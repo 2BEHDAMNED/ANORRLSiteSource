@@ -1,0 +1,387 @@
+hr {
+	margin: 15px;
+	border-color: #b0b0b0;
+	border-style: solid;
+}
+
+#UserStatsContainer, #UserInfoContainer {
+	margin: 0 auto;
+	width: 900px;
+	height:fit-content;
+}
+
+#UserInfoContainer #PaddingContainer {
+	padding: 10px;
+	margin: 0 auto;
+	width: fit-content;
+}
+
+#UserInfoContainer #ProfileInfo, #UserInfoContainer #ProfileImage {
+	float: left;
+}
+
+#UserInfoContainer #ProfileInfo {
+	width: 660px;
+	
+}
+
+#UserInfoContainer #ProfileImage {
+	text-align: center;
+}
+
+#UserInfoContainer #ProfileImage #ImageContainer > img {
+	display: block;
+	width: 200px;
+	height: 200px;
+	background: #222;
+	position:absolute;
+}
+
+#UserInfoContainer #ProfileImage #ImageContainer {
+	border: 2px solid black;
+	background: #222;
+	margin-right:5px;
+	position: relative;
+	width: 200px;
+	height: 200px;
+}
+
+#UserInfoContainer #ProfileImage button {
+	border: 2px solid black;
+	background: #111;
+	color: white;
+	padding: 3px 10px;
+	font-size: 12px;
+}
+
+#UserInfoContainer #ProfileImage button:hover {
+	border: 2px solid white;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#UserStatsContainer #LeftContainer,
+#UserStatsContainer #RightContainer {
+	width: 427px;
+	float: left;
+	padding: 10px;
+}
+
+#UserInfoContainer #Stats #Blurb {
+	border: 2px solid black;
+	background: #212121;
+	padding: 10px;
+	margin-top: 5px;
+	height: 125px;
+	overflow: auto;
+}
+
+#UserInfoContainer #Stats div > a {
+	text-decoration: none;
+}
+
+#UserInfoContainer #Stats #FollowFriendsWhatever {
+	background: black;
+	
+	width: unset;
+	padding: 10px;
+}
+
+#UserInfoContainer #Stats #FollowFriendsWhatever a {
+	color: white;
+}
+
+#UserInfoContainer #Stats #FollowFriendsWhatever a #Numbers {
+	font-family: Arial;
+	font-size: 14px;
+}
+
+#UserInfoContainer #Stats #OnlineStatusArea {
+	background: black;
+	width: unset;
+	padding: 0px 10px;
+	padding-bottom: 10px;
+}
+
+#UserInfoContainer #Stats #OnlineStatusArea .Online {
+	color: #73e71e;
+}
+
+#UserInfoContainer #Stats #OnlineStatusArea .Online a {
+	color: #73e71e;
+	font-weight: bold;
+}
+
+#UserInfoContainer #Stats div > a:hover span {
+	text-decoration: underline;
+}
+
+#UserStatsContainer #ProfileBadgesContainer,
+#UserStatsContainer #PlayerBadgesContainer {
+	width: 100%;
+}
+
+#UserStatsContainer #ProfileBadgesContainer h3,
+#UserStatsContainer #PlayerBadgesContainer h3 {
+	width: calc(100% - 2px);
+	padding: 5px 0px;
+	padding-left: 3px;
+	margin: 0px;
+}
+
+.Badge {
+	margin: 1px;
+	text-align: center;
+	background: #222;
+	width: 85px;
+	height: 112px;
+	padding: 5px;
+	border: 2px solid black;
+}
+
+.Badge img {
+	height: 75px;
+	width: 75px;
+	border: 2px solid black;
+	background: #555;
+}
+
+.Badge span {
+	font-size: 12px;
+	margin: 4px;
+	margin-top: 10px;
+	display: block;
+}
+
+#BadgesPane {
+	background: #111;
+	width: 432px;
+	min-height: 260px;
+	border: 2px solid black;
+}
+
+#BadgesPane td {
+	vertical-align: top;
+}
+
+#BadgesPane .Loading {
+	text-align: center;
+	font-size: 16px;
+	vertical-align: middle;
+}
+
+.Badge[template] {
+	display: none;
+}
+
+#UserGamesContainer h3 {
+	margin-bottom: 0px;
+	margin-left: 15px;
+	width: 826px;
+}
+
+#UserGamesContainer	#ProfileGamesBox {
+	border: 2px solid #090909;
+	margin: 0 auto;
+	background: #171717;
+	padding: 10px;
+	padding-left: 15px;
+	width: 870px;
+}
+
+.ProfileGame img {
+	width: 300px;
+	height: 169px;
+	border: 2px solid #090909;
+}
+
+.ProfileGame #Play {
+	width: 212px;
+	height: 54px;
+	background: url("/images/buttons/Play.png");
+	display: inline-block;
+}
+
+.ProfileGame #Play:hover {
+	background-position: 0 54px;
+}
+
+.ProfileGame #ShowcaseBigImages {
+	display: table-cell;
+	vertical-align: top;
+	width:304px;
+	text-align:center;
+}
+
+.ProfileGame #ShowcaseBigImages img {
+	background:	#282828
+}
+
+.ProfileGame #ShowcaseDetails {
+	display: table-cell;
+	vertical-align: top;
+
+	width: 282px;
+	height: 225px;
+}
+
+.ProfileGame #ShowcaseBigImages #NameAndCreator {
+	margin-left: 0px;
+	margin-top: 0px;
+	font-size:15px;
+	background: black;
+	font-family: punk;
+	font-weight: bold;
+	padding: 5px;
+	padding-left: 15px;
+	padding-top: 10px;
+}
+
+.ProfileGame #ShowcaseBigImages #NameAndCreator a {
+	display: block;
+	color: white;
+}
+
+.ProfileGame #ShowcaseBigImages #NameAndCreator #Creator {
+	font-size: 11px;
+}
+
+.ProfileGame #ShowcaseDetails code {
+	border: 2px solid black;
+	padding: 10px;
+	background: #282828;
+	height: 240px;
+	display: block;
+	width: 230px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	margin-bottom: -5px;
+}
+
+.ProfileGame #ShowcaseDetails #AllowedStuff {
+	border: 2px solid black;
+	padding: 10px;
+	background: #181818;
+	display: block;
+	width: 249px;
+	border-top: 0;
+}
+
+#ProfileGames {
+	text-align: center;
+	margin-left: 10px;
+	height: 195px;
+	background: #0f0f0f;
+}
+
+#ProfileGames img {
+	width: 227px;
+	height: 128px;
+	border: 1px solid gray;
+}
+
+#ProfileGames img:hover {
+	cursor: pointer;
+	border: 1px solid white;
+	filter: brightness(1.25) contrast(0.5);
+}
+
+#ProfileGames #Filler {
+	display: block;
+	width: 240px;
+	height: 128px;
+}
+
+#ProfileGames > div > a:hover > img {
+	background: #333;
+}
+
+#UserAvatarContainer h3 {
+	margin: 0px;
+	width: 826px;
+}
+
+#UserAvatarContainer {
+	margin: 0 auto;
+	width: 870px;
+}
+
+#UserAvatarContainer #UserAvatarPane {
+	border: 2px solid #090909;
+	margin: 0 auto;
+	background: #171717;
+	padding: 10px;
+	padding-left: 10px;
+	padding-left: 15px;
+}
+
+#AvatarItems {
+	padding: 5px;
+	width: 600px;
+	vertical-align: middle;
+	overflow: hidden;
+	overflow-x: scroll;
+	list-style: none;
+	white-space: nowrap;
+	margin: 5px;
+	float: left;
+}
+
+#AvatarItems > li {
+	text-align: center;
+	margin-right: 5px;
+	display: inline-block;
+}
+
+#AvatarRender {
+	float: left;
+	margin: 10px;
+	margin-left: 6px;
+	margin-top: 6px;
+	position: relative;
+	width: 200px;
+	height: 200px;
+}
+
+#AvatarRender > img {
+	border: 2px solid black;
+	width: 200px;
+	height: 200px;
+}
+
+#NoItemsOn {
+	margin: 95px 170px;
+	font-size: 16px;
+}
+
+#Controls button {
+	margin-top: 4px;
+}
+
+h1 {
+	border: 2px solid black;
+}
+
+#UserInfoContainer h3,
+#UserAvatarContainer h3,
+#UserGamesContainer h3,
+#UserStatsContainer h3,
+#NameAndCreator {
+	border-top: 2px solid black;
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+}
+
+h2[style] {
+	border: 2px solid black;
+}
+
+#FollowFriendsWhatever {
+	border: 2px solid black;
+	border-bottom: none;
+}
+
+#OnlineStatusArea {
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+}

@@ -1,0 +1,392 @@
+@font-face {
+	font-family: 'punk';
+	src: url('/css/Punktype.ttf');
+	src: url('/css/Punktype.eot')\9;
+}
+
+@font-face {
+	font-family: 'road';
+	src: url('/css/TransportMedium.ttf');
+	src: url('/css/TransportMedium.eot')\9;
+}
+
+#Footer > * {
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+
+#Footer {
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: url("/images/bkg.png") top center repeat-x #000444;
+	font-family: Arial,Helvetica,sans-serif;
+	color: black;
+	font-size: 12px;
+}
+
+a {
+	text-decoration: none;
+	color: #ffa634;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #ffc63f;
+}
+
+#Container {
+	margin: 55px auto;
+	/*border-left: 5px solid #DDD;
+	border-right: 5px solid #DDD;
+	background: #e5f1fd;*/
+	width: 950px;
+	padding: 0 10px;
+}
+
+#Header {
+	/*margin-top:55px;*/
+	width: 100%;
+	position: relative;
+}
+
+#Header #Logo {
+	line-height: 0;
+	width: 100%;
+	text-align: center;
+	border: none;
+}
+
+#Header #Logo img {
+	width: 207px;
+	height: 156px;
+	margin-bottom: -44px;
+	margin-top: -110px;
+	border: none;
+}
+
+#Header #ProfileSign {
+	width: 195px;
+	
+	transform: rotate(-3deg);
+	margin-bottom: -30px;
+	margin-left: -30px;
+
+	z-index: 3;
+	position: relative;
+	padding: 10px;
+
+	font-size: 16px;
+	font-family: road !important;
+	color: white;
+	text-align: center;
+
+	/* IE bullshit */
+	width: 200px\9;
+	margin-bottom: -50px\9;
+	margin-left: -50px\9;
+	filter: progid:DXImageTransform.Microsoft.Matrix(
+			M11 = 0.998629535 ,
+			M12 = 0.05233596,
+			M21 = -0.05233596,
+			M22 = 0.998629535 ,
+			sizingMethod = 'auto expand'
+	);
+
+	overflow: visible;
+}
+
+#Header #ProfileSign[logged=false] #background {
+	height: 100px\9;
+}
+
+#Header #ProfileSign[logged=true] #background {
+	height: 160px\9;
+}
+
+
+#Header #ProfileSign #background {
+	width: 220px;
+	height: 100%;
+	
+	position:absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#Header #ProfileSign #RegisterSign,
+#Header #ProfileSign #LoginSign {
+	padding: 10px;
+	width: 80px;
+	height: 54px;
+	display: block;
+	position: absolute;
+	padding-top: 38px;
+	font-weight: bold;
+	z-index: 4;
+	filter: none;
+}
+
+#Header #ProfileSign #RegisterSign {
+	left: -3px;
+	top: -25px;
+}
+
+#Header #ProfileSign #LoginSign {
+	top: -25px;
+	right: -11px;
+}
+
+#Header #ProfileSign a {
+	color: white;
+}
+
+#Header #ProfileSign hr {
+	margin:2px 0px;
+	color:white;
+	position: relative;
+	z-index: 2;
+}
+
+#Header #ProfileSign #UsernameRow {
+	position: relative;
+	z-index: 2;
+}
+
+#Header #ProfileSign #CreditsRow {
+	padding-bottom:5px;
+	position: relative;
+	z-index: 2;
+}
+
+#Header #ProfileSign #CreditsRow span {
+	display:inline-block;
+	font-size: 12px;
+	width:45%;
+	height: 20px;
+
+	width:25%\9;
+}
+
+#Header #ProfileSign #CreditsRow span img {
+	margin-bottom: -3px;
+	image-rendering: crisp-edges;
+	border: none;
+
+	width: 20px\9;
+}
+
+#Header #ProfileSign #CreditsRow span.Separator {
+	font-family: Arial;
+	font-size: 16px;
+	width: unset;
+	background: none;
+}
+
+#Header #LogoutSign {
+	background: url('/images/sign_stop.png') round; /* Practically useless in ie (overwritten by filters) */
+	transform: rotate(3deg);
+	position: relative;
+	float: right;
+	z-index: 3;
+	
+	font-size: 16px;
+	font-family: road !important;
+	color: white;
+	line-height: 90px;
+	text-align: center;
+	
+	width: 90px;
+	height: 90px;
+	
+	margin-top: -66px;
+	margin-right: 41px;
+	margin-left: -150px;
+
+	padding: 10px;
+
+	/* IE bullshit */
+	margin-left: -129px\9;
+	margin-top: -14px\9;
+	font-weight: normal\9;
+	filter: progid:DXImageTransform.Microsoft.Matrix(  /* ROTATE 3 DEG */
+		M11 = 0.99862953,  	/*  COS_THETA */
+		M12 = -0.05233596,	/* -SIN_THETA */
+		M21 = 0.05233596,   /*  SIN_THETA */
+		M22 = 0.99862953 ,  /*  COS_THETA */
+		sizingMethod = 'auto expand'
+	);
+}
+
+#Header #Links {
+	border: 5px solid black;
+	font-size: 18px;
+	width: 930px;
+	height: 21px;
+	margin: 0 auto;
+	padding: 5px;
+	
+	color: white;
+	text-align: center;
+	font-weight: bold;
+	font-family: punk !important;
+	position: relative;
+	z-index: 2;
+
+	background: url(/images/header/navbar.jpg) repeat-x;
+	background-size: 49px auto;
+}
+
+#Header #Links a {
+	color: white;
+	padding: 0px 1.5em;
+	background: rgb(0,0,0);
+	border: 2px solid black;
+	font-family: punk !important;
+}
+
+#Header #Links a:hover {
+	text-decoration: underline;
+	background: #222;
+}
+
+#Header #UserLinks {
+	border: 4px solid black;
+	font-size: 14px;
+	width: 900px;
+	margin: 0 auto;
+	padding: 2px 0px;
+	
+	color: white;
+	text-align: center;
+	position: relative;
+	z-index: 2;
+
+	background: #171717;
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+
+#Header #UserLinks a {
+	color: white;
+	padding: 2px 1.5em;
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+
+#Header #UserLinks a:hover,
+#Header #UserLinks a[selected] {
+	background: #3e3e3e;
+	font-weight: bold;
+}
+
+#Footer {
+	text-align: center;
+	background: #222;
+	padding-top: 10px;
+	padding-bottom: 20px;
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+
+#Footer > * {
+	font-family: Arial,Helvetica,sans-serif !important;
+}
+
+#Footer #FooterContainer {
+	width: 800px;
+	margin:0 auto;
+}
+
+#Footer #Links {
+	margin: 12px auto;
+    margin-top: 0px;
+}
+
+#Footer #Legalese {
+	width: 600px;
+	margin: 20px auto;
+	margin-bottom: 0px;
+}
+
+#Body {
+	border: 4px solid black;
+	background: #353535;
+	border-top: none;
+	width: 900px;
+	margin: 0 auto;
+	padding: 0px;
+	color:white;
+}
+
+#BodyContainer {
+	padding: 5px;
+}
+
+h4 {
+	font-size:14px;
+}
+
+h3 {
+	font-size:18px;
+}
+
+h2 {
+	font-size:22px;
+}
+
+
+h1 {
+	font-size:28px;
+}
+
+h1, h2, h3, h4 {
+	background: black;
+	padding: 5px 20px;
+	width: fit-content;
+	font-family: punk;
+	font-weight: 500;
+	block-size: fit-content;
+	overflow:auto;
+}
+
+#Clearer {
+	clear: both;
+	margin-bottom:2px;
+	margin-bottom:20px\9;
+}
+
+.DisplayMobileWarning {
+	position: absolute;
+	inset: 0;
+	background: darkred;
+	z-index: 999;
+	font-weight: bold;
+	color: white;
+}
+
+.DisplayMobileWarning #MobileWarningText {
+	width: 331px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.DisplayMobileWarning #MobileWarningText h1 {
+	margin: 10px auto;
+}
+
+#NumberPutter {
+	width: 40px;
+	border: 2px solid black;
+	background: #242424;
+	color: white;
+	text-align: center;
+}
+
+#Paginator {
+	margin: 4px auto;
+	margin-bottom: 0px;
+	text-align: center;
+}

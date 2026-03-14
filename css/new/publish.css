@@ -1,0 +1,178 @@
+h1, h2, h3, h4 {
+	margin: 0;
+}
+
+h2 {
+	margin-top: 10px;
+}
+
+#PublishContainer #ItemDetails {
+	background: #2c2c2c;
+	border: 2px solid black;
+	padding: 10px;
+	width: 866px;
+}
+
+#PublishContainer #ItemDetails table {
+	border: 2px solid black;
+	padding: 10px;
+	background: #222;
+	width:512px;
+	
+}
+
+#ItemDetails input[type=text],
+#ItemDetails input[type=number],
+#ItemDetails select,
+#ItemDetails textarea {
+	border: 2px solid black;
+	background: #444;
+	padding: 2px 4px;
+	color: white;
+	resize: vertical;
+}
+
+#ItemDetails input[type=text],
+#ItemDetails textarea {
+	width: 320px;
+}
+
+#ItemDetails input[type=submit],
+#ItemDetails a[type=submit],
+#ItemDetails label[for=files] {
+	border: 2px solid black;
+	background: black;
+	color: white;
+	padding: 4px 8px;
+	font-weight: bold;
+	font-family: punk;
+	margin: 10px auto;
+	margin-bottom: 0px;
+	display: block;
+}
+
+#ItemDetails input[type=submit]:hover,
+#ItemDetails input[type=submit]:hover,
+#ItemDetails label[for=files]:hover {
+	text-decoration: underline;
+	background: #161616;
+	cursor: pointer;
+}
+
+#ItemDetails label#filename {
+	margin-left: 5px;
+}
+
+#PublishContainer #ItemDetails table td {
+	width: 140px;
+	min-width: 140px;
+	vertical-align: top;
+}
+
+#PublishContainer #ItemDetails #DetailStack {
+	margin: 0 auto;
+	width: 510px;
+}
+
+#PublishContainer #ItemDetails {
+	background: #000;
+	border: 2px solid black;
+	padding: 10px;
+	width: 866px;
+}
+
+#ItemDetails input[type=text],
+#ItemDetails input[type=number],
+#ItemDetails select,
+#ItemDetails textarea {
+	border: 2px solid black;
+	background: #444;
+	padding: 2px 4px;
+	color: white;
+	resize: vertical;
+}
+
+#ItemDetails input[type=text],
+#ItemDetails textarea {
+	width: 320px;
+}
+
+#ItemDetails input[type=submit],
+#ItemDetails a[type=submit],
+#ItemDetails label[for=files] {
+	border: 2px solid black;
+	background: black;
+	color: white;
+	padding: 4px 8px;
+	font-weight: bold;
+	font-family: punk;
+	margin: 10px auto;
+	margin-bottom: 0px;
+	display: block;
+}
+
+#ItemDetails input[type=submit]:hover,
+#ItemDetails input[type=submit]:hover,
+#ItemDetails label[for=files]:hover {
+	text-decoration: underline;
+	background: #161616;
+	cursor: pointer;
+}
+
+#ItemDetails label#filename {
+	margin-left: 5px;
+}
+
+#PublishContainer #ItemDetails table td {
+	width: 140px;
+	min-width: 140px;
+	vertical-align: top;
+}
+
+#PublishContainer #ItemDetails #DetailStack {
+	margin: 0 auto;
+	width: 510px;
+}
+
+#PublishPlaces {
+	padding: 5px;
+	border: 2px solid black;
+	background: #222;
+}
+
+#PublishPlaces .Place {
+	border: 2px solid black;
+	background: #1d1d1d;
+	width:261px;
+	padding: 5px;
+	text-align: center;
+	margin: 3px;
+	display: inline-block;
+}
+
+#PublishPlaces .Place * {
+	display:block;
+	width:257px;
+}
+
+#PublishPlaces .Place img {
+	border: 2px solid black;
+	background: #111;
+	width:257px;
+	height:145px;
+}
+
+#PublishPlaces .Place span {
+	margin-top: 5px;
+	font-weight: bold;
+}
+
+#PublishPlaces .Place:hover,
+#PublishPlaces .Place:hover span {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+#PublishPlaces .Place:hover {
+	border-color: white;
+}

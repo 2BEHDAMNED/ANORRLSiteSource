@@ -1,0 +1,36 @@
+h1, h2, h3, h4 {
+	margin: 0px;
+}
+
+#CreditsContainer {
+	border: 2px solid black;
+	background: #222;
+	padding: 10px;
+}
+
+#CreditsContainer .Note {
+	font-style:italic;
+	color: #AAA;
+}
+
+#CreditsContainer table {
+	width: 100%;
+	table-layout: fixed
+}
+
+#CreditsContainer table a {
+	text-align: center;
+}
+
+#CreditsContainer table a > * {
+	display: block;
+}
+
+#CreditsContainer table a > img {
+	margin: 0 auto;
+	border: 2px solid black;
+}
+
+#CreditsContainer table a > span {
+	margin-top: 5px;
+}

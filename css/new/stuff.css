@@ -1,0 +1,209 @@
+/* Stuff / Create CSS */
+
+#StuffContainer {
+	width: 876px;
+	margin: 0 auto;
+	margin-bottom: 15px;
+}
+
+#StuffContainer h1 {
+	margin-bottom: 0px;
+	margin-top: 5px;
+	width:826px;
+}
+
+#StuffContainer #StuffNavigation {
+	border: 2px solid black;
+	background: #222;
+	width:184px;
+	display: inline-block;
+	vertical-align: top;
+	border-top: 0;
+	margin-right: -2px;
+}
+
+#StuffNavigation ul {
+	list-style: none;
+	padding: 15px;
+	margin: 0;
+}
+
+#StuffNavigation hr {
+	border: 0;
+}
+
+#StuffNavigation ul > li[selected] a {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#AssetsContainer {
+	display: inline-block;
+	border: 2px solid black;
+	min-height: 180px;
+	width: 676px;
+	background: #222;
+	vertical-align: middle;
+
+	white-space: nowrap;
+	border-top: 0;
+	position: relative;
+}
+
+#AssetsContainer table {
+	min-height: 180px;
+	padding: 5px;
+}
+
+#AssetsContainer #Paginator {
+	display: block;
+	background: #111111;
+	padding: 10px;
+	text-align: center;
+}
+
+#AssetsContainer #Paginator input {
+	font-size: 12px;
+	width: 30px;
+	height: 13px;
+	text-align: center;
+}
+
+#StuffNavigation #CreateArea {
+	display: block;
+	width: 100%;
+	padding: 5px 0px;
+	background: #111;
+	font-weight: bold;
+	text-align: center;
+}
+
+#StuffNavigation #CreateArea a {
+	display: inline-block;
+	width: 45%;
+}
+
+#StuffNavigation #CreateArea a[disabled] {
+	color: gray;
+	cursor:not-allowed;
+}
+
+.Asset {
+	border: 2px solid black;
+	width: 135px;
+	padding: 10px;
+	background: #222;
+	font-size: 0px;
+}
+
+
+.Asset[nopricing] #Pricing {
+	opacity: 0;
+}
+
+.Asset #NameAndThumbs {
+	display: block;
+}
+
+.Asset #NameAndThumbs > img {
+	border: 2px solid black;
+	display: block;
+	width: 130px;
+	height: 130px;
+	background: #222;
+}
+
+.Asset #NameAndThumbs > span {
+	display: block;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.Asset > a > span {
+	margin: 6px 5px;
+	margin-bottom: 0px;
+	display:block;
+	font-size: 12px;
+}
+
+.Asset > a:hover {
+	text-decoration: none;
+}
+.Asset > a:hover > span {
+	text-decoration: underline;
+}
+
+.Asset #Creator,
+.Asset #Creator span {
+	margin-top: 0px;
+}
+
+.Asset #Pricing {
+	background: #313131;
+	border: 2px solid black;
+	border-top: 0px;
+	padding: 5px;
+	width: 120px;
+	color: white;
+	text-decoration: none;
+	white-space: none;
+}
+
+.Asset #Pricing > span > img {
+	border: 0;
+	width: 16px;
+	height: 16px;
+	image-rendering: pixelated;
+	margin-bottom: -3px;
+	position: relative;
+	display: unset;
+}
+
+.Asset #Pricing > span {
+	display:inline-block;
+	width: 50%;
+	padding-left: 4px;
+	font-size: 12px;
+}
+
+.Asset #Pricing[oneprice] > span {
+	text-align: center;
+	width: 100%;
+	padding-left: 0px;
+}
+
+.Asset #Pricing > span#FreeTag {
+	text-align: center;
+	color: #00ae00;
+	font-weight: bold;
+	width: 100%;
+	padding-left: 0px;
+}
+
+.Asset #Pricing > span#NotOnSaleTag {
+	text-align: center;
+	color: #bbb;
+	font-weight: bold;
+	width: 100%;
+	padding-left: 0px;
+	font-style: italic;
+}
+
+
+.Asset[template] {
+	display: none;
+}
+
+#AssetsContainer table[hidden] {
+	display: none;
+}
+
+#AssetsContainer #Loading, 
+#AssetsContainer #NoAssets {
+	font-size: 18px;
+	width: 100%;
+	display: block;
+	text-align: center;
+	line-height: 180px;
+}

@@ -1,0 +1,174 @@
+#ItemContainer {
+	padding: 10px;
+}
+
+#ItemContainer #ItemDetails {
+	background: #2c2c2c;
+	border: 2px solid black;
+	padding: 10px;
+	display: table;
+}
+
+#ItemContainer #ItemDetails > div#Content,
+#ItemContainer #ItemDetails > div#Information {
+	display: table-cell;
+	vertical-align: top;
+}
+
+#ItemDetails #Content {
+	padding: 5px;
+	border: 2px solid black;
+	background: #212121;
+	text-align: center;
+}
+
+#ItemDetails #Content audio {
+	width: 229px;border:2px solid black;
+}
+
+#ItemDetails #Information {
+	width: 338px;
+}
+
+#ItemDetails #Information #UserCard {
+	display: table;
+	border: 2px solid black;
+	background: #222;
+	margin-left: 10px;
+	padding: 10px;
+	width: 309px;
+}
+
+#ItemDetails #Information #UserCard #AssetInfoStuff {
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 15px;
+	
+}
+
+#ItemDetails #Information #UserCard span{
+	display: block;
+}
+
+#ItemDetails #Information #ItemDescription {
+	border: 2px solid black;
+	background: #212121;
+	padding: 10px;
+	margin-top: 10px;
+	margin-left: 10px;
+	height: 96px;
+	overflow: auto;
+}
+
+#ItemDetails #Purchasing {
+	display: inline-block;
+	border: 2px solid black;
+	background: #212121;
+	padding: 10px;
+	margin-left: 10px;
+	text-align: center;
+}
+
+#ItemDetails #Purchasing #NotOnSale {
+	border: 2px solid gray;
+	font-weight: bold;
+	font-style: italic;
+	color: lightgray;
+	padding: 15px;
+}
+
+.PurchaseButton {
+	display:block;
+	font-size: 14px;
+	padding: 7px 50px;
+	text-align: center;
+	margin-bottom: 5px;
+	color: white;
+	background: #e5962eff;
+	border: 2px solid #666;
+	width: 220px;
+	
+}
+
+.PurchaseButton:hover {
+	background: #e4b139ff;
+	cursor: pointer;
+}
+
+.PurchaseButton img {
+	width: 20px;
+	image-rendering: pixelated;
+	margin-bottom: -5px;
+}
+
+#ManageOptions a {
+	display: block;
+	padding: 5px 0px;
+	width: 210px;
+}
+
+#ItemContainer .FavouriteButton {
+	width: 32px;
+	height: 32px;
+	margin-bottom: -7px;
+	margin-left: -16px;
+	margin-right: 10px;
+	background-image: url("/images/favourite_star.gif");
+	background-size: 32px;
+	display: inline-block;
+}
+
+#ItemContainer .FavouriteButton[favourited=true]{
+	background-image: url("/images/favourited_star.gif");
+}
+
+#ItemContainer .FavouriteButton[favourited=true]:hover {
+	background-image: url("/images/favourited_hover_star.gif");
+}
+
+#ItemContainer .FavouriteButton:hover {
+	background-image: url("/images/favourite_hover_star.gif");
+}
+
+#PurchasePanel {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	background: #000a;
+	z-index: 999;
+	margin-top: -55px;
+}
+
+#PurchasePanel #ModalPopup {
+	width: 360px;
+	height: fit-content;
+	border: 3px gray solid;
+	background: #333;
+	inset: 0;
+	position: absolute;
+	margin: auto;
+	padding: 10px;
+	color: white;
+}
+
+#PurchasePanel #ModalPopup h3 {
+	font-family:Arial, Helvetica, sans-serif;
+	background: none;
+	padding: 0;
+	margin: 10px 0px;
+	margin-top: 2px;
+	font-weight: bold;
+}
+
+#PurchasePanel #ModalPopup .MediumButton {
+	background: #777;
+	border: 2px solid black;
+	padding: 5px 0px;
+	color: white;
+}
+
+#PurchasePanel #ModalPopup .MediumButton:hover {
+	background: #999;
+	border-color: white;
+	cursor: pointer;
+}

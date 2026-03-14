@@ -1,0 +1,158 @@
+h2, h4 {
+	margin: 0;
+}
+
+h4 { 
+	margin-top: 5px; 
+}
+
+
+#CharacterContainer #CharacterLeftwardSide {
+	float: left;
+	width:600px;
+}
+
+#CharacterContainer #CharacterRightwardSide {
+	float: left;
+	width:290px;
+}
+
+#CharacterContainer #AssetsContainer {
+	width: 590px;
+	border:2px solid black;
+}
+
+#CharacterContainer #Wardrobe #WardrobeHeader {
+	width: 590px;
+	background: #111111;
+	padding: 5px 0px;
+	border: 2px solid black;
+	border-bottom: none;
+	text-align: center;
+}
+
+#CharacterContainer #Wardrobe #WardrobeHeader hr {
+	width: 85%;
+	
+}
+
+#CharacterContainer #Wardrobe #WardrobeHeader a {
+	padding: 10px;
+}
+
+#CharacterContainer #AvatarRender #RenderContainer {
+	border: 2px solid black;
+	background: #222;
+	text-align: center;
+}
+
+#CharacterContainer #AvatarRender button {
+	border: 2px solid black;
+	background: #111;
+	color: white;
+	padding: 3px 10px;
+	font-size: 12px;
+}
+
+#CharacterContainer #AvatarRender button:hover {
+	border: 2px solid white;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#CharacterContainer a[data_category][selected] {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#CharacterContainer a[data_category]:hover {
+	cursor: pointer;
+}
+
+#CharacterContainer .Asset {
+	position: relative;
+}
+
+#CharacterContainer #WearButton {
+	font-size: 12px;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	background: gray;
+	padding: 1px 3px;
+	border: 2px solid #575757;
+	color: #ffa634;
+}
+
+#CharacterContainer #WearButton:hover { 
+	text-decoration: underline;
+	color: #ffc63f;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#CharacterContainer .Asset {
+	width: 117px;
+	background: #1a1a1a;
+}
+
+#CharacterContainer .Asset #NameAndThumbs > img {
+	width: 113px;
+	height: 113px;
+}
+
+#CharacterContainer #BodyColours #BodyColoursContainer {
+	border: 2px solid black;
+	background: #222;
+	text-align: center;
+	padding: 15px;
+}
+
+#CharacterContainer #BodyColours #BodyColoursContainer button[data_bodytype] {
+	border: 2px solid black;
+	width: 38px;
+	height: 76px;
+}
+
+#CharacterContainer #BodyColours #BodyColoursContainer button[data_bodytype]:hover {
+	cursor: pointer;
+}
+
+#CharacterContainer #BodyColours #BodyColoursContainer button[data_bodytype="1"] {
+	width: 76px;
+}
+
+#CharacterContainer #BodyColours #BodyColoursContainer button[data_bodytype="0"] {
+	width: 44px;
+	height: 44px;
+}
+
+#CharacterContainer #BodyColours #BodyColoursContainer #BodyPartInfo {
+	margin: 0 auto;
+	margin-top: 15px;
+	background: black;
+	padding: 10px 5px;
+	font-family: punk;
+	font-size: 16px;
+}
+
+#Colours {
+	border: 2px solid black;
+	background: #333;
+	width: 580px;
+	height: 327px;
+	padding: 10px;
+	display: none;
+}
+
+#Colours button {
+	border: 2px solid black;
+	width: 32px;
+	height: 32px;
+	margin: 2px;
+}
+
+#Colours button:hover {
+	cursor: pointer;
+	border-color: white;
+}

@@ -1,0 +1,110 @@
+<?php
+	header("Content-Type: application/json");
+
+	require_once $_SERVER['DOCUMENT_ROOT']."/core/utilities/userutils.php";
+
+	if(isset($_GET['id']) && isset($_GET['request'])) {
+		$user = User::FromID(intval($_GET['id']));
+		$selfuser = false;
+		if($user == null) {
+			$user = UserUtils::RetrieveUser();
+			$selfuser = true;
+		}
+
+		if($user != null) {
+			if($_GET['request'] == "getuserbadges") {
+				$page = 1;
+				if(isset($_GET['p'])) {
+					$page = intval($_GET['p']);
+				}
+				
+				if($page < 1) {
+					$id = $user->id;
+					die(header("Location: /api/user?id=$id&request=getuserbadges&p=1"));
+				}
+				
+				$badges = $user->GetAllOwnedAssetsOfTypePaged(AssetType::BADGE,$page, 12);
+				$badges_raw = [];
+		
+				if(count($badges) != 0) {
+					foreach($badges as $asset) {
+						if($asset instanceof Asset) {
+							array_push($badges_raw, [
+								"id" => $asset->id,
+								"name" => $asset->name
+							]);
+						}
+					}
+				}
+		
+				die(json_encode(["badges" => $badges_raw, "page" => $page, "total_pages" => floor(count($user->GetAllOwnedAssetsOfType(AssetType::BADGE))/12)+1]));
+			}
+			else if($_GET['request'] == "isadmin") {
+				die(json_encode(['error' => false, 'isadmin' => $user->IsAdmin()]));
+			}
+			
+			else {
+				die(json_encode(["error" => true, "reason" => "Invalid request"]));
+			}
+			
+		} else {
+			die(json_encode(["error" => true, "reason" => "User not found."]));
+		}
+	} else if(isset($_POST['id']) && isset($_POST['request'])) {
+		$user = User::FromID(intval($_POST['id']));
+		$selfuser = false;
+		if($user == null) {
+			$user = UserUtils::RetrieveUser();
+			$selfuser = true;
+		}
+
+
+		if($user != null) {
+			
+			if($_POST['request'] == "follow" && !$selfuser) {
+				$founduser = UserUtils::RetrieveUser();
+
+				if($founduser != null) {
+					if($founduser->id != $user->id) {
+						if(!$founduser->IsFollowing($user)) {
+							$founduser->Follow($user);
+						} else {
+							$founduser->Unfollow($user);
+						}
+						
+						die(json_encode(['error' => false]));
+					}
+				}
+			} else if($_POST['request'] == "friend" && !$selfuser) {
+				$founduser = UserUtils::RetrieveUser();
+
+				if($founduser != null) {
+					if($founduser->id != $user->id) {
+						if($founduser->IsFriendsWith($user)) {
+							$founduser->Unfriend($user);
+						} else {
+							$founduser->Friend($user);
+						}
+						
+						die(json_encode(['error' => false]));
+					}
+				}
+			} else if($_POST['request'] == "unfriend" && !$selfuser) {
+				$founduser = UserUtils::RetrieveUser();
+
+				if($founduser != null) {
+					if($founduser->id != $user->id) {
+						$founduser->Unfriend($user);
+						
+						die(json_encode(['error' => false]));
+					}
+				}
+			}
+		} else {
+			die(json_encode(["error" => true, "reason" => "User not found."]));
+		}
+		 
+	}
+	
+	die(json_encode(["error" => true, "reason" => "Invalid request"]));
+?>

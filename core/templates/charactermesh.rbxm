@@ -1,0 +1,13 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://arl.lambda.cam/roblox.xsd" version="4">
+	<External>null</External>
+	<External>nil</External>
+	<Item class="CharacterMesh" referent="RBXCD0BC30A5F2547568BAC9E47DEC4D22C">
+		<Properties>
+			<int name="BaseTextureId">0</int>
+			<token name="BodyPart">{bodypart}</token>
+			<int name="MeshId">{assetid}</int>
+			<string name="Name">CharacterMesh</string>
+			<int name="OverlayTextureId">0</int>
+		</Properties>
+	</Item>
+</roblox>

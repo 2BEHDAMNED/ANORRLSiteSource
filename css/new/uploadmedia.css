@@ -1,0 +1,28 @@
+body {
+	color: white;
+}
+
+.InGamePopup {
+	height: 100vh;
+	margin: 12px;
+}
+
+
+#Wrapper {
+	margin: 12px;
+	width: 550px;
+	display:block;
+	margin: auto;
+	margin-top:200px;
+}
+
+.StandardBoxWhite {
+	background: #232323;
+	border: 2px solid black;
+	padding: 15px;
+}
+
+.InGamePopup h2 {
+	margin: 0;
+	width: 220px;
+}

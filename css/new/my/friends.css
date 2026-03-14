@@ -1,0 +1,52 @@
+h2, h4 {
+	margin: 0;
+}
+
+h4 {
+	margin-top: 5px;
+}
+
+#FriendsContainer {
+	border: 2px solid black;
+	background: #222;
+	padding: 10px;
+}
+
+#FriendsContainer > table {
+	width: 100%;
+}
+
+#FriendsContainer > table td {
+	vertical-align: top;
+}
+
+#FriendsContainer .Friend {
+	border: 2px solid black;
+	background: #1a1a1a;
+	width: 100px;
+	text-align: center;
+	padding: 10px;
+	margin: 0 auto;
+}
+
+#FriendsContainer .Friend a > * {
+	display: block;
+	margin: 0 auto;
+	font-weight: bold;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#FriendsContainer .Friend a > img {
+	width: 100px;
+	height: 100px;
+}
+
+#FriendsContainer .Friend a > span {
+	margin-top: 5px;
+}
+
+#FriendsContainer .Friend #ControlPanel > * {
+	margin: 2px auto;
+}

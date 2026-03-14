@@ -1,0 +1,255 @@
+h1, h2, h3, h4 {
+	margin: 0;
+}
+
+h2 {
+	padding: 5px 30px;
+}
+
+hr {
+	border-color: #aaa;
+}
+
+#ItemContainer {
+	padding: 10px;
+}
+
+#ItemContainer #PlaceDetails {
+	background: #2c2c2c;
+	border: 2px solid black;
+	padding: 10px;
+	display: table;
+	width: 845px;
+	text-align: center;
+}
+
+#PlaceDetails > div {
+	display: table-cell;
+	vertical-align: top;
+}
+
+#PlaceDetails #Content {
+	padding: 5px;
+	border: 2px solid black;
+	background: #212121;
+	text-align: left;
+}
+
+#PlaceDetails #Content #PlaceImageContainer {
+	width:623px;
+	height:350px;
+	position: relative;
+}
+
+#PlaceDetails #Content #PlaceImageContainer #OriginalLabel {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	font-size: 20px;
+	border: 2px solid black;
+	padding: 4px 15px;
+	background: #6b0388;
+	font-family: punk;
+	font-weight: bold;
+}
+
+#PlaceDetails #Information {
+	width: 338px;
+}
+
+#PlaceDetails #Information #UserCard {
+	border: 2px solid black;
+	background: #222;
+	margin-left: 10px;
+	padding: 10px;
+	width: 175px;
+	height: 348px;
+	padding-top: 15px;
+	padding-bottom: 0px;
+}
+
+#PlaceDetails #Information #UserCard #AssetInfoStuff {
+	display: inline-block;
+	vertical-align: top;
+	margin-bottom: 15px;
+	width: 100%;
+	margin: 3px 0px;
+}
+
+#PlaceDetails #Information #UserCard span{
+	display: block;
+	
+}
+
+#PlaceDetails #ManageOptions a {
+	font-size: 12px;
+	width: 175px;
+	padding: 3px 0px;
+}
+
+#PlaceInfoArea #NoDescription {
+	font-style: italic;
+	color: lightgray;
+}
+
+#PlaceInfoArea #Description {
+	padding: 10px;
+}
+
+#PlaceDetails #UserCard #NotOnSale {
+	border: 2px solid gray;
+	font-weight: bold;
+	font-style: italic;
+	color: lightgray;
+	padding: 10px;
+}
+
+#PlaceInfoArea {
+	margin-top: 10px;
+	background: #222;
+	border: 2px solid black;
+}
+
+#PlaceInfoArea #InfoHeaders {
+	table-layout: fixed;
+	background: #000;
+	font-size: 16px;
+	font-family: punk;
+	border-bottom: 2px solid black;
+	width:100%;
+}
+
+#PlaceInfoArea #InfoHeaders td {
+	color: white;
+	text-align: center;
+	padding: 10px;
+	cursor: pointer;
+}
+
+#PlaceInfoArea #InfoHeaders td:hover,
+#PlaceInfoArea #InfoHeaders td[selected] {
+	background: #2b2b2b;
+	text-decoration: underline;
+}
+
+#PlaceInfoArea #InfoBox {
+	padding: 10px;
+}
+
+#BigNumbersArea {
+	width: 100%;
+	table-layout: fixed;
+}
+
+#BigNumbersArea #Detail {
+	text-align: center;
+	padding: 5px 10px;
+}
+
+#BigNumbersArea #Detail * {
+	display:block;
+}
+
+#ServersBox {
+	padding: 10px;
+	border: 2px solid black;
+	background: #1d1d1d;
+}
+
+#ServersBox #NoGamesWarning {
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#ServersBox .Server {
+	width: 100%;
+	background: #1a1a1a;
+	border: 2px solid black;
+	
+}
+
+.Server td { 
+	padding: 10px;
+}
+
+.Server button {
+	border: 2px solid black;
+	background: black;
+	color: white;
+	padding: 4px 8px;
+	font-weight: bold;
+	font-family: punk;
+	font-size: 12px
+}
+
+.Server button:hover {
+	text-decoration: underline;
+	background: #161616;
+	cursor: pointer;
+	font-size: 12px
+}
+
+.Server #PlayersBox {
+
+}
+
+.Server #PlayersBox #Player {
+	float:left;
+	width: 64px;
+	height: 64px;
+	border: 2px solid #8e8e8e;
+	background: #555;
+}
+
+.Server #PlayersBox #Player img {
+	width: 64px;
+	height: 64px;
+}
+
+.Server #JoinBox {
+	text-align: center;
+	border-left: 2px solid #555;
+}
+
+.PlaceButton {
+	display: block;
+	font-size: 14px;
+	padding: 7px 50px;
+	text-align: center;
+	margin-bottom: 5px;
+	color: white;
+	background: #e5962eff;
+	border: 2px solid #666;
+	width: 175px;
+  	padding: 0px;
+
+	cursor: pointer;
+}
+
+.PlaceButton[Play] {
+	background: url("/images/buttons/Play.png");
+}
+
+.PlaceButton[Edit] {
+	background: url("/images/buttons/Edit.png");
+}
+
+.PlaceButton[Play],
+.PlaceButton[Edit] {
+	height: 43px;
+	background-size: 175px;
+	border: 0px;
+}
+
+.PlaceButton[Play]:hover,
+.PlaceButton[Edit]:hover {
+	background-position: 0 44px;
+}
+
+#GearsEnabled {
+	font-size: 13px;
+	font-weight: bold;
+	margin: 2px;
+	letter-spacing: 2px;
+}
