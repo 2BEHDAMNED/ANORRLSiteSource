@@ -28,7 +28,8 @@
 			"sanfordhappy",
 			"sanfordthumbsup",
 			"weeeeh",
-			"neuroangel"
+			"neuroangel",
+			"iscream"
 		];
 		shuffle($array);
 
