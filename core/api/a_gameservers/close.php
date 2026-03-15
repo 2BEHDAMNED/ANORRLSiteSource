@@ -45,8 +45,6 @@
 						$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 						curl_close($ch);
 
-						echo $data;
-
 						if($code != 200) {
 							die(http_response_code(503));
 						}
