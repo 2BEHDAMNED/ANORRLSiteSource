@@ -138,7 +138,7 @@ ANORRL.Games = {
 					if(asset['year'] == "2013") {
 						template.find("#YearArea > span").html(asset['year']);
 					} else {
-						template.find("#YearArea > span").remove();
+						template.find("#YearArea").remove();
 					}
 					
 					
