@@ -110,6 +110,10 @@
 									60,
 									"Contributed to the website's development!"
 								); ?>
+								<?php CreateProfile(
+									53,
+									"Added a few funny and silly stuff to the site!"
+								); ?>
 							</tr>
 						</table>
 						<hr>
