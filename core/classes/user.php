@@ -1168,6 +1168,10 @@ EOT;
 				if(str_starts_with($file_type,"image/")) {
 					if(!str_contains($file_type, "gif")) {
 						$pre_image = imagecreatefromstring($file_contents);
+
+						if(!($pre_image instanceof GdImage)) {
+							return ["error" => true, "reason" => "That wasn't an image brochacho!"];
+						}
 						
 						$width = imagesx($pre_image);
 						$height = imagesy($pre_image);
