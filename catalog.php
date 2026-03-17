@@ -99,7 +99,7 @@
 						</div>
 						<div id="AssetsContainer">
 							<div method="GET" id="FormPanel" style="margin: 5px auto;">
-								<input id="SearchBox" name="query" type="text" placeholder="Look for awesome games!!!" style="width: 460px;">
+								<input id="SearchBox" name="query" type="text" placeholder="Look for awesome items!!!" style="width: 460px;">
 								<input id="Submit" type="submit" value="Search" onclick="ANORRL.Catalog.Submit(); return false;">
 							</div>
 							<div id="StatusText">
