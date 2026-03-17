@@ -2,6 +2,7 @@
 
 	require_once $_SERVER['DOCUMENT_ROOT']."/core/classes/status.php";
 	require_once $_SERVER['DOCUMENT_ROOT']."/core/utilities/utilutils.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/core/classes/asset.php";
 	require_once $_SERVER['DOCUMENT_ROOT']."/core/vendor/autoload.php";
 	use CSSValidator\CSSValidator;
 
@@ -1057,20 +1058,15 @@ EOT;
 				}
 
 				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
-				$checktype = $con->prepare("SELECT `asset_type` FROM `assets` WHERE `asset_id` = ? LIMIT 1");
-    			$checktype->bind_param('i', $bgm_content);
-    			$checktype->execute();
-    			$resultcheck = $checktype->get_result();
-				
-				if ($resultcheck->num_rows === 0) {
+				$queried_asset = Asset::FromID($bgm_content);
+				if($queried_asset == null) {
         			return [
             			"error" => true,
             			"reason" => "Asset does not exist."
         			];
     			}
-
-    			$asset = $resultcheck->fetch_assoc();
-    			if (intval($asset['asset_type']) !== 3) {
+				
+    			if($queried_asset->type != AssetType::AUDIO) {
         			return [
             			"error" => true,
             			"reason" => "This is not an audio asset."
