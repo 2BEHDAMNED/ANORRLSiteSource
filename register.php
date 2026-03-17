@@ -10,13 +10,13 @@
 		session_start();
 	}
 	
-	$istoomany = count(UserUtils::GetAllUsers()) > 80;
+	$istoomany = count(UserUtils::GetAllUsers()) > 100;
 
 	if(isset($_POST['ANORRL$Signup$Username']) &&
 	   isset($_POST['ANORRL$Signup$Password']) &&
 	   isset($_POST['ANORRL$Signup$ConfirmPassword']) &&
 	   isset($_POST['ANORRL$Signup$AccessKey']) &&
-	   isset($_POST['ANORRL$Signup$Submit'])) {
+	   isset($_POST['ANORRL$Signup$Submit']) && !$istoomany) {
 		$username = trim($_POST['ANORRL$Signup$Username']);
 		$password = trim($_POST['ANORRL$Signup$Password']);
 		$confirm_password = trim($_POST['ANORRL$Signup$ConfirmPassword']);
