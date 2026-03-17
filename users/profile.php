@@ -57,7 +57,7 @@
 
 	$comments = Comment::GetCommentsOn($get_user);
 	$comments_count = count($comments);
-    $bgm = htmlspecialchars($user->profilebgm);
+    $bgm = htmlspecialchars($get_user->profilebgm);
 ?>
 <!DOCTYPE html>
 <html>
