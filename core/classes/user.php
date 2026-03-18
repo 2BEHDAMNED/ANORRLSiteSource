@@ -539,7 +539,9 @@
 		 * @param int $count
 		 * @return void
 		 */
-		function GetOwnedAssets(AssetType $type, string $query = "", bool $creator_only = false, array $excludedids = [], int $page = -1, int $count = -1) {}
+		function GetOwnedAssets(AssetType $type, string $query = "", bool $creator_only = false, array $excludedids = [], int $page = -1, int $count = -1): array {
+			return [];
+		}
 
 		function GetAllOwnedAssets(): array {
 			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
