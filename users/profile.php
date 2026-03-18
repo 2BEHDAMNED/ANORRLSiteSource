@@ -76,8 +76,8 @@
 		<script src="/js/placelauncher.js?t=1771413807"></script>
 		<script src="/js/user.js?t=1771413807"></script>
 		<?php if ($bgm != null): ?>
-		<audio id="bgm" loop muted> <!-- autoplay m.i.a -->
-		    <source src="/asset/?id=<?= $bgm->GetAssetIDSafe() ?>" type="audio/mpeg">
+		<audio id="bgm" preload="auto" loop muted> <!-- autoplay m.i.a -->
+		    <source src="/asset/?id=<?= $bgm->GetAssetIDSafe() ?>">
 		</audio>
 		<script>
 		/*
