@@ -30,7 +30,7 @@
 
 	if(isset($_GET['page'])) {
 		if(intval($_GET['page']) == 1) {
-			die(include($_SERVER['DOCUMENT_ROOT']."/users/api/friends.php"));
+			die(include $_SERVER['DOCUMENT_ROOT']."/private/api/users/friends.php");
 		} else {
 			header("Content-Type: application/json");
 			die("{}");

@@ -2,8 +2,8 @@
 	use anorrl\Place;
 
 	header("Content-Type: application/json");
-	if(isset($_GET['universeId'])) {
-		$place = Place::FromID(intval($_GET['universeId']));
+	if(isset($universeId)) {
+		$place = Place::FromID(intval($universeId));
 
 		if($place != null) {
 			die(json_encode([

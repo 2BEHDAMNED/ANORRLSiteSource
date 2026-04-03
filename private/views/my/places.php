@@ -125,7 +125,7 @@
 						<div><h3>Collaborative Projects</h3></div>
 						<?php
 							foreach($teamplaces as $place) {
-								if($place instanceof Asset) {
+								if($place instanceof anorrl\Asset) {
 									$place_id = $place->id;
 									$place_name = $place->name;
 									echo <<<EOT
@@ -146,7 +146,7 @@
 							
 							if(count($places) != 0) {
 								foreach($places as $place) {
-									if($place instanceof Place) {
+									if($place instanceof anorrl\Place) {
 
 										$place_id = $place->id;
 										$place_name = $place->name;

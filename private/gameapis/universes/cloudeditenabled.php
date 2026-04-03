@@ -8,7 +8,7 @@
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 
-	$place_id = intval($_GET['universeId']);
+	$place_id = intval($universeId);
 
 	$place = Place::FromID($place_id);
 

@@ -26,7 +26,7 @@
 			<tr>
 				<td>
 					<div>
-						<a href="2016/ANORRLPlayerLauncher.exe">
+						<a href="/public/download/ANORRLPlayerLauncher.exe">
 							<img src="/images/download/2016client.png">
 							<span>Client</span>
 						</a>
@@ -34,7 +34,7 @@
 				</td>
 				<td>
 					<div>
-						<a href="2016/ANORRLStudioLauncher.exe">
+						<a href="/public/download/ANORRLStudioLauncher.exe">
 							<img src="/images/download/2016studio.png">
 							<span>Studio</span>
 						</a>

@@ -23,6 +23,8 @@
 		$startOffset = intval(trim($_GET['startOffset']));
 		$resultSize = intval(trim($_GET['resultSize']));
 
+		$page = $startOffset/$resultSize;
+
 		$filter = match($sort) {
 			"Relevance" => CatalogFilter::RecentlyUploaded,
 			"MostTaken" => CatalogFilter::MostSold,
@@ -33,13 +35,13 @@
 		$assets = [];
 
 		if($type == "FreeModels") {
-			$assets = AssetUtils::GetFiltered($filter, AssetType::MODEL, $query, 1, $resultSize);
+			$assets = AssetUtils::GetFiltered($filter, AssetType::MODEL, $query, $page, $resultSize);
 		} elseif($type == "FreeDecals") {
-			$assets = AssetUtils::GetFiltered($filter, AssetType::DECAL, $query, 1, $resultSize);
+			$assets = AssetUtils::GetFiltered($filter, AssetType::DECAL, $query, $page, $resultSize);
 		}
 
 		foreach($assets as $asset) {
-			if($asset instanceof Asset) {
+			if($asset instanceof anorrl\Asset) {
 				array_push($result, [
 					"ID" => $asset->id,
 					"AssetID" => $asset->id,

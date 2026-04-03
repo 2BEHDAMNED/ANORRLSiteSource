@@ -73,13 +73,13 @@
 						<div id="LocalSaveButton"  style="display:none;"><input class="OKCancelButton" style="WIDTH: 100%" onclick="DialogResult.value='3'; window.close(); return false" type="button" value="Save Local" /></div>
 					</td>
 					<td>
-						<div id="NormalSaveText" style="display:block;"><strong>Save changes to my Place to ROBLOX.</strong> (You will leave your place after the save has completed.)</div>
-						<div id="LocalSaveText"  style="display:none;"><strong>Save a local copy of my Place instead of uploading.</strong> ("You can open the file you save using Roblox Studio.")</strong></div>
+						<div id="NormalSaveText" style="display:block;"><strong>Save changes to my Place to ANORRL.</strong> (You will leave your place after the save has completed.)</div>
+						<div id="LocalSaveText"  style="display:none;"><strong>Save a local copy of my Place instead of uploading.</strong> ("You can open the file you save using ANORRL Studio.")</strong></div>
 					</td>
 				</tr>
 				<tr>
 					<td width="120"><input class="OKCancelButton" style="WIDTH: 100%" onclick="DialogResult.value='1'; window.close(); return false" type="button" value="Don't Save" /></td>
-					<td><strong>Leave my Place on ROBLOX unchanged.</strong> (You will lose any changes you made during your visit.)</td>
+					<td><strong>Leave my Place on ANORRL unchanged.</strong> (You will lose any changes you made during your visit.)</td>
 				</tr>
 				<tr>
 					<td width="120"><input class="OKCancelButton" style="WIDTH: 100%" onclick="DialogResult.value='2'; window.close(); return false" type="button" value="Cancel" /></td>

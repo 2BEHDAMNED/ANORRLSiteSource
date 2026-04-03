@@ -362,7 +362,7 @@
 						$current_version = $asset->current_version;
 
 						foreach($versions as $version) {
-							if($version instanceof AssetVersion) {
+							if($version instanceof anorrl\AssetVersion) {
 								
 								$version_date = $version->publish_date->format('d/m/Y H:i:s A');
 								$vid = $version->id;

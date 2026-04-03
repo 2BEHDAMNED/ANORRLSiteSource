@@ -267,7 +267,7 @@
 								}
 							}
 
-							if($data instanceof Asset) {
+							if($data instanceof anorrl\Asset) {
 								$asset_id = $data->id;
 								$asset_name = $data->name;
 								$asset_urlname = $data->GetURLTitle();
@@ -277,7 +277,7 @@
 								
 							}
 
-							if($data instanceof Place) {
+							if($data instanceof anorrl\Place) {
 								$asset_id = $data->id;
 								$asset_name = $data->name;
 								$asset_urlname = $data->GetURLTitle();

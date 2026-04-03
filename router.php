@@ -1,6 +1,6 @@
 <?php
 
-	// lifted from pixie - by parakeet
+	// base code lifted from pixie by parakeet
 
 	$dir = __DIR__."/private";
 	$router = new AltoRouter();
@@ -10,6 +10,12 @@
 		$router->map($method, $path, function(...$params) use ($file) {
 			foreach ($params as $key => $value) {
 				$$key = $value;
+			}
+			if(str_ends_with($file, ".json")) {
+				header("Content-Type: application/json");
+			}
+			if(str_ends_with($file, ".txt")) {
+				header("Content-Type: text/plain");
 			}
 			require __DIR__.$file;
 		});
@@ -95,10 +101,146 @@
 	route_api('GET|POST', 'gameservers/validateplayer');
 
 	// game apis
-
 	route('GET',      '/asset/', '/private/api/assetdeliverer.php');
 	route('GET',      '/Asset/', '/private/api/assetdeliverer.php');
+	route('GET',      '/users/[i:userId]/canmanage/[i:placeId]', '/private/api/users/canmanage.php');
+	route('GET',      '/users/[i:userId]/canmanage/[i:placeId]/', '/private/api/users/canmanage.php');
+	route('GET',      '/Users/[i:userId]', '/private/api/users/data.php');
+	route('GET',      '/users/get-by-username', '/private/api/users/get-by-username.php');
 
+	route('GET',      '/IDE/Upload.aspx', '/private/views/ide/publish.php');
+	route('GET|POST', '/IDE/PublishNewPlace.aspx', '/private/views/ide/publishnewplace.php');
+	route('GET',      '/IDE/ClientToolbox.aspx', '/private/views/ide/toolbox.php');
+	route('GET|POST', '/Data/Upload.ashx', '/private/views/ide/upload.php');
+	route('GET|POST', '/Game/Upload.ashx', '/private/views/ide/goingupload.php');
+
+	route('GET|POST', '/ide/toolbox/items', '/private/api/toolbox/items.php');
+	route('GET|POST', '/IDE/Toolbox/Search', '/private/api/toolbox/search.php');
+	route('GET|POST', '/IDE/Toolbox/GetTotalNumberOfResults', '/private/api/toolbox/gettotalnumber.php');
+
+	route('GET|POST', '/Sets/SetHandler.ashx', '/private/gameapis/sets/setshandler.php');
+
+	route('GET',      '/Game/Tools/ThumbnailAsset.ashx', '/images/unavailable-75.png');
+	route('GET',      '/Thumbs/Avatar.ashx', '/private/thumbs/player.php');
+	route('GET',      '/thumbs/avatar.ashx', '/private/thumbs/player.php');
+	route('GET',      '/Thumbs/RawAsset.ashx', '/private/thumbs/rawasset.php');
+	route('GET',      '/Thumbs/Asset.ashx', '/private/thumbs/rawasset.php');
+	route('GET',      '/thumbnail/avatar-headshot', '/private/thumbs/fakeheadshot.php');
+
+	route('GET',      '/Game/PlaceSpecificScript.ashx', '/private/gameapis/gamescripts/placespecificscript.php');
+	route('GET',      '/Game/LuaWebService/HandleSocialRequest.ashx', '/private/gameapis/social/socialrequests.php');
+	route('GET',      '/game/PlaceLauncher.ashx', '/private/gameapis/gamescripts/placelauncher.php');
+	route('GET',      '/Game/PlaceLauncher.ashx', '/private/gameapis/gamescripts/placelauncher.php');
+	route('GET',      '/Game/LoadPlaceInfo.ashx', '/private/gameapis/gamescripts/loadplaceinfo.php');
+	route('GET',      '/game/gameserver.ashx', '/private/gameapis/gamescripts/gameserver.php');
+	route('GET',      '/game/join.ashx', '/private/gameapis/gamescripts/join.php');
+	route('GET',      '/game/visit.ashx', '/private/gameapis/gamescripts/visit.php');
+	route('GET',      '/game/edit.ashx', '/private/gameapis/gamescripts/edit.php');
+	route('GET',      '/game/load-place-info', '/private/gameapis/places/load-place-info.php');
+
+	route('GET',      '/GetAllowedMD5Hashes/', '/private/gameapis/authentication/getallowedmd5hashes.php');
+	route('GET',      '/GetAllowedSecurityKeys/', '/private/gameapis/authentication/getallowedsecuritykeys.php');
+	route('GET',      '/GetAllowedSecurityVersions/', '/private/gameapis/authentication/getallowedsecurityversions.php');
+
+	route('GET',      '/Setting/QuietGet/AndroidAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
+	route('GET',      '/Setting/QuietGet/ClientAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
+	route('GET',      '/Setting/QuietGet/ClientSharedSettings/', '/private/gameapis/settings/ClientSharedSettings.json');
+	route('GET',      '/Setting/QuietGet/WindowsBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
+	route('GET',      '/Setting/QuietGet/WindowsStudioBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
+
+	route('GET|POST', '/Error/Dmp.ashx', '/private/templates/responses/nothing.txt');
+	route('GET|POST', '/v1.1/Counters/Increment/', '/private/templates/responses/nothing.txt');
+	route('GET|POST', '/v1.1/counters/increment/', '/private/templates/responses/nothing.txt');
+	route('GET|POST', '/game/report-stats', '/private/templates/responses/nothing.txt');
+	route('GET|POST', '/Game/report-stats', '/private/templates/responses/nothing.txt');
+	route('GET|POST', '/game/validate-machine', '/private/templates/responses/success.json');
+	route('GET|POST', '/mac-address/validate-machine', '/private/templates/responses/success.json');
+	route('GET|POST', '/Game/validate-machine', '/private/templates/responses/success.json');
+
+	route('GET',      '/Login/Negotiate.ashx', '/private/gameapis/authentication/negotiate.php');
+	route('GET',      '/Login/RequestAuth.ashx', '/private/gameapis/authentication/requestauth.php');
+	route('GET',      '/login/RequestAuth.ashx', '/private/gameapis/authentication/requestauth.php');
+	route('GET',      '/game/GetCurrentUser.ashx', '/private/gameapis/authentication/getcurrentuser.php');
+	route('GET',      '/Game/GetCurrentUser.ashx', '/private/gameapis/authentication/getcurrentuser.php');
+
+	route('GET',      '/game/logout.aspx', '/private/api/logout.php');
+	route('GET',      '/Game/logout.aspx', '/private/api/logout.php');
+
+	route('GET',      '/game/players/[i:id]', '/private/api/users/players.php');
+	route('GET',      '/game/players/[i:id]/', '/private/api/users/players.php');
+
+	route('GET',      '/my/settings/json', '/private/gameapis/authentication/settings.php');
+
+	route('GET|POST', '/persistence/getV2.aspx', '/private/gameapis/persistence/getv2.php');
+	route('GET|POST', '/persistence/getV2', '/private/gameapis/persistence/getv2.php');
+	route('GET|POST', '/persistence/getSortedValues', '/private/gameapis/persistence/getv2.php');
+	route('GET|POST', '/persistence/increment.aspx', '/private/gameapis/persistence/increment.php');
+	route('GET|POST', '/persistence/set.aspx', '/private/gameapis/persistence/set.php');
+	route('GET|POST', '/persistence/set', '/private/gameapis/persistence/set.php');
+	route('GET|POST', '/Persistence/SetBlob.ashx', '/private/gameapis/datastores/setblob.php');
+	route('GET|POST', '/Persistence/GetBlob.ashx', '/private/gameapis/datastores/getblob.php');
+
+	route('GET',      '/userblock/getblockedusers', '/private/gameapis/social/getblockedusers.php');
+	route('GET',      '/user/following-exists', '/private/gameapis/social/following-exists.php');
+	route('GET',      '/user/get-friendship-count', '/private/gameapis/social/get-friendship-count.php');
+	route('GET|POST', '/user/follow', '/private/gameapis/social/follow.php');
+	route('GET|POST', '/user/unfollow', '/private/gameapis/social/unfollow.php');
+	route('GET',      '/user/request-friendship', '/private/gameapis/social/request-friendship.php');
+	route('GET',      '/user/decline-friend-request', '/private/gameapis/social/decline-friend-request.php');
+	route('GET|POST', '/Game/AreFriends', '/private/gameapis/social/arefriends.php');
+
+	route('GET',      '/universes/get-universe-containing-place', '/private/gameapis/universes/get-universe-containing-place.php');
+	route('GET',      '/universes/[i:universeId]/cloudeditenabled', '/private/gameapis/universes/cloudeditenabled.php');
+	route('GET',      '/universes/[i:universeId]/game-start-info', '/private/gameapis/universes/game-start-info.php');
+	route('GET',      '/universes/[i:universeId]/enablecloudedit', '/private/gameapis/universes/enablecloudedit.php');
+	route('GET',      '/universes/[i:universeId]/disablecloudedit', '/private/gameapis/universes/disablecloudedit.php');
+	route('GET',      '/universes/[i:universeId]/listcloudeditors', '/private/gameapis/universes/listcloudeditors.php');
+	route('GET',      '/universes/[i:universeId]/addcloudeditor', '/private/gameapis/universes/addcloudeditor.php');
+	route('GET',      '/universes/[i:universeId]/removecloudeditor', '/private/gameapis/universes/removecloudeditor.php');
+	route('GET',      '/places/[i:placeId]/settings', '/private/gameapis/places/settings.php');
+	route('GET',      '/universes/get-info', '/private/gameapis/universes/get-info.php');
+	route('GET',      '/universes/validate-place-join', '/private/gameapis/universes/validate-place-join.php');
+	route('GET',      '/universes/get-universe-places', '/private/gameapis/universes/get-universe-places.php');
+	route('GET',      '/universes/get-aliases', '/private/gameapis/universes/get-aliases.php');
+	route('GET',      '/developerproducts/list', '/private/gameapis/universes/developerproducts.php');
+
+	route('GET',      '/Asset/BodyColors.ashx', '/private/gameapis/character/bodycolors.php');
+	route('GET',      '/Asset/CharacterFetch.ashx', '/private/gameapis/character/characterfetch.php');
+
+	route('GET',      '/game/MachineConfiguration.ashx', '/private/gameapis/authentication/machineconfiguration.txt');
+	route('GET',      '/Game/MachineConfiguration.ashx', '/private/gameapis/authentication/machineconfiguration.txt');
+
+	route('GET',      '/Game/Tools/InsertAsset.ashx', '/private/api/insertasset.php');
+
+	route('GET',      '/UploadMedia/PostImage.aspx', '/private/gameapis/uploadmedia/postimage.php');
+	route('GET',      '/UploadMedia/UploadVideo.aspx', '/private/gameapis/uploadmedia/uploadvideo.php');
+
+	route('GET|POST', '/moderation/v2/filtertext', '/private/gameapis/moderation/filtertext.php');
+	route('GET|POST', '/moderation/v2/filtertext/', '/private/gameapis/moderation/filtertext.php');
+
+	route('GET',      '/marketplace/productinfo', '/private/gameapis/marketplace/productinfo.php');
+	route('GET',      '/marketplace/productDetails', '/private/gameapis/marketplace/productinfo.php');
+	route('GET',      '/marketplace/purchase', '/private/gameapis/marketplace/purchase.php');
+	route('GET',      '/ownership/hasasset', '/private/gameapis/marketplace/hasasset.php');
+	route('GET',      '/ownership/hasAsset', '/private/gameapis/marketplace/hasasset.php');
+	route('GET',      '/gametransactions/getpendingtransactions/', '/private/gameapis/marketplace/getpendingtransactions.php');
+	route('GET',      '/gametransactions/getpendingtransactions', '/private/gameapis/marketplace/getpendingtransactions.php');
+	route('GET',      '/currency/balance', '/private/gameapis/marketplace/balance.php');
+
+	route('GET',      '/inbox', '/private/views/mobile/inbox.php');
+	route('GET',      '/home', '/private/views/mobile/home.php');
+	route('GET',      '/mobile-app-upgrades/native-ios/bc', '/private/views/mobile/nocurrencylol.php');
+	route('GET',      '/mobile-app-upgrades/native-ios/robux', '/private/views/mobile/nocurrencylol.php');
+	route('GET',      '/mobile/games', '/private/views/mobile/games.php');
+	route('GET',      '/mobile/games/', '/private/views/mobile/games.php');
+	route('GET',      '/signup/is-username-valid', '/private/api/mobile/is-username-valid.php');
+	route('GET',      '/signup/is-password-valid', '/private/api/mobile/is-password-valid.php');
+	route('GET',      '/UserCheck/getrecommendedusername', '/private/api/mobile/getrecommendedusername.php');
+
+	route('GET|POST', '/mobileapi/login', '/private/api/mobile/login.php');
+	route('GET|POST', '/mobileapi/securesignup', '/private/api/mobile/securesignup.php');
+
+	route('GET',      '/UserCheck/getrecommendedusername', '/private/api/mobile/getrecommendedusername.php');
 
 	$match = $router->match();
 

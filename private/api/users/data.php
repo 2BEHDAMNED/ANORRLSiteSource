@@ -19,11 +19,11 @@
 	}
 
 	// No id parameter? GET OUT!
-	if(!isset($_GET['id'])) {
+	if(!isset($userId)) {
 		die("{}");
 	}
 
-	$get_user = User::FromID(intval($_GET['id']));
+	$get_user = User::FromID(intval($userId));
 
 	if($get_user == null) {
 		die("{}");

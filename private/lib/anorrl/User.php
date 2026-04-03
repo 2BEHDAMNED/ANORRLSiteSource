@@ -285,7 +285,7 @@
 			
 			foreach($grabbedplaces as $asset) {
 				$place = Place::FromID($asset->id);
-				if($place instanceof Place) {
+				if($place instanceof anorrl\Place) {
 					if($teamcreate && $place->teamcreate_enabled && $place->IsCloudEditor($this)) {
 						array_push($result, $place);
 					}
@@ -562,7 +562,7 @@
 
 		function IsWearing(Asset|int $asset): bool {
 			$assetid = $asset;
-			if($asset instanceof Asset) {
+			if($asset instanceof anorrl\Asset) {
 				$assetid = $asset->id;
 			}
 			
@@ -584,7 +584,7 @@
 				$stmt_additem = $con->prepare("INSERT INTO `inventory`(`inv_userid`, `inv_assetid`, `inv_assettype`) VALUES (?, ?, ?)");
 				$assettype = 0;
 
-				if($asset instanceof Asset) {
+				if($asset instanceof anorrl\Asset) {
 					$assettype = $asset->type->ordinal();
 				} else {
 					$assettype = Asset::FromID($assetid)->type->ordinal();
@@ -602,7 +602,7 @@
 			$theabsolutelimit = 5;
 
 			$assetid = $asset;
-			if($asset instanceof Asset) {
+			if($asset instanceof anorrl\Asset) {
 				$assetid = $asset->id;
 			}
 			
@@ -661,7 +661,7 @@
 
 		function Unwear(Asset|int $asset): array {
 			$assetid = $asset;
-			if($asset instanceof Asset) {
+			if($asset instanceof anorrl\Asset) {
 				$assetid = $asset->id;
 			}
 			
@@ -1081,7 +1081,7 @@ EOT;
 
 		function Owns(Asset|int $asset): bool {
 			$assetid = $asset;
-			if($asset instanceof Asset) {
+			if($asset instanceof anorrl\Asset) {
 				$assetid = $asset->id;
 			}
 			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";

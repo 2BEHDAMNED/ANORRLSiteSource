@@ -8,8 +8,8 @@
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 
-	if(isset($_GET['universeId'])) {
-		$place = Place::FromID(intval($_GET['universeId']));
+	if(isset($universeId)) {
+		$place = Place::FromID(intval($universeId));
 
 		if($place != null && $place->teamcreate_enabled) {
 			$editorusers = $place->GetCloudEditors();

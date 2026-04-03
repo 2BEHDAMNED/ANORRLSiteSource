@@ -7,21 +7,21 @@
 		$type = $_GET['rqtype'];
 
 		if($type == "getrobloxsets") {
-			die(include($_SERVER['DOCUMENT_ROOT']."/core/gameapis/sets/get-roblox-sets.php"));
+			die(include "get-roblox-sets.php");
 		}
 		else if($type == "getsetinfo") {
-			die(include($_SERVER['DOCUMENT_ROOT']."/core/gameapis/sets/get-set-info.php"));
+			die(include "get-set-info.php");
 		}
 		else if($type == "getsetitems") {
-			die(include($_SERVER['DOCUMENT_ROOT']."/core/gameapis/sets/get-set-items.php"));
+			die(include "get-set-items.php");
 		}
 		else if($type == "getmydecals") {
-			die(include($_SERVER['DOCUMENT_ROOT']."/core/gameapis/sets/get-my-decals.php"));
+			die(include "get-my-decals.php");
 		}
 		else if($type == "getmymodels") {
-			die(include($_SERVER['DOCUMENT_ROOT']."/core/gameapis/sets/get-my-models.php"));
+			die(include "get-my-models.php");
 		}
 	}
 
-	die("{}");
+	die(json_encode(["TotalNumAssetsInSet" => 0]));
 ?>

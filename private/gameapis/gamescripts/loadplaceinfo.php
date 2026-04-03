@@ -21,7 +21,7 @@ pcall(function() game:GetService("GamePassService"):SetPlayerHasPassUrl("http://
 	if(isset($_GET['PlaceId'])) {
 		$place = Place::FromID(intval($_GET['PlaceId']));
 
-		if($place != null && $place instanceof Place) {
+		if($place != null && $place instanceof anorrl\Place) {
 			$script = "\r\n" . ob_get_clean();
 			$script = str_replace("{creator}", $place->creator->id, $script);
 			$signature = get_signature($script);

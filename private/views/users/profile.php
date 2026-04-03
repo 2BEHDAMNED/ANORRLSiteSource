@@ -293,7 +293,7 @@ $(function() {
 			foreach($items as $item) {
 				$asset = Asset::FromID($item);
 
-				if($asset instanceof Asset) {
+				if($asset instanceof anorrl\Asset) {
 					$asset_id = $asset->id;
 					$asset_urlname = $asset->GetURLTitle();
 					$asset_name = $asset->name;

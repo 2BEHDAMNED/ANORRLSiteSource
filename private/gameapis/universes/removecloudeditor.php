@@ -4,7 +4,7 @@
 	
 	header("Content-Type: application/json");
 
-	$place_id = intval($_GET['universeId']);
+	$place_id = intval($universeId);
 	$usertoadd_id = intval($_GET['userId']);
 
 	$place = Place::FromID($place_id);

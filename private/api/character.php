@@ -205,7 +205,7 @@
 
 					if(count($assets) != 0) {
 						foreach($assets as $asset) {
-							if($asset instanceof Asset) {
+							if($asset instanceof anorrl\Asset) {
 								array_push($assets_raw, [
 									"id" => $asset->id,
 									"name" => $asset->name,
@@ -269,7 +269,7 @@
 				if(count($wearing_array) != 0) {
 					foreach($wearing_array as $assetid) {
 						$asset = Asset::FromID($assetid);
-						if($asset != null && $asset instanceof Asset) {
+						if($asset != null && $asset instanceof anorrl\Asset) {
 							array_push($assets, [
 								"id" => $asset->id,
 								"name" => $asset->name,

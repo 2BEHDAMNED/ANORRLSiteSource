@@ -8,7 +8,7 @@
 	require_once $_SERVER["DOCUMENT_ROOT"]."/core/utilities/userutils.php";
 	
 	$user = UserUtils::RetrieveUser();
-
+	
 	$directory = $_SERVER['DOCUMENT_ROOT'];
 	$assetsdir = "$directory/../assets/";
 

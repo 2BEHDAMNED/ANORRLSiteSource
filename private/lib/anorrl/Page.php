@@ -61,10 +61,10 @@
 
 		function addResource(string $type, string $path) {
 			if($type == "script") {
-				$this->scripts[] = $path;
+				$this->scripts[] = "/public$path";
 			}
 			if($type == "stylesheet") {
-				$this->stylesheets[] = $path;
+				$this->stylesheets[] = "/public$path";
 			}
 		}
 

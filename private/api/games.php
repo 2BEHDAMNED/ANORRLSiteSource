@@ -44,7 +44,7 @@
 
 		if(count($retrievedassets) != 0) {
 			foreach($retrievedassets as $asset) {
-				if($asset instanceof Place) {
+				if($asset instanceof anorrl\Place) {
 					array_push($assets, [
 						"id" => $asset->id,
 						"creator" => [

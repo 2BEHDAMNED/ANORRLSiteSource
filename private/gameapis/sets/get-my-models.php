@@ -18,7 +18,8 @@
 					"SortOrder" => 2147483647,
 					"NewerVersionAvailable" => "False",
 					"AssetID" => $model->id,
-					"IsEndorsed" => false
+					"IsEndorsed" => false,
+					"TotalNumAssetsInSet" => 0
 				]
 			);
 		}

@@ -47,7 +47,7 @@
 
 		if($validresponse) {
 			foreach($paged_assets as $asset) {
-				if($asset instanceof Asset){
+				if($asset instanceof anorrl\Asset){
 					array_push($result,
 					[
 						"Asset" => [

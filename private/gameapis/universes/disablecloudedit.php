@@ -3,7 +3,7 @@
 	
 	header("Content-Type: application/json");
 
-	$place_id = intval($_GET['universeId']);
+	$place_id = intval($universeId);
 
 	$place = Place::FromID($place_id);
 	$user = SESSION ? SESSION->user : null;

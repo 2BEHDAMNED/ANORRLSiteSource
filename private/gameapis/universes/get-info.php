@@ -1,7 +1,7 @@
 <?php
 use anorrl\Asset;
 header('Content-type: application/json');
-$assetid = intval($_GET['universeId']);
+$assetid = intval($universeId);
 $asset = Asset::FromID($assetid);
 
 if($asset != null) {
