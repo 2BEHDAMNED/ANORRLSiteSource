@@ -2,7 +2,7 @@
 	use anorrl\User;
 	
 	function getServerDetailsFromJobID(string $jobID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `server_jobid` = ?");
 		$stmt_getsessiondetails->bind_param("s", $jobID);
@@ -23,7 +23,7 @@
 			$user = User::FromID(intval($_GET['userID']));
 
 			if($server_details != null) {
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 				$stmt_createnewserver = $con->prepare("DELETE FROM `active_players` WHERE `session_serverid` = ? AND `session_playerid` = ?;");
 				$stmt_createnewserver->bind_param("si", $server_details['server_id'], $user->id);
 				$stmt_createnewserver->execute();

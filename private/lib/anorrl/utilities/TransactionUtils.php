@@ -28,7 +28,7 @@
 
 		
 		public static function GenerateID() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$id = self::getRandomString(); //id
 			$stmt = $con->prepare('SELECT * FROM `transactions` WHERE `ta_id` LIKE ?');
 			$stmt->bind_param('s', $id);
@@ -45,7 +45,7 @@
 		}
 
 		public static function BuyItem(int|string $asset_id): string {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			
 			$get_user = SESSION ? SESSION->user : null;
 			

@@ -2,18 +2,20 @@
 
 	// REMOVE THIS AND LIKE KILL EVERYONE
 
-	include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
-	require_once $_SERVER["DOCUMENT_ROOT"]."/core/utilities/assetutils.php";
-	require_once $_SERVER["DOCUMENT_ROOT"]."/core/classes/renderer.php";
-	require_once $_SERVER["DOCUMENT_ROOT"]."/core/utilities/userutils.php";
+	include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 	
-	$user = UserUtils::RetrieveUser();
+	use anorrl\utilities\Renderer;
+	use anorrl\enums\AssetType;
+	use anorrl\Asset;
+	use anorrl\AssetVersion;
+
+	$user = SESSION ? SESSION->user : null;
 	
 	$directory = $_SERVER['DOCUMENT_ROOT'];
 	$assetsdir = "$directory/../assets/";
 
 	function CheckAndDeleteAsset(int $aid) {
-		include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+		include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 		$asset = Asset::FromID($aid);
 		if($asset != null) {
 			$stmt = $con->prepare("SELECT * FROM `assets` WHERE `asset_id` = ? OR `asset_relatedid` = ?;");

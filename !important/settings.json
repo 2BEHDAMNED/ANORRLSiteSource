@@ -1,9 +1,9 @@
 {
-	"mysql": {
+	"database": {
 		"hostname": "localhost",
 		"username": "sqluser",
 		"password": "sqlpassword",
-		"database": "anorrldb"
+		"name": "anorrldb"
 	},
 	"asset": {
 		"key": "uuid or something",

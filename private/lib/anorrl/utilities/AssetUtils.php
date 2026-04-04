@@ -10,7 +10,7 @@
 	class AssetUtils {
 		
 		public static function Get(AssetType $type, string $query = "", int $page = -1, int $count = -1): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$user = UserUtils::RetrieveUser();
 			if($user == null) 
 				return [];
@@ -67,7 +67,7 @@
 				$filter = CatalogFilter::RecentlyUploaded;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			$user = UserUtils::RetrieveUser();
 			if($user == null) 
@@ -139,7 +139,7 @@
 				$filter = CatalogFilter::RecentlyUploaded;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			
 			$user = UserUtils::RetrieveUser();

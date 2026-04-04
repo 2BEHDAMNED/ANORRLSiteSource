@@ -23,7 +23,7 @@
 		}
 
 		public static function GenerateID() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$id = self::GetRandomString(); //id
 			$stmt = $con->prepare('SELECT * FROM `statuses` WHERE `status_id` = ?');
 			$stmt->bind_param('s', $id);
@@ -72,7 +72,7 @@
 					return ["error"=> true, "reason" => "Status was too long! (64 characters maximum)"];
 				}
 
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt = $con->prepare('INSERT INTO `statuses`(`status_id`, `status_poster`, `status_content`) VALUES (?, ?, ?)');
 				$stmt -> bind_param('sis',  $status_id, $user->id, $status_content);
 				$stmt -> execute();
@@ -85,7 +85,7 @@
 
 		public static function GetLatestFeedsPaged(int $pagenum, int $count): array {
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getallusers = $con->prepare("SELECT * FROM `statuses` ORDER BY `status_posted` DESC LIMIT ?, ?");
 			$page = (($pagenum-1)*$count);
 			$stmt_getallusers->bind_param('ii', $page, $count);
@@ -103,7 +103,7 @@
 		}
 
 		public static function GetLatestFeedsCount(): int {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getallusers = $con->prepare("SELECT * FROM `statuses`");
 			$stmt_getallusers->execute();
 			$result = $stmt_getallusers->get_result();

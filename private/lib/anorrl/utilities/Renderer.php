@@ -47,16 +47,16 @@
 		}
 
 		private static function UpdateAndSetConfig() {
-			if(self::$cantuserenderer != CONFIG->arbiter->disabled) {
-				self::$cantuserenderer = CONFIG->arbiter->disabled;
+			if(self::$cantuserenderer != \CONFIG->arbiter->disabled) {
+				self::$cantuserenderer = \CONFIG->arbiter->disabled;
 			}
 
-			if(self::$arbiter_ip != CONFIG->arbiter->location->private) {
-				self::$arbiter_ip = CONFIG->arbiter->location->private;
+			if(self::$arbiter_ip != \CONFIG->arbiter->location->private) {
+				self::$arbiter_ip = \CONFIG->arbiter->location->private;
 			}
 
-			if(self::$arbiter_token != CONFIG->arbiter->token) {
-				self::$arbiter_token = CONFIG->arbiter->token;
+			if(self::$arbiter_token != \CONFIG->arbiter->token) {
+				self::$arbiter_token = \CONFIG->arbiter->token;
 			}
 		}
 

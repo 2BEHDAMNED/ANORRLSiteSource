@@ -99,11 +99,11 @@
 		}
 
 		private static function PushWebhook(Asset $asset) {
-			if(strlen(trim(CONFIG->asset->webhook)) == 0 || !str_starts_with(CONFIG->asset->webhook, "https://discord.com/api/webhooks/")) {
+			if(strlen(trim(\CONFIG->asset->webhook)) == 0 || !str_starts_with(\CONFIG->asset->webhook, "https://discord.com/api/webhooks/")) {
 				return;
 			}
-			$webhook_url = trim(CONFIG->asset->webhook);
-			$domain = CONFIG->domain;
+			$webhook_url = trim(\CONFIG->asset->webhook);
+			$domain = \CONFIG->domain;
 			
 			$msg = [
 				"username" => "Catalog Hotline",
@@ -148,7 +148,7 @@
 			bool $comments_enabled = true,
 			User $user
 		): array {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$hidden = AssetTypeUtils::IsHidden($type);
 
@@ -236,7 +236,7 @@
 			if($user->id != $asset->creator->id && !$user->IsAdmin()) {
 				return ["error" => true, "reason" => "User is not authorised to perform this action!"];
 			}
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$id = $asset->id;
 			$parsed_public          = intval($public);
@@ -339,9 +339,6 @@
 						return ["error" => true, "reason" => "File was empty! Hello???"];
 					}
 				}
-				
-				
-				
 
 				$name = trim($name);
 
@@ -407,7 +404,7 @@
 			$result = self::UploadAsset(null, AssetType::PLACE, $name, $description, $public, false, $comments_enabled, $user);
 
 			if(!$result['error']) {
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 				$stmt_addplace = $con->prepare("INSERT INTO `asset_places`(`place_id`, `place_copylocked`, `place_serversize`, `place_gears_enabled`, `place_original`) VALUES (?, ?, ?, ?, ?)");
 				
 				$place_copylocked = $copylocked ? 1 : 0;
@@ -643,7 +640,7 @@
 									$result = self::CommitAsset($data, $type, $name, $description, $public, $on_sale, $comments_enabled, $user);
 
 									if(!$result['error']) {
-										include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+										include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 										$stmt = $con->prepare("UPDATE `assets` SET `asset_relatedid` = ? WHERE `asset_id` = ?;");
 										$stmt->bind_param('ii', $result['id'], $image_id);

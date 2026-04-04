@@ -8,7 +8,7 @@
 
 	$user = SESSION->user;
 
-	include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+	include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 	$stmt = $con->prepare("SELECT * FROM `friends` WHERE (`sender` = ? OR `reciever` = ?) ORDER BY `status` ASC");
 	$stmt->bind_param("ii", $user->id, $user->id);

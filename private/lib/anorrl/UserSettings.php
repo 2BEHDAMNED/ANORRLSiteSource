@@ -24,7 +24,7 @@
 				]);
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `users_settings` WHERE `settings_userid` = ?");
 			$stmt_getuser->bind_param('i', $user->id);
 			$stmt_getuser->execute();
@@ -53,7 +53,7 @@
 		function SetRandomsEnabled(bool $value) {
 			$stmt_value = $value ? 1 : 0;
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_randoms` = ? WHERE `settings_userid` = ?;");
 			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
 			$stmt_updatesetting->execute();
@@ -63,7 +63,7 @@
 		function SetTetoEnabled(bool $value) {
 			$stmt_value = $value ? 1 : 0;
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_teto` = ? WHERE `settings_userid` = ?;");
 			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
 			$stmt_updatesetting->execute();
@@ -73,7 +73,7 @@
 		function SetNightBGEnabled(bool $value) {
 			$stmt_value = $value ? 1 : 0;
 			
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_nightbg` = ? WHERE `settings_userid` = ?;");
 			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
 			$stmt_updatesetting->execute();
@@ -83,7 +83,7 @@
 		function SetEmoteSoundsEnabled(bool $value) {
 			$stmt_value = $value ? 1 : 0;
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_emotesounds` = ? WHERE `settings_userid` = ?;");
 			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
 			$stmt_updatesetting->execute();
@@ -93,7 +93,7 @@
 		function SetAccessibilityEnabled(bool $value) {
 			$stmt_value = $value ? 1 : 0;
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_accessbility` = ? WHERE `settings_userid` = ?;");
 			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
 			$stmt_updatesetting->execute();
@@ -103,7 +103,7 @@
 		function SetHeadshotsEnabled(bool $value) {
 			$stmt_value = $value ? 1 : 0;
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_headshots` = ? WHERE `settings_userid` = ?;");
 			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
 			$stmt_updatesetting->execute();

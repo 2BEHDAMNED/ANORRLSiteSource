@@ -70,6 +70,8 @@
 	route('GET',      '/users/[i:id]/following', '/private/views/users/following.php');
 	route('GET',      '/users/[i:id]/friends', '/private/views/users/friends.php');
 
+	route('GET|POST', '/Admin/components/assetstuff', '/private/api/assetstuff.php');
+
 	route('GET',      '/thumbs/profile', '/private/thumbs/profile.php');
 	route('GET',      '/thumbs/player', '/private/thumbs/player.php');
 	route('GET',      '/thumbs/headshot', '/private/thumbs/headshot.php');
@@ -250,7 +252,7 @@
 	route('GET|POST', '/mobileapi/securesignup', '/private/api/mobile/securesignup.php');
 
 	route('GET',      '/UserCheck/getrecommendedusername', '/private/api/mobile/getrecommendedusername.php');
-	
+
 	$match = $router->match();
 
 	if (is_array($match) && is_callable($match['target'])) {

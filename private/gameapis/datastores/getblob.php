@@ -15,7 +15,7 @@
 
 	function IsTooManyBlobbers(Place $place, User $user) {
 		if(!$user->IsBanned()) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
 			$stmt->bind_param("ii", $place->id, $user->id);
 			$stmt->execute();
@@ -28,7 +28,7 @@
 
 	function BlobberExists(Place $place, User $user) {
 		if(!$user->IsBanned()) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
 			$stmt->bind_param("ii", $place->id, $user->id);
 			$stmt->execute();
@@ -41,7 +41,7 @@
 
 	function CreateBlobber(Place $place, User $user) {
 		if(!$user->IsBanned() && !BlobberExists($place, $user)) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt = $con->prepare("INSERT INTO `persistenceblobs`(`blob_placeid`, `blob_playerid`) VALUES (?, ?)");
 			$stmt->bind_param("ii", $place->id, $user->id);
@@ -52,7 +52,7 @@
 
 	function GetDataBlob(Place $place, User $user) {
 		if(!$user->IsBanned() && BlobberExists($place, $user)) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
 			$stmt->bind_param("ii", $place->id, $user->id);
@@ -71,7 +71,7 @@
 
 		if($place != null && $user != null && !$user->IsBanned() && CONFIG->asset->key == $_GET['access']) {
 
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			if(BlobberExists($place, $user)) {
 				if(IsTooManyBlobbers($place, $user)) {

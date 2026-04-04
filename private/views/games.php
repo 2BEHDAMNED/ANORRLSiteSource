@@ -14,7 +14,6 @@
 
 	$page->loadHeader();
 ?>
-
 <div class="Game" template>
 	<div id="ImageContainer">
 		<div id="FavouritesArea"><img src="/images/favourite_star.gif"> <span>0</span></div>

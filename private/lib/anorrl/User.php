@@ -83,7 +83,7 @@
 		 * @return User|null
 		 */
 		public static function FromID(int $id) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `users` WHERE `user_id` = ?");
 			$stmt_getuser->bind_param('i', $id);
 			$stmt_getuser->execute();
@@ -103,7 +103,7 @@
 		 * @return User|null
 		 */
 		public static function FromName(string $name) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `users` WHERE `user_name` LIKE ?");
 			$stmt_getuser->bind_param('s', $name);
 			$stmt_getuser->execute();
@@ -123,7 +123,7 @@
 		 * @return User|null
 		 */
 		public static function FromSecurityKey(string $security) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `users` WHERE `user_security` = ?");
 			$stmt_getuser->bind_param('s', $security);
 			$stmt_getuser->execute();
@@ -160,7 +160,7 @@
 		}
 
 		function GetFriends(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `friends` WHERE (`sender` LIKE ? OR `reciever` LIKE ?) AND `status` = 1;");
 			$stmt_getuser->bind_param('ii', $this->id, $this->id);
 			$stmt_getuser->execute();
@@ -179,7 +179,7 @@
 		}
 		
 		function GetFollowers(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `follows` WHERE `followed` = ?;");
 			$stmt_getuser->bind_param('i', $this->id);
 			$stmt_getuser->execute();
@@ -194,7 +194,7 @@
 		}
 		
 		function GetFollowing(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `follows` WHERE `follower` = ?;");
 			$stmt_getuser->bind_param('i', $this->id);
 			$stmt_getuser->execute();
@@ -209,7 +209,7 @@
 		}
 
 		function GetPendingFriendRequests(): array {
-			include $_SERVER['DOCUMENT_ROOT'] . "/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT'] . "/private/connection.php";
 
 			$stmt_getfriendreqs = $con->prepare("SELECT * FROM `friends` WHERE `reciever` = ? AND `status` = 0;");
 			$stmt_getfriendreqs->bind_param("i", $this->id);
@@ -264,7 +264,7 @@
 			$teamcreatedplaces = [];
 			
 			if($teamcreate) {
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt_checkiseditor = $con->prepare('SELECT * FROM `cloudeditors` WHERE `cloudeditor_userid` = ?;');
 				$stmt_checkiseditor->bind_param('i', $this->id);
 				$stmt_checkiseditor->execute();
@@ -303,7 +303,7 @@
 		}
 
 		function GiveProfileBadge(ANORRLBadge $badge): void {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `badge_id` = ? AND `badge_userid` = ?");
 			$ordinal = $badge->ordinal();
 			$stmt->bind_param('ii', $ordinal, $this->id);
@@ -318,7 +318,7 @@
 		}
 
 		function HasProfileBadgeOf(ANORRLBadge $badge): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `badge_id` = ? AND `badge_userid` = ?");
 			$ordinal = $badge->ordinal();
 			$stmt->bind_param('ii', $ordinal, $this->id);
@@ -332,7 +332,7 @@
 		 * @return void
 		 */
 		function GetProfileBadges(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `badge_userid` = ? ORDER BY `badge_recieved` DESC, `badge_admincorecore` DESC");
 			$stmt->bind_param('i',$this->id);
 			$stmt->execute();
@@ -357,7 +357,7 @@
 		}
 
 		function GetLatestStatus(): Status|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `statuses` WHERE `status_poster` = ? ORDER BY `status_posted` DESC");
 			$stmt->bind_param('i', $this->id);
 			$stmt->execute();
@@ -384,7 +384,7 @@
 		 * @return void
 		 */
 		function GetOwnedAssets(AssetType $type, string $query = "", bool $creator_only = false, bool $show_all = true, array $excludedids = [], int $page = -1, int $count = -1): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 		
 			$sql_assettype = $type->ordinal();
 			$sql_query = trim($query);
@@ -472,7 +472,7 @@
 		 * @return void
 		 */
 		function GetOwnedAssetsCount(AssetType $type, string $query = "", bool $creator_only = false, bool $show_all = true, array $excludedids = []): int {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 		
 			$sql_assettype = $type->ordinal();
 			$sql_query = trim($query);
@@ -523,7 +523,7 @@
 		}
 
 		function GetAllOwnedAssets(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `transactions` WHERE `ta_userid` = ? ORDER BY `ta_date` DESC");
 			$stmt_getuser->bind_param('i', $this->id);
 			$stmt_getuser->execute();
@@ -543,7 +543,7 @@
 		}
 
 		function GetLatestAssetUploaded() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `assets` WHERE `asset_creator` = ? ORDER BY `asset_id` DESC");
 			$stmt_getuser->bind_param('i', $this->id);
 			$stmt_getuser->execute();
@@ -570,7 +570,7 @@
 				return false;
 			}
 			
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_checkinventory = $con->prepare("SELECT * FROM `inventory` WHERE `inv_userid` = ? AND `inv_assetid` = ?;");
 			$stmt_checkinventory->bind_param('ii', $this->id, $assetid);
 			$stmt_checkinventory->execute();
@@ -610,7 +610,7 @@
 				return ["error"=>true, "reason"=>"Invalid item"];
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			if($this->IsWearing($asset)) {
 				return ["error" => false];
@@ -669,7 +669,7 @@
 				return ["error"=>true, "reason"=>"Invalid item"];
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			if(!$this->IsWearing($asset)) {
 				return ["error" => false];
@@ -703,7 +703,7 @@
 			$leftarmcolour = $colours['leftarm'];
 			$rightlegcolour = $colours['rightleg'];
 			$torsocolour = $colours['torso'];
-			$domain = CONFIG->domain;
+			$domain = \CONFIG->domain;
 
 return <<<EOT
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://$domain/roblox.xsd" version="4">
@@ -725,7 +725,7 @@ EOT;
 		}
 
 		function GetCharacterAppearance(): string {
-			$domain = CONFIG->domain;
+			$domain = \CONFIG->domain;
 			$getwearing = $this->GetWearingArray();
 
 			$userId = $this->id;
@@ -743,14 +743,14 @@ EOT;
 		}
 
 		function GetCharacterAppearanceVerbose(): string {
-			$domain = CONFIG->domain;
+			$domain = \CONFIG->domain;
 			$bodycoloursxml = $this->GetBodyColoursXML();
 			$getwearing = $this->GetWearingArray(true);
 
 			$userId = $this->id;
 			$parsedshit= "";
 
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			foreach($getwearing as $id) {
 				$asset = Asset::FromID($id);
@@ -785,7 +785,7 @@ EOT;
 		}
 
 		function UpdateOutfitHash() {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$md5 = $this->GetCharacterAppearanceHash();
 
 			$stmt = $con->prepare("UPDATE `users` SET `user_currentappearancemd5` = ? WHERE `user_id` = ?");
@@ -794,7 +794,7 @@ EOT;
 		}
 
 		function GetWearingArray(bool $ordered = false) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			if($ordered) {
 				$stmt_checkinventory = $con->prepare("SELECT * FROM `inventory` WHERE `inv_userid` = ? ORDER BY `inv_assetid`");
@@ -827,7 +827,7 @@ EOT;
 		}
 
 		function GetBodyColours() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			$stmt_grabcolours = $con->prepare("SELECT * FROM `bodycolours` WHERE `colours_userid` = ?;");
 			$stmt_grabcolours->bind_param('i', $this->id);
@@ -856,7 +856,7 @@ EOT;
 		function SetBodyColours(int $head, int $torso, int $leftarm, int $rightarm, int $leftleg, int $rightleg) {
 			$this->GetBodyColours(); // populate if doesn't exist
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			$stmt_createcolours = $con->prepare("UPDATE `bodycolours` SET `colours_head` = ?, `colours_torso` = ?, `colours_leftarm` = ?, `colours_rightarm` = ?, `colours_leftleg` = ?,`colours_rightleg` = ? WHERE `colours_userid` = ?;");
 			$stmt_createcolours->bind_param('iiiiiii', $head, $torso, $leftarm, $rightarm, $leftleg, $rightleg, $this->id);
@@ -864,7 +864,7 @@ EOT;
 		}
 		
 		function Follow(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -877,7 +877,7 @@ EOT;
 		}
 
 		function Unfollow(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -890,7 +890,7 @@ EOT;
 		}
 
 		function IsFollowing(User|int $user): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -905,7 +905,7 @@ EOT;
 		}
 
 		function Friend(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -925,7 +925,7 @@ EOT;
 		}
 
 		function Unfriend(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -943,7 +943,7 @@ EOT;
 		}
 
 		function IsPendingFriendsReq(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -958,7 +958,7 @@ EOT;
 		}
 
 		function IsIncomingFriendsReq(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -973,7 +973,7 @@ EOT;
 		}
 
 		function IsFriendsWith(User|int $user): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
@@ -1012,7 +1012,7 @@ EOT;
 					return ["error"=> true, "reason" => "Status was too long! (1000 characters maximum)"];
 				}
 
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt = $con->prepare('UPDATE `users` SET `user_blurb` = ?, `user_lastprofileupdate` = now() WHERE `user_id` = ?;');
 				$stmt -> bind_param('si',  $bio_content, $this->id);
 				$stmt -> execute();
@@ -1027,7 +1027,7 @@ EOT;
 		public function UpdateBGM(string $bgm): array {
 			if(!$this->IsBanned()) {
 				if ($bgm === null || trim($bgm) === '') {
-            	 	include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+            	 	include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
             	 	$stmt = $con->prepare('UPDATE `users` SET `user_profilebgm` = NULL, `user_lastbgmupdate` = NOW() WHERE `user_id` = ?;');
             	    $stmt->bind_param('i', $this->id);
             	 	$stmt->execute();
@@ -1053,7 +1053,7 @@ EOT;
 					];
 				}
 
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$queried_asset = Asset::FromID($bgm_content);
 				if($queried_asset == null) {
         			return [
@@ -1087,7 +1087,7 @@ EOT;
 			if($asset instanceof anorrl\Asset) {
 				$assetid = $asset->id;
 			}
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt = $con->prepare('SELECT * FROM `transactions` WHERE `ta_userid` = ? AND `ta_asset` = ?;');
 			$stmt -> bind_param('ii', $this->id, $assetid);
 			$stmt -> execute();
@@ -1104,7 +1104,7 @@ EOT;
 		}
 
 		function IsOnline(): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			
 			$stmt_user_status_check = $con->prepare('SELECT * FROM `activity` WHERE `userid` = ? AND `action_time` > DATE_SUB(NOW(),INTERVAL 5 MINUTE)');
 			$stmt_user_status_check->bind_param('i', $this->id);
@@ -1128,7 +1128,7 @@ EOT;
 		}
 
 		private function getUserGameDetails(): array|null {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_players` WHERE `session_playerid` = ? AND `session_status` = 1;");
 			$stmt_getsessiondetails->bind_param("i", $this->id);
@@ -1144,7 +1144,7 @@ EOT;
 		}
 
 		private function getServerDetails(string $serverID): array|null {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `server_id` = ?");
 			$stmt_getsessiondetails->bind_param("s", $serverID);
@@ -1160,7 +1160,7 @@ EOT;
 		}
 
 		function GetOnlineActivity(): string {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			
 			$userGameDetails = $this->getUserGameDetails();
 
@@ -1246,7 +1246,7 @@ EOT;
 							imagepng($image, $_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png", 9);
 
 							if(!$this->setprofilepicture) {
-								include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+								include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 								$stmt_updateuser = $con->prepare("UPDATE `users` SET `user_setprofilepicture` = 1 WHERE `user_id` = ?;");
 								$stmt_updateuser->bind_param("i", $this->id);
@@ -1265,7 +1265,7 @@ EOT;
 							move_uploaded_file($file['tmp_name'], $_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png");
 
 							if(!$this->setprofilepicture) {
-								include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+								include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 								$stmt_updateuser = $con->prepare("UPDATE `users` SET `user_setprofilepicture` = 1 WHERE `user_id` = ?;");
 								$stmt_updateuser->bind_param("i", $this->id);
@@ -1302,7 +1302,7 @@ EOT;
 					unlink($_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png");
 				}
 
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 				$stmt_updateuser = $con->prepare("UPDATE `users` SET `user_setprofilepicture` = 0 WHERE `user_id` = ?;");
 				$stmt_updateuser->bind_param("i", $this->id);
@@ -1332,7 +1332,7 @@ EOT;
 					return false;
 				}
 
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 				$stmt_updateuser = $con->prepare("UPDATE `users` SET `user_css` = ? WHERE `user_id` = ?;");
 				$stmt_updateuser->bind_param("si", $data, $this->id);
@@ -1355,7 +1355,7 @@ EOT;
 		public string $description;
 
 		public static function FromID(int $id): ProfileBadge|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `profilebadges_info` WHERE `pbadge_id` = ?");
 			$stmt_getuser->bind_param('i', $id);
 			$stmt_getuser->execute();

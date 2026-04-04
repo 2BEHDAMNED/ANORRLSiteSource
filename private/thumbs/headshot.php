@@ -15,7 +15,7 @@
 
 		$user = User::FromID($id);
 		if($user != null) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			
 			//base64_encode(
 

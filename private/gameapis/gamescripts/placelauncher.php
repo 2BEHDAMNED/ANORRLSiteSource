@@ -19,7 +19,7 @@
 	}
 
 	function getActiveServersCount(int $placeID, bool $teamcreate = false): bool {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -33,7 +33,7 @@
 	}
 
 	function getAnActiveServer(int $placeID, bool $teamcreate = false): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -51,7 +51,7 @@
 	}
 
 	function isUserInAGame(int $userID, bool $teamcreate = false): bool {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -65,7 +65,7 @@
 	}
 
 	function getSessionDetails(string $sessionID, bool $teamcreate = false): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -83,7 +83,7 @@
 	}
 
 	function updatePlaceOfSession(string $sessionID, string $placeID, bool $teamcreate = false): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -101,7 +101,7 @@
 	}
 
 	function getServerDetails(string $serverID, bool $teamcreate = false): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -146,7 +146,7 @@
 			if($place != null && $user != null) {
 				$playerID = $user->id;
 				if(isUserInAGame($user->id)) {
-					include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 					$stmt_deletesession = $con->prepare("DELETE FROM `active_players` WHERE `session_playerid` = ?");
 					$stmt_deletesession->bind_param("i", $playerID);
 					$stmt_deletesession->execute();
@@ -161,7 +161,7 @@
 				}
 				$sessionID = getRandomString(25);
 				
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 				$stmt_createnewsession = $con->prepare("INSERT INTO `active_players`(`session_id`, `session_serverid`, `session_playerid`, `session_status`) VALUES (?,?,?,0)");
 				$stmt_createnewsession->bind_param("ssi", $sessionID, $serverID, $playerID);
 				$stmt_createnewsession->execute();
@@ -193,7 +193,7 @@
 						curl_close($ch);
 
 						if ($code != 200) {
-							include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+							include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 							$stmt = $con->prepare("DELETE FROM `active_players` WHERE `session_id` = ?");
 							$stmt->bind_param("s", $sessionID);
 							$stmt->execute();
@@ -213,7 +213,7 @@
 
 						$strPort = strval($port);
 
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 						$stmt_createnewserver = $con->prepare("INSERT INTO `active_servers` (`server_id`, `server_jobid`, `server_placeid`, `server_maxcount`, `server_port`, `server_pid`) VALUES (?,?,?,?,?,?)");
 						$stmt_createnewserver->bind_param("ssiiss", $serverid, $jobid, $placeId, $place->server_size, $strPort, $pid);
@@ -222,7 +222,7 @@
 						updatePlaceOfSession($sessionID, $serverid);
 
 					} catch(SoapFault $e) {
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewserver = $con->prepare("DELETE FROM `active_players` WHERE `session_id` = ?;");
 						$stmt_createnewserver->bind_param("s", $sessionID);
 						$stmt_createnewserver->execute();
@@ -267,7 +267,7 @@
 			if($place != null && $user != null) {
 				$playerID = $user->id;
 				if(isUserInAGame($user->id, true)) {
-					include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 					$stmt_deletesession = $con->prepare("DELETE FROM `active_players` WHERE `session_playerid` = ? AND `session_teamcreate` = 1");
 					$stmt_deletesession->bind_param("i", $playerID);
 					$stmt_deletesession->execute();
@@ -282,7 +282,7 @@
 				}
 				$sessionID = getRandomString(25);
 				
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 				$stmt_createnewsession = $con->prepare("INSERT INTO `active_players`(`session_id`, `session_serverid`, `session_playerid`, `session_status`, `session_teamcreate`) VALUES (?,?,?,0,1)");
 				$stmt_createnewsession->bind_param("ssi", $sessionID, $serverID, $playerID);
 				$stmt_createnewsession->execute();
@@ -327,7 +327,7 @@
 						$pid = $json['pid'];
 						$strPort = strval($port);
 						
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewserver = $con->prepare("INSERT INTO `active_servers` (`server_id`, `server_jobid`, `server_placeid`, `server_maxcount`, `server_port`, `server_pid`, `server_teamcreate`) VALUES (?,?,?,?,?,?,1)");
 						$stmt_createnewserver->bind_param("ssiiss", $serverid, $jobid, $placeId, $place->server_size, $strPort, $pid);
 						$stmt_createnewserver->execute();
@@ -336,7 +336,7 @@
 
 					} catch(SoapFault $e) {
 						
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewserver = $con->prepare("DELETE FROM `active_players` WHERE `session_id` = ? AND `session_teamcreate` = 1;");
 						$stmt_createnewserver->bind_param("s", $sessionID);
 						$stmt_createnewserver->execute();
@@ -464,7 +464,7 @@
 						$pid = $json['pid'];
 						$strPort = strval($port);
 
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewserver = $con->prepare("INSERT INTO `active_servers`(`server_id`, `server_jobid`, `server_placeid`, `server_maxcount`, `server_port`, `server_pid`) VALUES (?,?,?,?,?,?)");
 						$stmt_createnewserver->bind_param("ssiiss", $serverid, $jobid, $placeId, $place->server_size, $strPort, $pid);
 						$stmt_createnewserver->execute();
@@ -472,7 +472,7 @@
 						updatePlaceOfSession($sessionToken, $serverid);
 
 					} catch(Exception $e) {
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewserver = $con->prepare("DELETE FROM `active_players` WHERE `session_id` = ?;");
 						$stmt_createnewserver->bind_param("s", $sessionToken);
 						$stmt_createnewserver->execute();

@@ -7,7 +7,7 @@
 
 	if(isset($_GET['access']) && isset($_GET['jobID'])) {
 		if($_GET['access'] == $access) {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			
 			$stmt_getactiveservers = $con->prepare("SELECT * FROM `active_servers` WHERE `server_jobid` = ?");
 			$stmt_getactiveservers->bind_param("s", $_GET['jobID']);

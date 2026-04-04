@@ -36,7 +36,7 @@
 		}
 
 		if($asset->type == AssetType::AUDIO) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$stmt = $con->prepare('SELECT * FROM `assets` WHERE `asset_relatedid` = ? AND `asset_type` = ?;');
 			$type = AssetType::AUDIO->ordinal();
 			$stmt->bind_param("ii", $id, $type);

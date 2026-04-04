@@ -21,7 +21,7 @@
 			$place = Place::FromID($placeID);
 
 			if($place != null) {
-				include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 				$stmt_checkserver = $con->prepare("SELECT * FROM `active_servers` WHERE `server_placeid` = ? AND `server_teamcreate` = 0;");
 				$stmt_checkserver->bind_param("i", $place->id);
 				$stmt_checkserver->execute();
@@ -68,7 +68,7 @@
 		}
 
 		public static function FromID(int $id): Place|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `asset_places` WHERE `place_id` = ?");
 			$stmt_getuser->bind_param('i', $id);
 			$stmt_getuser->execute();
@@ -96,7 +96,7 @@
 		}
 
 		function EnableTeamCreate() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_enableteamcreate = $con->prepare('UPDATE `asset_places` SET `place_teamcreate_enabled` = 1 WHERE `place_id` = ?');
 			$stmt_enableteamcreate->bind_param('i', $this->id);
 			$stmt_enableteamcreate->execute();
@@ -107,7 +107,7 @@
 		}
 
 		function DisableTeamCreate() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_disableteamcreate = $con->prepare('UPDATE `asset_places` SET `place_teamcreate_enabled` = 0 WHERE `place_id` = ?');
 			$stmt_disableteamcreate->bind_param('i', $this->id);
 			$stmt_disableteamcreate->execute();
@@ -132,8 +132,8 @@
 						"pid" => $row['server_pid']
 					]);
 
-					$arbiter_ip = CONFIG->arbiter->location->private;
-					$arbiter_token = CONFIG->arbiter->token;
+					$arbiter_ip = \CONFIG->arbiter->location->private;
+					$arbiter_token = \CONFIG->arbiter->token;
 
 					$ch = curl_init("http://$arbiter_ip/api/v1/gameserver/kill");
 					curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -152,7 +152,7 @@
 						die(http_response_code(503));
 					}
 
-					include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 					$stmt_createnewserver = $con->prepare("DELETE FROM `active_servers` WHERE `server_jobid` = ?;");
 					$stmt_createnewserver->bind_param("s", $jobID);
 					$stmt_createnewserver->execute();
@@ -164,7 +164,7 @@
 
 		function IsCloudEditor(User $user) {
 			if($this->teamcreate_enabled) {
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt_checkiseditor = $con->prepare('SELECT * FROM `cloudeditors` WHERE `cloudeditor_userid` = ? AND `cloudeditor_placeid` = ?;');
 				$stmt_checkiseditor->bind_param('ii', $user->id, $this->id);
 				$stmt_checkiseditor->execute();
@@ -176,7 +176,7 @@
 
 		function AddCloudEditor(User $user) {
 			if(!$this->IsCloudEditor($user)) {
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt_addeditor = $con->prepare('INSERT INTO `cloudeditors`(`cloudeditor_userid`, `cloudeditor_placeid`) VALUES (?, ?)');
 				$stmt_addeditor->bind_param('ii', $user->id, $this->id);
 				$stmt_addeditor->execute();
@@ -185,7 +185,7 @@
 
 		function RemoveCloudEditor(User $user) {
 			if($this->IsCloudEditor($user) && $user->id != $this->creator->id) {
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt_addeditor = $con->prepare('DELETE FROM `cloudeditors` WHERE `cloudeditor_userid` = ? AND `cloudeditor_placeid` = ?;');
 				$stmt_addeditor->bind_param('ii', $user->id, $this->id);
 				$stmt_addeditor->execute();
@@ -194,7 +194,7 @@
 
 		function GetCloudEditors() {
 			if($this->teamcreate_enabled) {
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				$stmt_geteditors = $con->prepare('SELECT * FROM `cloudeditors` WHERE `cloudeditor_placeid` = ?;');
 				$stmt_geteditors->bind_param('i', $this->id);
 				$stmt_geteditors->execute();
@@ -222,7 +222,7 @@
 				$userid = $user->id;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 
 			$placeid = $this->id;
 

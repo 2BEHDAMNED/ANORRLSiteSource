@@ -24,7 +24,7 @@
 	// No id parameter? GET OUT!
 	
 	if(!isset($id)) {
-		//die(header("Location: /my/home"));
+		die(header("Location: /my/home"));
 	}
 
 	$get_user = User::FromID(intval($id));

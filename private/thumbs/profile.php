@@ -16,7 +16,7 @@
 
 		$asset = User::FromID($id);
 		if($asset != null) {
-			include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			
 			if(file_exists($_SERVER['DOCUMENT_ROOT']."/../users/profile_$id.png")) {
 				$contents = file_get_contents($_SERVER['DOCUMENT_ROOT']."/../users/profile_$id.png");

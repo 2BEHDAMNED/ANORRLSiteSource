@@ -7,7 +7,7 @@
 	use anorrl\utilities\UserUtils;
 
 	function getSessionDetails(string $sessionID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_players` WHERE `session_id` = ?");
 		$stmt_getsessiondetails->bind_param("s", $sessionID);
@@ -23,7 +23,7 @@
 	}
 
 	function getServerDetails(string $serverID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `server_id` = ?");
 		$stmt_getsessiondetails->bind_param("s", $serverID);

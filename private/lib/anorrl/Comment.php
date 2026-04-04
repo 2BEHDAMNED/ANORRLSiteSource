@@ -69,7 +69,7 @@
 		}
 
 		static function GenerateID() {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			
 			$id = self::GetRandomString();
 			$stmt = $con->prepare('SELECT * FROM `comments` WHERE `comment_id` = ?');
@@ -87,7 +87,7 @@
 		}
 
 		static function GetLatestCommentFromUser(User $user): Comment|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `comments` WHERE `comment_poster` = ? ORDER BY `comment_postdate` DESC");
 			$stmt_getuser->bind_param('i', $user->id);
 			$stmt_getuser->execute();
@@ -148,7 +148,7 @@
 				$comment = SlurUtils::ProcessText($comment);
 
 				if(!$error_check) {
-					include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 					$stmt = $con->prepare('INSERT INTO `comments`(`comment_id`, `comment_parent`, `comment_poster`, `comment_content`) VALUES (?, ?, ?, ?)');
 					$stmt->bind_param('ssss',  $comment_id, $parent_id, $user->id, $comment);
 					
@@ -178,7 +178,7 @@
 				$parent_id = "u!".$parent->id;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$stmt_getuser = $con->prepare("SELECT * FROM `comments` WHERE `comment_parent` = ? ORDER BY `comment_postdate` DESC;");
 			$stmt_getuser->bind_param('s', $parent_id);
 			$stmt_getuser->execute();

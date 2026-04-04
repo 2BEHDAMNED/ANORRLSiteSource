@@ -99,7 +99,7 @@
 	   isset($_POST['ANORRL$EditItem$Description'])
 	) {
 
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$name = ReturnNotUnicodedString($_POST['ANORRL$EditItem$Name']);
 		$description = ReturnNotUnicodedString($_POST['ANORRL$EditItem$Description']);

@@ -4,7 +4,7 @@
 
 	header("Content-Type: application/json");
 
-	include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+	include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 
 	if(SESSION) {

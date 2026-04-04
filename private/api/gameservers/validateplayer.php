@@ -3,7 +3,7 @@
 	use anorrl\Place;
 	
 	function getServerDetailsFromJobID(string $jobID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `server_jobid` = ?");
 		$stmt_getsessiondetails->bind_param("s", $jobID);
@@ -26,7 +26,7 @@
 			if($server_details != null && $user != null) {
 				$place = Place::FromID(intval($server_details['server_placeid']));
 				if($place != null) {
-					include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 					$stmt_checkplayer = $con->prepare("SELECT * FROM `active_players` WHERE `session_serverid` = ? AND `session_playerid` = ?;");
 					$stmt_checkplayer->bind_param("si", $server_details['server_id'], $user->id);
 					$stmt_checkplayer->execute();

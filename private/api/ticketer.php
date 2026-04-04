@@ -21,7 +21,7 @@
 	}
 
 	function getAnActiveServer(int $placeID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getactiveservers = $con->prepare("SELECT * FROM `active_servers` WHERE `server_placeid` = ? AND `server_playercount` != `server_maxcount` AND `server_teamcreate` = 0");
 		$stmt_getactiveservers->bind_param("i", $placeID);
@@ -37,7 +37,7 @@
 	}
 
 	function isUserInAGame(int $userID): bool {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_players` WHERE `session_playerid` = ?");
 		$stmt_getsessiondetails->bind_param("i", $userID);
@@ -49,7 +49,7 @@
 	}
 
 	function getServerDetails(string $serverID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `server_id` = ? AND `server_teamcreate` = 0");
 		$stmt_getsessiondetails->bind_param("s", $serverID);
@@ -65,7 +65,7 @@
 	}
 
 	function getActiveServersCount(int $placeID, bool $teamcreate = false): bool {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -79,7 +79,7 @@
 	}
 
 	function updatePlaceOfSession(string $sessionID, string $placeID, bool $teamcreate = false): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 		$stmt_teamcreate = $teamcreate ? 1 : 0;
 
@@ -116,7 +116,7 @@
 					
 					$placeID = $place->id;
 					if(isUserInAGame($user->id)) {
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewsession = $con->prepare("DELETE FROM `active_players` WHERE `session_playerid` = ?");
 						$stmt_createnewsession->bind_param("i", $playerID);
 						$stmt_createnewsession->execute();
@@ -131,7 +131,7 @@
 					}
 					$sessionID = getRandomString();
 					
-					include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 					$stmt_createnewsession = $con->prepare("INSERT INTO `active_players`(`session_id`, `session_serverid`, `session_playerid`, `session_status`) VALUES (?,?,?,0)");
 					$stmt_createnewsession->bind_param("ssi", $sessionID, $serverID, $playerID);
 					$stmt_createnewsession->execute();
@@ -152,7 +152,7 @@
 						
 						$placeID = $place->id;
 						if(isUserInAGame($user->id)) {
-							include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+							include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 							$stmt_createnewsession = $con->prepare("DELETE FROM `active_players` WHERE `session_playerid` = ?");
 							$stmt_createnewsession->bind_param("i", $playerID);
 							$stmt_createnewsession->execute();
@@ -167,7 +167,7 @@
 						}
 						$sessionID = getRandomString();
 						
-						include $_SERVER['DOCUMENT_ROOT']."/core/connection.php";
+						include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 						$stmt_createnewsession = $con->prepare("INSERT INTO `active_players`(`session_id`, `session_serverid`, `session_playerid`, `session_status`) VALUES (?,?,?,0)");
 						$stmt_createnewsession->bind_param("ssi", $sessionID, $serverID, $playerID);
 						$stmt_createnewsession->execute();

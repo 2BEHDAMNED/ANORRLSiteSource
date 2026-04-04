@@ -3,6 +3,7 @@
 	namespace anorrl\utilities;
 
 	use anorrl\User;
+	use anorrl\Database;
 
 	/**
 	 * Utilities for User stuff<br>
@@ -67,7 +68,7 @@
 			$hashedpass = password_hash($password, PASSWORD_DEFAULT);
 			$securitykey = self::GenerateSecurityKey();
 
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
+			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
 
 			$stmt_insertuser = $con->prepare("INSERT INTO `users`(`user_name`, `user_blurb`, `user_discord`, `user_password`, `user_security`) VALUES (?,'',?,?,?);");
 			$stmt_insertuser->bind_param('ssss', $username, $discordid, $hashedpass, $securitykey);
@@ -88,7 +89,7 @@
 		public static function LoginUser(string $username, string $password): string|array {
 			$errors = [];
 
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
+			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
 			$pass_username = trim($username);
 			$pass_password = trim($password);
 
@@ -139,7 +140,7 @@
 		 * @return bool
 		 */
 		static function IsValidKey(string $accesskey): bool {
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
+			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
 			$stmt_checkkey = $con->prepare('SELECT `access_key` FROM `accesskeys` WHERE `access_key` = ?;');
 			$stmt_checkkey->bind_param('s', $accesskey);
 			$stmt_checkkey->execute();
@@ -153,7 +154,7 @@
 		 * @return string|null
 		 */
 		static function UseAccessKey(string $accesskey): string|null {
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
+			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
 			$stmt_checkkey = $con->prepare('SELECT `access_discorduid` FROM `accesskeys` WHERE `access_key` = ?;');
 			$stmt_checkkey->bind_param('s', $accesskey);
 			$stmt_checkkey->execute();
@@ -174,7 +175,7 @@
 		 * @return bool True if it's not being used
 		 */
 		public static function IsUsernameAvailable(string $username): bool {
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
+			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
 			$stmt_checkusername = $con->prepare('SELECT `user_name` FROM `users` WHERE `user_name` LIKE ?;');
 			$stmt_checkusername->bind_param('s', $username);
 			$stmt_checkusername->execute();
@@ -306,7 +307,7 @@
 		 */
 		public static function RegisterAction(User $reg_user, string $action = "Website"): void {
 			if($reg_user != null) {
-				include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 				// Check if row exists
 				$stmt_check_row = $con->prepare('SELECT * FROM `activity` WHERE `userid` = ?');
 				$stmt_check_row->bind_param('i', $reg_user->id);
@@ -334,69 +335,50 @@
 
 		public static function RemoveCookies(): void {
 			unset($_COOKIE['ANORRLSECURITY']);
-			setcookie("ANORRLSECURITY", "", -1, "/", $_SERVER['SERVER_NAME']);
+			setcookie("ANORRLSECURITY", "", -1, "/", \CONFIG->domain);
 			setcookie("ANORRLSECURITY", "", -1, "/", ".lambda.cam");
 		}
 
 		public static function GetRandomUsers(int $count): array {
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
-			
-			$stmt = $con->prepare('SELECT * FROM `users` ORDER BY RAND() LIMIT ?');
-			$stmt->bind_param('i', $count);
-			$stmt->execute();
+			$fetch_users = Database::singleton()->run(
+				"SELECT user_id FROM `users` ORDER BY RAND() LIMIT :limit",
+				[ ":limit" => $count ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
-			$result = $stmt->get_result();
-
-			if($result->num_rows != 0) {
-				$users =  [];
-
-				while(($row = $result->fetch_assoc()) != null) {
-					array_push($users, new User($row));
-				}
-
-				return $users;
+			$users =  [];
+			foreach($fetch_users as $obj_user) {
+				$users[] = User::FromID($obj_user->user_id);
 			}
 
-			return [];
+			return $users;
 		}
 
 
 		public static function GetLatestUsers(int $count): array {
-			include $_SERVER['DOCUMENT_ROOT'].'/core/connection.php';
-			
-			$stmt = $con->prepare('SELECT * FROM `users` ORDER BY `user_joindate` DESC LIMIT ?');
-			$stmt->bind_param('i', $count);
-			$stmt->execute();
+			$fetch_users = Database::singleton()->run(
+				"SELECT * FROM `users` ORDER BY `user_joindate` DESC LIMIT :limit",
+				[ ":limit" => $count ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
-			$result = $stmt->get_result();
-
-			if($result->num_rows != 0) {
-				$users =  [];
-
-				while(($row = $result->fetch_assoc()) != null) {
-					array_push($users, new User($row));
-				}
-
-				return $users;
+			$users =  [];
+			foreach($fetch_users as $obj_user) {
+				$users[] = User::FromID($obj_user->user_id);
 			}
 
-			return [];
+			return $users;
 		}
 
 		public static function GetAllUsersPaged(int $pagenum, int $count, string $query = ""): array|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$queryfiltered = "%$query%";
 			if($queryfiltered == "%%") {
 				$queryfiltered = "%";
 			}
 
-			$stmt = $con->prepare("SELECT `user_id` FROM `users` WHERE 1;");
-			$stmt->execute();
-
-			$result_stmt = $stmt->get_result();
-
-			while($row = $result_stmt->fetch_assoc()) {
-				User::FromID(intval($row['user_id']))->IsOnline();
+			$fetch_users = Database::singleton()->run("SELECT `user_id` FROM `users`")->fetchAll(\PDO::FETCH_OBJ);
+			
+			foreach($fetch_users as $obj_user) {
+				User::FromID($obj_user->user_id)->IsOnline();
 			}
 
 			$stmt_getallusers = $con->prepare("SELECT * FROM `users` WHERE `user_name` LIKE ? ORDER BY `user_online` DESC, `user_joindate` DESC LIMIT ?, ?");
@@ -413,11 +395,13 @@
 				}
 				
 			}
-			return $result_array;
+
+			return $users;
+			//return $result_array;
 		}
 
 		public static function GetAllUsers(string $query = ""): array|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/core/connection.php";
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$queryfiltered = "%$query%";
 			$stmt_getallusers = $con->prepare("SELECT * FROM `users` WHERE `user_name` LIKE ?");
 			$stmt_getallusers->bind_param('s', $queryfiltered);
