@@ -1,6 +1,8 @@
 <?php 
 	namespace anorrl\utilities;
 
+	use anorrl\User;
+
 	ini_set("default_socket_timeout", 60);
 
 	class Renderer {
