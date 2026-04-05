@@ -87,7 +87,7 @@
 
 	$bgm = Asset::FromID($user->profilebgm);
 
-	if(!$bgm->IsUsable()) {
+	if($bgm && !$bgm->IsUsable()) {
 		$bgm = null;
 	}
 

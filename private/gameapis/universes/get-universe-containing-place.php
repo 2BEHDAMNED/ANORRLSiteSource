@@ -2,6 +2,8 @@
 
 	use anorrl\Place;
 
+	header("Content-Type: application/json");
+
 	if(isset($_GET['placeId'])) {
 		$placeid = intval($_GET['placeId']);
 	} else {
@@ -19,6 +21,5 @@
 			"updateFromPlaceId" => $placeid,
 		]);
 	}
-	
 
 ?>

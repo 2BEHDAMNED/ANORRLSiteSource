@@ -93,9 +93,9 @@
 	$signature = get_signature($script);
 
 	die("--rbxsig%". $signature . "%" . $script);
-?>
-<?php else: ?>
-{
+else: 
+
+$joinscript = [
 	"ClientPort" => 0,
 	"MachineAddress" => "{server}",
 	"ServerPort" => {serverport},
@@ -134,8 +134,8 @@
 	"UsePortraitMode" => false,
 	"FollowUserId" => 0,
 	"characterAppearanceId" => {playerid}
-}
-<?php
+];
+
 	function get_signature($script)
 	{
 		$signature = "";

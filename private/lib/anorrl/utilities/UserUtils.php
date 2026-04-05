@@ -335,7 +335,6 @@
 
 		public static function RemoveCookies(): void {
 			unset($_COOKIE['ANORRLSECURITY']);
-			setcookie("ANORRLSECURITY", "", -1, "/", \CONFIG->domain);
 			setcookie("ANORRLSECURITY", "", -1, "/", ".lambda.cam");
 		}
 

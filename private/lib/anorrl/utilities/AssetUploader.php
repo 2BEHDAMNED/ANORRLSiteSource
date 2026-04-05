@@ -278,7 +278,7 @@
 
 			$versionid = $con->insert_id;
 
-			$stmt = $con->prepare('UPDATE `assets` SET `asset_currentversion` = ?, `asset_lastedited` = now(), `asset_name` = ?, `asset_description` = ?, `asset_public` = ?, `asset_onsale` = ?, `asset_comments_enabled` = ?, WHERE `asset_id` = ?');
+			$stmt = $con->prepare('UPDATE `assets` SET `asset_currentversion` = ?, `asset_lastedited` = now(), `asset_name` = ?, `asset_description` = ?, `asset_public` = ?, `asset_onsale` = ?, `asset_comments_enabled` = ? WHERE `asset_id` = ?');
 			$stmt->bind_param('issiiii', $new_versionid, $name, $description, $parsed_public, $parsed_onsale, $parsed_commentsenabled, $id);
 			try {
 				if(!$stmt->execute()) {

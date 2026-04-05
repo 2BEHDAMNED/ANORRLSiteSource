@@ -63,7 +63,7 @@
 	$comments = Comment::GetCommentsOn($get_user);
 	$comments_count = count($comments);
     $bgm = Asset::FromID($get_user->profilebgm);
-	if(!$bgm->IsUsable()) {
+	if($bgm && !$bgm->IsUsable()) {
 		$bgm = null;
 	}
 

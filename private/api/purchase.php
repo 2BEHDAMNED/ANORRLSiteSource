@@ -6,7 +6,7 @@
 	// rewrite this shit
 
 	if(SESSION) {
-
+		$user = SESSION->user;
 		if(!$user->IsBanned() && isset($_POST['asset_id']) && isset($_POST['typatransaction'])) {
 			$type = strtolower(trim($_POST['typatransaction']));
 			$result = TransactionUtils::BuyItem($_POST['asset_id']);

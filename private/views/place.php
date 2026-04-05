@@ -1,5 +1,8 @@
 <?php 
-	$id = intval($_GET['id']);
+	if(!isset($id))
+		$id = intval($_GET['id']);
+	if(!isset($_GET['id']) && !isset($id))
+		die(header("Location: /my/stuff"));
 
 	use anorrl\Asset;
 	use anorrl\Comment;
