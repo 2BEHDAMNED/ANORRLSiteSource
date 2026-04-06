@@ -75,6 +75,7 @@
 			<ul id="Friends">
 			<?php 
 				$friends = $user->GetFriends();
+				shuffle($friends);
 				
 				if(count($friends) > 5) {
 					$new_friends = [];
