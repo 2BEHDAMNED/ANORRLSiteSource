@@ -1,6 +1,8 @@
 # ANotherOldRobloxRevivalLol
 also known as ANORRL
 
+This uses the [ANSRAL](https://github.com/unc-nnected/ANotherRccServiceArbiterLol/) project (created by [Aria](https://github.com/unc-nnected)) as to render and start gameservers so please use that when hosting this source!
+
 
 This is a FOSS project, you can submit issues and pull requests.
 
