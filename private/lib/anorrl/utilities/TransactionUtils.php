@@ -105,7 +105,7 @@
 				);
 			} else {
 				Database::singleton()->run(
-					"INSERT INTO `transactions`(`id`, `userid`, `method`, `cost`) VALUES (?, ?, ?, ?)",
+					"INSERT INTO `transactions`(`id`, `userid`, `method`, `cost`) VALUES (:id, :uid, :method, :cost)",
 					[
 						":id"     => $ta_id,
 						":uid"    => $user->id,
@@ -127,6 +127,42 @@
 					break;
 			}
 			self::CommitTransaction($type, $user, $cost, $asset);
+		}
+
+		public static function StipendLightsToUser(int $user_id, int $amount = 250) {
+			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+			$ta_id = self::GenerateID();
+			$ta_userid = $user_id;
+			$ta_cost = $amount;
+			$stmt = $con->prepare('INSERT INTO `transactions`(`ta_id`, `ta_userid`, `ta_currency`, `ta_cost`) VALUES (?, ?, "lights", ?)');
+			$stmt->bind_param("sii", $ta_id, $ta_userid, $ta_cost);
+			$stmt->execute();
+		}
+
+		public static function StipendCheckToUser(int $user_id) {
+			$user = User::FromID($user_id);
+			if($user != null && !$user->isBanned() && $user->pendingStipend()) {
+
+				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+				$stmt_getuser = $con->prepare("SELECT * FROM `subscriptions` WHERE `userid` = ?");
+				$stmt_getuser->bind_param('i', $user->id);
+				$stmt_getuser->execute();
+				$result = $stmt_getuser->get_result();
+
+
+				if($result->num_rows == 1) {
+					$stmt_user_status_check = $con->prepare('UPDATE `subscriptions` SET `lastpaytime` = now() WHERE `userid` = ?');
+					$stmt_user_status_check->bind_param('i', $user->id);
+					$stmt_user_status_check->execute();
+				} else {
+					$stmt_user_status_check = $con->prepare('INSERT INTO `subscriptions`(`userid`) VALUES (?)');
+					$stmt_user_status_check->bind_param('i', $user->id);
+					$stmt_user_status_check->execute();
+				}
+
+				self::CommitTransaction(TransactionType::CONES, $user, 100);
+				self::CommitTransaction(TransactionType::LIGHTS, $user, 250);
+			}
 		}
 	}
 ?>

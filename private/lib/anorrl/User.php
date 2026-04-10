@@ -1366,7 +1366,7 @@ EOT;
 				if(!$row->asset || $row->userid != $this->id)
 					$result_sum += $row->cost;
 
-				if($row->userid == $this->id)
+				elseif($row->userid == $this->id)
 					$result_sum -= $row->cost;
 			}
 
@@ -1418,6 +1418,13 @@ EOT;
 					]
 				);
 			}
+		}
+
+		function pendingStipend() {
+			return Database::singleton()->run(
+				"SELECT * FROM `subscriptions` WHERE `userid` = :id AND `lastpaytime` > DATE_SUB(NOW(),INTERVAL 1 DAY)",
+				[":id" => $this->id]
+			)->rowCount() == 0;
 		}
 
 	}

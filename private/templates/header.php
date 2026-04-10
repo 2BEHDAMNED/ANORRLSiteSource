@@ -171,6 +171,12 @@
 					<a href="/my/stuff"     <?php if($_SERVER['SCRIPT_NAME'] == "/private/views/my/stuff.php"    		 ):?>selected<?php endif ?>>Stuff</a>
 					<a href="/download"     <?php if($_SERVER['SCRIPT_NAME'] == "/private/views/download/index.php"      ):?>selected<?php endif ?>>Download</a>
 				</div>
+				<?php if($header_check_user->pendingStipend()): ?>
+				<div id="StipendThingy">
+					<span style="font-size: 13px">Yoo bitch you got a paycheck incoming!!!</span>
+					<a href="javascript:ANORRL.CollectStipend()" style=>Collect</a>
+				</div>
+				<?php endif ?>
 				<?php else: ?>
 				<div id="Links"></div>
 				<?php endif ?>

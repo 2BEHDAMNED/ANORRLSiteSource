@@ -289,6 +289,33 @@ a:hover {
 	font-weight: bold;
 }
 
+#Header #StipendThingy {
+	border: 4px solid black;
+	font-size: 14px;
+	width: 900px;
+	margin: 0 auto;
+	padding: 6px 0px;
+	
+	color: white;
+	text-align: center;
+	position: relative;
+	z-index: 2;
+
+	border-top: 0;
+	background: green;
+	
+}
+
+#Header #StipendThingy a {
+	border: 2px solid black;
+	padding: 3px 5px;
+	background: #222;
+}
+
+#Header #StipendThingy a:hover {
+	background: #444;
+}
+
 #Footer {
 	text-align: center;
 	background: #222;
