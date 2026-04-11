@@ -122,11 +122,10 @@
 				$parent_id = "u!".$parent->id;
 			}
 
-			$blockedchars = array('𒐫', '‮', '﷽', '𒈙', '⸻ ', '꧅');
 			$waittime = 5;
 
 			$comment_id = self::GenerateID();
-			$comment = trim(str_replace($blockedchars, '', $contents));
+			$comment = UtilUtils::StripUnicode($contents);
 			$lastpost = self::GetLatestCommentFromUser($user);
 			
 			if($lastpost != null) {
@@ -187,7 +186,7 @@
 			$comments = [];
 
 			while($row = $result->fetch_assoc()) {
-				array_push($comments, new Comment($row));
+				$comments[] = new Comment($row);
 			}
 			return $comments;
 		}

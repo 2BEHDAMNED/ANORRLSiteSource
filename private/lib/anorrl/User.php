@@ -10,53 +10,7 @@
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\UtilUtils;
 	use anorrl\utilities\ImageUtils;
-
-	/**
-	 *  Core Profile Badges.
-	 */
-	enum ANORRLBadge {
-		case ADMINISTRATOR;
-		case FORUM_MOD;
-		case IMAGE_MOD;
-		case HOMESTEAD;
-		case BRICKSMITH;
-		case FRIENDSHIP;
-		case INVITER;
-		case COMBAT_INITIATION;
-		case WARRIOR;
-		case BLOXXER;
-
-		public function ordinal(): int {
-			return match($this) {
-				ANORRLBadge::ADMINISTRATOR => 1,
-				ANORRLBadge::FORUM_MOD => 2,
-				ANORRLBadge::IMAGE_MOD => 3,
-				ANORRLBadge::HOMESTEAD => 4,
-				ANORRLBadge::BRICKSMITH => 5,
-				ANORRLBadge::FRIENDSHIP => 6,
-				ANORRLBadge::INVITER => 7,
-				ANORRLBadge::COMBAT_INITIATION => 8,
-				ANORRLBadge::WARRIOR => 9,
-				ANORRLBadge::BLOXXER => 10,
-			};
-		}
-
-		public static function index(int $badge): ANORRLBadge {
-			return match($badge) {
-				1 => ANORRLBadge::ADMINISTRATOR,
-				2 => ANORRLBadge::FORUM_MOD,
-				3 => ANORRLBadge::IMAGE_MOD,
-				4 => ANORRLBadge::HOMESTEAD,
-				5 => ANORRLBadge::BRICKSMITH,
-				6 => ANORRLBadge::FRIENDSHIP,
-				7 => ANORRLBadge::INVITER,
-				8 => ANORRLBadge::COMBAT_INITIATION,
-				9 => ANORRLBadge::WARRIOR,
-				10 => ANORRLBadge::BLOXXER,
-			};
-		}
-	}
-
+	use anorrl\enums\ANORRLBadge;
 
 	/**
 	 * Data of the user.
@@ -74,8 +28,6 @@
 		 */
 		public bool $setprofilepicture;
 		public string $currentoutfitmd5;
-		public string $usercss;
-		public int $profilebgm;
 		public \DateTime $join_date;
 		
 		/**
@@ -154,29 +106,23 @@
 			$this->last_update = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['user_lastprofileupdate']);
 			$this->setprofilepicture = boolval($rowdata['user_setprofilepicture']);
 			$this->currentoutfitmd5 = strval($rowdata['user_currentappearancemd5']);
-			$this->usercss = strval($rowdata['user_css']);
 			$this->join_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['user_joindate']);
-			$this->profilebgm = intval($rowdata['user_profilebgm']);
 			$this->password = strval($rowdata['user_password']);
 			$this->security_key = strval($rowdata['user_security']);
 		}
 
 		function GetFriends(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `friends` WHERE (`sender` LIKE ? OR `reciever` LIKE ?) AND `status` = 1;");
-			$stmt_getuser->bind_param('ii', $this->id, $this->id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$fetch = Database::singleton()->run(
+				"SELECT * FROM `friends` WHERE (`sender` LIKE :id OR `reciever` LIKE :id) AND `status` = 1;",
+				[ ":id" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$friends = [];
 
-			while($row = $result->fetch_assoc()) {
-				if($row['sender'] == $this->id) {
-					array_push($friends, User::FromID($row['reciever']));
-				} else {
-					array_push($friends, User::FromID($row['sender']));
-				}
+			foreach($fetch as $row) {
+				$friends[] = User::FromID($row->sender == $this->id ? $row->reciever : $row->sender);
 			}
+
 			return $friends;
 		}
 		
@@ -226,12 +172,11 @@
 					$user = User::FromID($row['sender']);
 
 					if($user != null) {
-						array_push($result, $user);
+						$result[] = $user;
 					} else {
 						$stmt_deletefriendreq = $con->prepare("DELETE FROM `friends` WHERE `sender` = ? AND `reciever` = ? AND `status` = 0;");
 						$stmt_deletefriendreq->bind_param("ii", $row['sender'], $this->id);
 						$stmt_deletefriendreq->execute();
-						// remove the request maybe
 					}
 				}
 			}
@@ -278,7 +223,7 @@
 						$place = Place::FromID(intval($row['cloudeditor_placeid']));
 
 						if($place != null && $place->creator->id != $this->id) {
-							array_push($teamcreatedplaces, $place);
+							$teamcreatedplaces[] = $place;
 						}
 					}
 				}
@@ -293,8 +238,6 @@
 					}
 				}
 			}
-
-			
 			
 			return array_merge($result, $teamcreatedplaces);
 		}
@@ -307,9 +250,10 @@
 			$stmt->execute();
 
 			if($stmt->get_result()->num_rows == 0) {
-				$stmt = $con->prepare("INSERT INTO `profilebadges`(`badge_id`, `badge_userid`, `badge_admincorecore`) VALUES (?, ?, 0)");
+				$stmt = $con->prepare("INSERT INTO `profilebadges`(`badge_id`, `badge_userid`, `badge_admincorecore`) VALUES (?, ?, ?)");
 				$ordinal = $badge->ordinal();
-				$stmt->bind_param('ii', $ordinal, $this->id);
+				$admin_badge = $badge == ANORRLBadge::ADMINISTRATOR ? 1 : 0;
+				$stmt->bind_param('iii`', $ordinal, $this->id, $admin_badge);
 				$stmt->execute();
 			}
 		}
@@ -339,7 +283,7 @@
 			$badges = [];
 
 			while($row = $result->fetch_assoc()) {
-				array_push($badges, ProfileBadge::FromID($row['badge_id']));
+				$badges[] = ANORRLBadge::index($row['badge_id']);
 			}
 
 			return $badges;
@@ -447,7 +391,7 @@
 
 			if($result->num_rows != 0) {
 				while($row = $result->fetch_assoc()) {
-					array_push($result_array, Asset::FromID($row['asset_id']));
+					$result_array[] = Asset::FromID($row['asset_id']);
 				}
 				return $result_array;
 			}
@@ -529,7 +473,7 @@
 
 			if($result->num_rows != 0) {
 				while($row = $result->fetch_assoc()) {
-					array_push($result_array, Asset::FromID($row['asset']));
+					$result_array[] = Asset::FromID($row['asset']);
 				}
 				return $result_array;
 			}
@@ -561,7 +505,7 @@
 				$assetid = $asset->id;
 			}
 			
-			if(!$this->Owns($asset) || Asset::FromID($assetid) == null) {
+			if(!$this->owns($asset) || Asset::FromID($assetid) == null) {
 				return false;
 			}
 			
@@ -601,7 +545,7 @@
 				$assetid = $asset->id;
 			}
 			
-			if(!$this->Owns($asset) || Asset::FromID($assetid) == null) {
+			if(!$this->owns($asset) || Asset::FromID($assetid) == null) {
 				return ["error"=>true, "reason"=>"Invalid item"];
 			}
 
@@ -660,7 +604,7 @@
 				$assetid = $asset->id;
 			}
 			
-			if(!$this->Owns($asset) || Asset::FromID($assetid) == null) {
+			if(!$this->owns($asset) || Asset::FromID($assetid) == null) {
 				return ["error"=>true, "reason"=>"Invalid item"];
 			}
 
@@ -700,23 +644,23 @@
 			$torsocolour = $colours['torso'];
 			$domain = \CONFIG->domain;
 
-return <<<EOT
-<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://$domain/roblox.xsd" version="4">
-	<External>null</External>
-	<External>nil</External>
-	<Item class="BodyColors" referent="RBXCCC36C132C584B37B29DB69EAE48292A">
-		<Properties>
-			<int name="HeadColor">$headcolour</int>
-			<int name="LeftArmColor">$rightarmcolour</int>
-			<int name="LeftLegColor">$leftlegcolour</int>
-			<string name="Name">Body Colors</string>
-			<int name="RightArmColor">$leftarmcolour</int>
-			<int name="RightLegColor">$rightlegcolour</int>
-			<int name="TorsoColor">$torsocolour</int>
-		</Properties>
-	</Item>
-</roblox>
-EOT;
+			return <<<EOT
+			<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://$domain/roblox.xsd" version="4">
+				<External>null</External>
+				<External>nil</External>
+				<Item class="BodyColors" referent="RBXCCC36C132C584B37B29DB69EAE48292A">
+					<Properties>
+						<int name="HeadColor">$headcolour</int>
+						<int name="LeftArmColor">$rightarmcolour</int>
+						<int name="LeftLegColor">$leftlegcolour</int>
+						<string name="Name">Body Colors</string>
+						<int name="RightArmColor">$leftarmcolour</int>
+						<int name="RightLegColor">$rightlegcolour</int>
+						<int name="TorsoColor">$torsocolour</int>
+					</Properties>
+				</Item>
+			</roblox>
+			EOT;
 		}
 
 		function GetCharacterAppearance(): string {
@@ -763,6 +707,12 @@ EOT;
 					}
 				} else {
 					// remove from everyone... OMG WHY HAVEN'T YOU IMPLEMENTED THIS YET YOU FAT FUCK
+					Database::singleton()->run(
+						"DELETE FROM `inventory` WHERE `inv_assetid` = :id",
+						[":id" => $id]
+					);
+
+					// transactions MAYBE but i wont delete assets completely
 				}
 			}
 
@@ -800,9 +750,10 @@ EOT;
 			
 				if($checkinventory_result->num_rows != 0) {
 					while($row = $checkinventory_result->fetch_assoc()) {
-						array_push($ids, $row['inv_assetid']);
+						$ids[] = $row['inv_assetid'];
 					}
-				}	
+				}
+
 				return $ids;
 			}
 
@@ -814,7 +765,7 @@ EOT;
 		
 			if($checkinventory_result->num_rows != 0) {
 				while($row = $checkinventory_result->fetch_assoc()) {
-					array_push($ids, $row['inv_assetid']);
+					$ids[] = $row['inv_assetid'];
 				}
 			}	
 
@@ -983,7 +934,7 @@ EOT;
 		}
 
 		function UpdateBio(string $bio): array {
-			if(!$this->IsBanned()) {
+			if(!$this->isBanned()) {
 				// check if user hasn't posted one in 30s
 
 				//$offset = 3600; // windows blehh
@@ -1000,8 +951,7 @@ EOT;
 					return ["error"=> true, "reason" => "You need to wait $calculated_time seconds before updating again."];
 				}
 
-				$blockedchars = array('𒐫', '‮', '﷽', '𒈙', '⸻ ', '꧅');
-				$bio_content = str_replace($blockedchars, '', trim($bio));
+				$bio_content = UtilUtils::StripUnicode($bio);
 
 				if(strlen($bio_content) > 1000) {
 					return ["error"=> true, "reason" => "Status was too long! (1000 characters maximum)"];
@@ -1018,66 +968,7 @@ EOT;
 			}
 		}
 
-		//updatebgm coded by skylerclock
-		public function UpdateBGM(string $bgm): array {
-			if(!$this->IsBanned()) {
-				if ($bgm === null || trim($bgm) === '') {
-            	 	include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-            	 	$stmt = $con->prepare('UPDATE `users` SET `user_profilebgm` = NULL, `user_lastbgmupdate` = NOW() WHERE `user_id` = ?;');
-            	    $stmt->bind_param('i', $this->id);
-            	 	$stmt->execute();
-            	 	return ["error" => false];
-        	 	}
-				//$offset = 3600; // windows blehh
-				$offset = -3600; // prod
-				$difference = (time() - ($this->last_update->getTimestamp() + $this->last_update->getOffset() + $offset));
-				$calculated_time = 30 - $difference;
-				if($difference < 30) {
-					return [
-						"error" => true,
-						"reason" => "You need to wait $calculated_time seconds before updating again."
-					];
-				}
-				
-				$blockedchars = array('𒐫', '‮', '﷽', '𒈙', '⸻ ', '꧅');
-				$bgm_content = str_replace($blockedchars, '', trim($bgm));
-				if(strlen($bgm_content) > 255) {
-					return [
-						"error" => true,
-						"reason" => "ID value too long!"
-					];
-				}
-
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$queried_asset = Asset::FromID($bgm_content);
-				if($queried_asset == null) {
-        			return [
-            			"error" => true,
-            			"reason" => "Asset does not exist."
-        			];
-    			}
-				
-    			if($queried_asset->type != AssetType::AUDIO) {
-        			return [
-            			"error" => true,
-            			"reason" => "This is not an audio asset."
-        			];
-    			}
-
-				$stmt = $con->prepare('UPDATE `users` SET `user_profilebgm` = ?, `user_lastbgmupdate` = NOW() WHERE `user_id` = ?;');
-				$stmt->bind_param('si', $bgm_content, $this->id);
-				$stmt->execute();
-				return ["error" => false];
-
-			} else {
-				return [
-					"error" => true,
-					"reason" => "Unauthorized."
-				];
-			}
-		}
-
-		function Owns(Asset|int $asset): bool {
+		function owns(Asset|int $asset): bool {
 			$assetid = $asset;
 			if($asset instanceof Asset) {
 				$assetid = $asset->id;
@@ -1094,7 +985,7 @@ EOT;
 			return $this->HasProfileBadgeOf(ANORRLBadge::ADMINISTRATOR);
 		}
 
-		function IsBanned(): bool {
+		function isBanned(): bool {
 			return false;
 		}
 
@@ -1293,8 +1184,8 @@ EOT;
 
 		function ResetProfilePicture() {
 			if($this->setprofilepicture) {
-				if(file_exists($_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png")) {
-					unlink($_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png");
+				if(file_exists($_SERVER['DOCUMENT_ROOT']."/../users/profile_{$this->id}.png")) {
+					unlink($_SERVER['DOCUMENT_ROOT']."/../users/profile_{$this->id}.png");
 				}
 
 				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
@@ -1305,41 +1196,19 @@ EOT;
 			}
 		}
 
-		function GetAutoThumbsUrl() {
+		function getThumbnail(): mixed {
+			return null;
+		}
+
+		/**
+		 * Lowkey start using this more
+		 */
+		function getThumbsUrl(): string {
 			return "/thumbs/" . ($this->setprofilepicture ? "profile" : "headshot"). "?id=".$this->id;
 		}
 
-		function GetAccountAge(): int {
+		function getAccountAge(): int {
 			return UtilUtils::GetTimeDifference($this->join_date);
-		}
-
-		function setUserCSS(string $data) {
-			$validator = new CSSValidator();
-
-			$result = $validator->validateFragment($data);
-
-			if($result->isValid()) {
-
-				if(!UtilUtils::IsValidCSS($data)) {
-					return false;
-				}
-
-				Database::singleton()->run(
-					"UPDATE `users` SET `user_css` = :css WHERE `user_id` = :id;",
-					[
-						":id" => $this->id,
-						":css" => $data
-					]
-				);
-
-				return true;
-			}
-
-			return false;
-		}
-
-		function getUserCSS() {
-			return $this->usercss;
 		}
 
 		function getNetLights(): int {
@@ -1427,31 +1296,5 @@ EOT;
 			)->rowCount() == 0;
 		}
 
-	}
-
-	class ProfileBadge {
-		public ANORRLBadge $id;
-		public string $name;
-		public string $description;
-
-		public static function FromID(int $id): ProfileBadge|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `profilebadges_info` WHERE `pbadge_id` = ?");
-			$stmt_getuser->bind_param('i', $id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
-
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
-			} else {
-				return null;
-			}
-		}
-
-		function __construct($rowdata) {
-			$this->id = ANORRLBadge::index(intval($rowdata['pbadge_id']));
-			$this->name = strval($rowdata['pbadge_name']);
-			$this->description = strval($rowdata['pbadge_description']);
-		}
 	}
 ?>

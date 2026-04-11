@@ -17,11 +17,11 @@
 		
 		$name = $profileUser->name;
 		$online = $profileUser->IsOnline();
-		$thumbs = $profileUser->GetAutoThumbsUrl();
+		$thumbs = $profileUser->getThumbsUrl();
 
 		if($profileUser != null) {
 			global $excludelist;
-			array_push($excludelist, $id);
+			$excludelist[] = $id;
 			echo <<<EOT
 			<td>
 				<div>

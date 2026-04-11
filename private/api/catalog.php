@@ -52,7 +52,7 @@
 	if(count($assets) != 0) {
 		foreach($assets as $asset) {
 			if($asset instanceof anorrl\Asset) {
-				array_push($assets_raw, [
+				$assets_raw[] = [
 					"id" => $asset->id,
 					"name" => $asset->name,
 					"creator" => [
@@ -67,7 +67,7 @@
 						"lights" => $asset->lights
 					]
 					
-				]);
+				];
 			}
 		}
 	}

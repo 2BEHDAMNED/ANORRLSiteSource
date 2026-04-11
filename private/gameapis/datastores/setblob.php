@@ -14,7 +14,7 @@
 	}
 
 	function IsTooManyBlobbers(Place $place, User $user) {
-		if(!$user->IsBanned()) {
+		if(!$user->isBanned()) {
 			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
 			$stmt->bind_param("ii", $place->id, $user->id);
@@ -27,7 +27,7 @@
 	}
 
 	function BlobberExists(Place $place, User $user) {
-		if(!$user->IsBanned()) {
+		if(!$user->isBanned()) {
 			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
 			$stmt->bind_param("ii", $place->id, $user->id);
@@ -40,7 +40,7 @@
 	}
 
 	function CreateBlobber(Place $place, User $user) {
-		if(!$user->IsBanned() && !BlobberExists($place, $user)) {
+		if(!$user->isBanned() && !BlobberExists($place, $user)) {
 			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt = $con->prepare("INSERT INTO `persistenceblobs`(`blob_placeid`, `blob_playerid`) VALUES (?, ?)");
@@ -51,7 +51,7 @@
 	}
 
 	function GetDataBlob(Place $place, User $user) {
-		if(!$user->IsBanned() && BlobberExists($place, $user)) {
+		if(!$user->isBanned() && BlobberExists($place, $user)) {
 			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
@@ -66,7 +66,7 @@
 
 	function SetDataBlob(Place $place, User $user, string $data) {
 		
-		if(IsValidXML($data) && !$user->IsBanned() && BlobberExists($place, $user)) {
+		if(IsValidXML($data) && !$user->isBanned() && BlobberExists($place, $user)) {
 			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
 			$stmt = $con->prepare("UPDATE `persistenceblobs` SET `blob_data` = ? WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
@@ -81,7 +81,7 @@
 		$place = Place::FromID(intval($_GET['placeid']));
 		$user = User::FromID(intval($_GET['userid']));
 
-		if($place != null && $user != null && !$user->IsBanned() && CONFIG->asset->key == $_GET['access']) {
+		if($place != null && $user != null && !$user->isBanned() && CONFIG->asset->key == $_GET['access']) {
 
 			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 

@@ -1,7 +1,7 @@
 <?php
 	
 	use anorrl\Page;
-	use anorrl\utilities\Splasher;
+	use anorrl\utilities\FileSplasher;
 	use anorrl\utilities\UserUtils;
 
 	$user = UserUtils::RetrieveUser();
@@ -11,7 +11,7 @@
 	}
 
     //took this from games.php but idrc atp -skylerclock
-	$randomsplash = new Splasher("people")->getRandomSplash();
+	$randomsplash = new FileSplasher("people")->getRandomSplash();
 
 	$page = new Page("Vandals");
 

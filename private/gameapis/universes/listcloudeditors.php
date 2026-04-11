@@ -18,11 +18,11 @@
 
 			foreach($editorusers as $user) {
 				if($user instanceof anorrl\User) {
-					if(!$user->IsBanned()) {
-						array_push($editors, [
+					if(!$user->isBanned()) {
+						$editors[] = [
 							"userId" => $user->id,
 							"isAdmin" => $user->id == $place->creator->id
-						]);
+						];
 					}
 				}
 			}

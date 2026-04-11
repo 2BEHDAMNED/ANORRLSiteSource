@@ -139,7 +139,7 @@ end
 	if($user != null) {
 		$username = $user->name;
 		$userid = $user->id;
-		$userage = $user->GetAccountAge();
+		$userage = $user->getAccountAge();
 	}
 
 	$script = "\r\n" . ob_get_clean();

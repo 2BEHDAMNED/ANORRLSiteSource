@@ -42,14 +42,14 @@
 					$profile = "headshot";
 				}
 
-				array_push($users_raw, [
+				$users_raw[] = [
 					"id" => $user->id,
 					"name" => $user->name,
 					"blurb" => htmlspecialchars($user->blurb, ENT_QUOTES),
 					"online" => $user->IsOnline(),
 					"status" => $user->GetOnlineActivity(),
 					"thumbnail" => "/thumbs/$profile?id=".$user->id."&sxy=64"
-				]);
+				];
 			}
 		}
 	}

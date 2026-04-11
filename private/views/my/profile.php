@@ -26,21 +26,15 @@
 	if(isset($_POST['ANORRL$Update$Profile$BGM']) &&
 	   isset($_POST['ANORRL$Update$Profile$BGM$Submit'])) {
 		
-		$result = $user->UpdateBGM(trim($_POST['ANORRL$Update$Profile$BGM']));
+		SESSION->settings->setBackgroundMusic(intval(trim($_POST['ANORRL$Update$Profile$BGM'])));
 
-		if($result['error']) {
-			$_SESSION['ANORRL$Update$ProfileError'] = true;
-			$_SESSION['ANORRL$Update$ProfileResult'] = $result['reason'];
-			die(header("Location: /my/profile"));
-		} else {
-			die(header("Location: /users/".$user->id."/profile"));
-		}
+		die(header("Location: /my/profile"));
 	}
 
 	if(isset($_POST['ANORRL$Update$Profile$CSS']) &&
 	   isset($_POST['ANORRL$Update$Profile$CSS$Submit'])) {
 		
-		$result = $user->setUserCSS(trim($_POST['ANORRL$Update$Profile$CSS']));
+		$result = SESSION->settings->setCSS(trim($_POST['ANORRL$Update$Profile$CSS']));
 
 		if(!$result) {
 			$_SESSION['ANORRL$Update$ProfileError'] = true;
@@ -76,16 +70,16 @@
 		$headshots_enabled = isset($_POST['ANORRL$Update$Settings$HeadshotsEnabled']);
 		$nightbg_enabled = isset($_POST['ANORRL$Update$Settings$NightBGEnabled']);
 
-		$settings->SetRandomsEnabled($randoms_enabled);
-		$settings->SetTetoEnabled($teto_enabled);
-		$settings->SetAccessibilityEnabled($accessibility_enabled);
-		$settings->SetHeadshotsEnabled($headshots_enabled);
-		$settings->SetNightBGEnabled($nightbg_enabled);
+		$settings->setRandomsEnabled($randoms_enabled);
+		$settings->setTetoEnabled($teto_enabled);
+		$settings->setAccessibilityEnabled($accessibility_enabled);
+		$settings->setHeadshotsEnabled($headshots_enabled);
+		$settings->setNightBGEnabled($nightbg_enabled);
 
 		die(header("Location: /my/profile"));
 	}
 
-	$bgm = Asset::FromID($user->profilebgm);
+	$bgm = SESSION->settings->background_music;
 
 	if($bgm && !$bgm->isUsable()) {
 		$bgm = null;
@@ -105,11 +99,9 @@
 
 	$(function () {
 		$("input[type=file]")[0].onchange = e => { 
-			//var file = e.target.files[0];
 			$("#PictureForm").submit();
 		}
 	})
-	
 </script>
 <?php if(isset($_SESSION['ANORRL$Update$ProfileError']) && $_SESSION['ANORRL$Update$ProfileError']): ?>
 <div class="ErrorTime" style="margin: 5px; border: 2px solid black;">Error: <?= $_SESSION['ANORRL$Update$ProfileResult'] ?></div>
@@ -129,7 +121,7 @@
 		<h3>User Profile CSS</h3>
 		<div id="FormStuff">
 			<span>Ok so this is where you can change your profile stuff... have a go i guess?</span>
-			<textarea name="ANORRL$Update$Profile$CSS"><?= $user->getUserCSS() ?></textarea>
+			<textarea name="ANORRL$Update$Profile$CSS"><?= SESSION->settings->css; ?></textarea>
 			<input type="submit" value="Update" name="ANORRL$Update$Profile$CSS$Submit">
 		</div>
 	</div>
@@ -139,7 +131,7 @@
 		<h3>Profile Music</h3>
 		<div id="FormStuff">
 			<span>Here you can input the id of a sound asset and it'll just play when someone views your profile ig</span>
-			<?php if($bgm != null): ?>
+			<?php if($bgm): ?>
 			<div style="border: 2px solid black; margin: 10px auto; width: 320px; text-align: center;">
 				<img src="/thumbs/?id=<?= $bgm->id ?>&sxy=320">
 				<div style="padding: 5px; background: #333;">
@@ -147,7 +139,7 @@
 				</div>
 			</div>
 			<?php endif ?>
-			<textarea name="ANORRL$Update$Profile$BGM" style="height:16px;resize:none;margin-top: 0px;text-align: center"><?= $bgm != null ? $user->profilebgm : "" ?></textarea>
+			<textarea name="ANORRL$Update$Profile$BGM" style="height:16px;resize:none;margin-top: 0px;text-align: center"><?= $bgm ? SESSION->settings->background_music : "" ?></textarea>
 			<input type="submit" value="Update" name="ANORRL$Update$Profile$BGM$Submit">
 		</div>
 	</div>

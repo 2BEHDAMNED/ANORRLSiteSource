@@ -117,7 +117,7 @@ else:
 		$player = User::FromID(intval($sessionDetails['session_playerid']));
 		$place = Place::FromID(intval($serverDetails['server_placeid']));
 		
-		if($player != null && !$player->IsBanned() && $place != null) {
+		if($player != null && !$player->isBanned() && $place != null) {
 
 			if(UserUtils::RetrieveUser() == null) {
 				UserUtils::SetCookies($player->security_key);
@@ -150,7 +150,7 @@ else:
 				"CreatorId" => $place->creator->id,
 				"CreatorTypeEnum" => "User",
 				"MembershipType" => "None",
-				"AccountAge" => $player->GetAccountAge(),
+				"AccountAge" => $player->getAccountAge(),
 				"CookieStoreFirstTimePlayKey" => "rbx_evt_ftp",
 				"CookieStoreFiveMinutePlayKey" => "rbx_evt_fmp",
 				"CookieStoreEnabled" => true,

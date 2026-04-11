@@ -45,7 +45,7 @@
 		if(count($retrievedassets) != 0) {
 			foreach($retrievedassets as $asset) {
 				if($asset instanceof anorrl\Place) {
-					array_push($assets, [
+					$assets[] = [
 						"id" => $asset->id,
 						"creator" => [
 							"id" => $asset->creator->id,
@@ -56,7 +56,7 @@
 						"activeplayercount" => $asset->current_playing_count,
 						"visitcount" => $asset->visit_count,
 						"original" => $asset->is_original
-					]);
+					];
 				}
 			}
 		}

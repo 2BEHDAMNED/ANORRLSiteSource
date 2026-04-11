@@ -2,25 +2,16 @@
 	use anorrl\User;
 	use anorrl\utilities\UserUtils;
 	use anorrl\enums\AssetType;
+	use anorrl\enums\ANORRLBadges;
 	use anorrl\Comment;
 	use anorrl\Asset;
 	use anorrl\Page;
+	use anorrl\utilities\UtilUtils;
 
-	function IsRewrite() {
-		if(!empty($_SERVER['IIS_WasUrlRewritten']))
-			return true;
-		else if(array_key_exists('HTTP_MOD_REWRITE',$_SERVER))
-			return true;
-		else if( array_key_exists('REDIRECT_URL', $_SERVER))
-			return true;
-		else
-			return false;
-	}
-
-	if(!IsRewrite()) {
+	if(!UtilUtils::HasBeenRewritten()) {
 		die(header("Location: /my/home"));
 	}
-
+	
 	// No id parameter? GET OUT!
 	
 	if(!isset($id)) {
@@ -62,7 +53,7 @@
 
 	$comments = Comment::GetCommentsOn($get_user);
 	$comments_count = count($comments);
-    $bgm = Asset::FromID($get_user->profilebgm);
+    $bgm = SESSION->settings->background_music;
 	if($bgm && !$bgm->isUsable()) {
 		$bgm = null;
 	}
@@ -388,9 +379,9 @@ $(function() {
 						}
 
 						$badgeid = $badge->id->ordinal();
-						$badgename = $badge->name;
-						$badgenamefile = str_replace(" ", "", $badge->name);
-						$badgedesc = $badge->description;
+						$badgename = $badge->name();
+						$badgenamefile = str_replace(" ", "", $badge->name());
+						$badgedesc = $badge->description();
 
 						echo <<<EOT
 						<td>

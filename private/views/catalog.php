@@ -1,7 +1,7 @@
 <?php
 
 	use anorrl\Page;
-	use anorrl\utilities\Splasher;
+	use anorrl\utilities\FileSplasher;
 	use anorrl\utilities\UserUtils;
 
 	$user = UserUtils::RetrieveUser();
@@ -10,7 +10,7 @@
 		die(header("Location: /login"));
 	}
 
-	$randomsplash = new Splasher("catalog")->getRandomSplash();
+	$randomsplash = new FileSplasher("catalog")->getRandomSplash();
 
 	$page = new Page("Catalog");
 

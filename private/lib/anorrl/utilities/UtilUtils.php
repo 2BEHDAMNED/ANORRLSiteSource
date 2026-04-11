@@ -2,18 +2,18 @@
 
 	namespace anorrl\utilities;
 
-    class UtilUtils {
-        public static function GetTimeAgo(\DateTime $time) {
+	class UtilUtils {
+		public static function GetTimeAgo(\DateTime $time) {
 			$time_difference = time() - $time->getTimestamp();
 
 			if( $time_difference < 1 ) { return 'less than 1 second ago'; }
-			$condition = array( 12 * 30 * 24 * 60 * 60 =>  'year',
+			$condition = [ 12 * 30 * 24 * 60 * 60 =>  'year',
 						30 * 24 * 60 * 60       =>  'month',
 						24 * 60 * 60            =>  'day',
 						60 * 60                 =>  'hour',
 						60                      =>  'minute',
 						1                       =>  'second'
-			);
+			];
 
 			foreach($condition as $secs => $str) {
 				$d = $time_difference / $secs;
@@ -25,7 +25,7 @@
 			}
 		}
 
-        public static function RecurseRemove($input, $find, $replace) {
+		public static function RecurseRemove($input, $find, $replace) {
 			
 			$result = str_replace($find, $replace,$input);
 
@@ -35,6 +35,27 @@
 
 			return $result;
 		}
+
+		public static function StripUnicode(string $input) {
+			$blockedchars = ['𒐫', '‮', '﷽', '𒈙', '⸻', '꧅'];
+			return trim(str_replace($blockedchars, '', $input));
+		}
+
+		public static function HasBeenRewritten(): bool {
+			if(!empty($_SERVER['IIS_WasUrlRewritten']))
+				return true;
+			else if(array_key_exists('HTTP_MOD_REWRITE',$_SERVER))
+				return true;
+			else if( array_key_exists('REDIRECT_URL', $_SERVER))
+				return true;
+			else
+				return false;
+		}
+
+		public static function GetFilesArray(string $folder_location) {
+			return array_diff(scandir($_SERVER['DOCUMENT_ROOT'].$folder_location, SCANDIR_SORT_NONE), ["..", "."]);
+		}
+
 		/**
 		 * Summary of GetTimeDifference
 		 * @param \DateTime $time
@@ -159,4 +180,5 @@
 			return true;
 		}
 
-    }
+	}
+?>

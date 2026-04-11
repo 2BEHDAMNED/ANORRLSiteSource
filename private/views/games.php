@@ -1,9 +1,9 @@
 <?php
 	
 	use anorrl\Page;
-	use anorrl\utilities\Splasher;
+	use anorrl\utilities\FileSplasher;
 
-	$randomsplash = new Splasher("games")->getRandomSplash();
+	$randomsplash = new FileSplasher("games")->getRandomSplash();
 
 	$page = new Page("Games");
 

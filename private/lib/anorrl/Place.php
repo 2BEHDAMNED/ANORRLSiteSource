@@ -5,6 +5,7 @@
 	use anorrl\Asset;
 	use anorrl\Database;
 	use anorrl\enums\AssetType;
+	use anorrl\enums\ANORRLBadge;
 	use anorrl\utilities\AssetUtils;
 
 	class Place extends Asset {
@@ -207,8 +208,8 @@
 				while($row = $result_geteditors->fetch_assoc()) {
 					$user = User::FromID(intval($row['cloudeditor_userid']));
 
-					if($user != null && !$user->IsBanned()) {
-						array_push($result, $user);
+					if($user && !$user->isBanned()) {
+						$result[] = $user;
 					}
 				}
 

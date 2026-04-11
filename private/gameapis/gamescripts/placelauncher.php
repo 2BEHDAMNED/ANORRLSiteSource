@@ -420,7 +420,7 @@
 			
 			$user = User::FromID(intval($session_data['session_playerid']));
 
-			if($place != null && $user != null && !$user->IsBanned()) {
+			if($place != null && $user != null && !$user->isBanned()) {
 				if(UserUtils::RetrieveUser() == null) {
 					UserUtils::SetCookies($user->security_key);
 				}

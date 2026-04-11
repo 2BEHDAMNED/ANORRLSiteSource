@@ -1,76 +1,28 @@
 <?php
 	use anorrl\utilities\Splasher;
+	use anorrl\utilities\FileSplasher;
+	use anorrl\utilities\UtilUtils;
 
 	$header_check_user = SESSION ? SESSION->user : null;
-	
-	// 99999999 max
-	//very true -skyler
-	
-	function getImagesList() {
-		$array = [
-			"2behdamned",
-			"chokinghamster",
-			"horse",
-			"mario",
-			"satoru",
-			"twinfantasy",
-			"soretrojak",
-			"deimos",
-			"xendiscord",
-			"sanford",
-			"flclcanti",
-			"hankblender",
-			"jermafwoomp",
-			"jermathe",
-			"sanfordhappy",
-			"sanfordthumbsup",
-			"weeeeh",
-			"neuroangel",
-			"iscream",
-			"neuroqueen",
-			"tenisbol"
-		];
-		shuffle($array);
 
-		return $array;
-	}
+	$rand_pic = new Splasher(UtilUtils::GetFilesArray("/images/randoms/"), false, "RandomImages")->getRandomSplash();
 
-	function rollImage() {
-		$pictures = $_SESSION['ANORRL$UserPage$RandomImages'];
-		
-		if(count($pictures) == 0) {
-			$_SESSION['ANORRL$UserPage$RandomImages'] = getImagesList();
-			$pictures = $_SESSION['ANORRL$UserPage$RandomImages'];
+	$randomsignsplash = new FileSplasher("sign")->getRandomSplash();
+
+	if(session_status() == PHP_SESSION_NONE)
+		session_start();
+
+	if(isset($_SESSION['ANORRL$UserPage$RandomImages']))
+		unset($_SESSION['ANORRL$UserPage$RandomImages']);
+
+	//this is so that if the user ever sets 'background:' on the profile css it'll not apply the night background
+	//because the night background can override the user's background
+	if (isset($get_user)) {
+		$userCSS = SESSION->settings->css;
+		if (!empty($userCSS) && preg_match('/background\s*:/i', $userCSS)) {
+			$this->addStylesheet("/users/{$header_check_user->id}/css");
 		}
-		
-		if(count($pictures) != 1) {
-			$rand_pic_name = $pictures[0];
-			array_splice($_SESSION['ANORRL$UserPage$RandomImages'], 0, length: 1);
-		} else {
-			$rand_pic_name = end($pictures);
-			$_SESSION['ANORRL$UserPage$RandomImages'] = getImagesList();
-		}
-
-		return $rand_pic_name;
 	}
-
-	if(!isset($_SESSION['ANORRL$UserPage$RandomImages'])) {
-		$_SESSION['ANORRL$UserPage$RandomImages'] = getImagesList();
-	}
-
-	$rand_pic = rollImage();
-
-	$randomsignsplash = new Splasher("sign")->getRandomSplash();
-
-    //this is so that if the user ever sets 'background:' on the profile css it'll not apply the night background
-    //because the night background can override the user's background
-	$hasBackground = false;
-	/*if (isset($get_user)) {
-   		$userCss = $header_data->getUserCSS();
-    	if (!empty($userCss) && preg_match('/background\s*:/i', $userCss)) {
-        	$hasBackground = true;
-    	}
-	}*/
 ?>
 <!DOCTYPE html>
 <html>
@@ -99,12 +51,12 @@
 		</style>
 		<?php endif ?>
 		<?php if($this->settings->randoms_enabled): ?>
-		<img src="/images/randoms/<?= $rand_pic ?>.png" style="position: fixed;bottom: 0px;left: 0px;width: 250px;z-index: 9999;">
+		<img src="/images/randoms/<?= $rand_pic ?>" style="position: fixed;bottom: 0px;left: 0px;width: 250px;z-index: 9999;">
 		<?php endif ?>
 		<?php if($this->settings->teto_enabled): ?>
 		<div id="TetoContainer">
 			<div id="TetoSplashContainer">
-				<p id="TetoSplash"><?= new Splasher("teto")->getRandomSplash(); ?></p>
+				<p id="TetoSplash"><?= new FileSplasher("teto")->getRandomSplash(); ?></p>
 			</div>
 			<img id="Teto" src="/images/tetospeech.png">
 		</div>

@@ -1,6 +1,6 @@
 <?php
 	use anorrl\Page;
-	use anorrl\utilities\Splasher;
+	use anorrl\utilities\FileSplasher;
 
 	$user = SESSION ? SESSION->user : null;
 
@@ -8,7 +8,7 @@
 		die(header("Location: /login"));
 	}
 
-	$randomsplash = new Splasher("client")->getRandomSplash();
+	$randomsplash = new FileSplasher("client")->getRandomSplash();
 
 	$page = new Page("Download");
 	$page->addStylesheet("/css/new/download.css");

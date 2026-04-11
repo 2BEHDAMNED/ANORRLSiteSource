@@ -12,13 +12,13 @@
 	$user = User::FromID($userId);
 
 	$queryString = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-	$otherUserIds = array();
+	$otherUserIds = [];
 	$parameters = explode('&', $queryString);
 	foreach ($parameters as $parameter) {
 		list($key, $value) = explode('=', $parameter);
 		if ($key === 'otherUserIds') {
 			$otherUser = User::FromID(intval($value));
-			if($otherUser != null && !$otherUser->IsBanned()) {
+			if($otherUser != null && !$otherUser->isBanned()) {
 				$otherUserIds[] = $otherUser;
 			}
 		}

@@ -16,6 +16,8 @@
 
 		$asset = Asset::FromID($id);
 		if($asset != null) {
+
+			//$contents = $asset->getThumbnail();
 			
 			$version = AssetVersion::GetLatestVersionOf($asset);
 

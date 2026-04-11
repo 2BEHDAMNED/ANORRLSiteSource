@@ -10,11 +10,8 @@
 
 
 	$user = SESSION->user;
-	if(!$user->IsBanned() && isset($_POST['asset_id']) && isset($_POST['typatransaction'])) {
-		//$type = strtolower(trim($_POST['typatransaction']));
-		
+	if(!$user->isBanned() && isset($_POST['asset_id']) && isset($_POST['typatransaction'])) {
 		$type = TransactionType::index(intval($_POST['typatransaction']));
-
 		$asset = Asset::FromID(intval($_POST['asset_id']));
 
 		if(!$asset)

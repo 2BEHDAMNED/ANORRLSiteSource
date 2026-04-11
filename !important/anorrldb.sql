@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 02, 2026 at 06:37 PM
+-- Generation Time: Apr 11, 2026 at 01:11 AM
 -- Server version: 12.2.2-MariaDB
 -- PHP Version: 8.5.4
 
@@ -99,6 +99,8 @@ CREATE TABLE `assets` (
   `asset_favourites_count` int(11) NOT NULL DEFAULT 0,
   `asset_comments_enabled` int(11) NOT NULL DEFAULT 1,
   `asset_onsale` int(11) NOT NULL DEFAULT 0,
+  `asset_cones` int(11) NOT NULL DEFAULT 0,
+  `asset_lights` int(11) NOT NULL DEFAULT 0,
   `asset_sales_count` int(11) NOT NULL DEFAULT 0,
   `asset_relatedid` int(11) DEFAULT NULL,
   `asset_currentversion` int(11) NOT NULL DEFAULT 1,
@@ -296,21 +298,7 @@ DROP TABLE IF EXISTS `profilebadges`;
 CREATE TABLE `profilebadges` (
   `badge_id` int(2) NOT NULL,
   `badge_userid` int(10) NOT NULL,
-  `badge_admincorecore` int(1) NOT NULL,
   `badge_recieved` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profilebadges_info`
---
-
-DROP TABLE IF EXISTS `profilebadges_info`;
-CREATE TABLE `profilebadges_info` (
-  `pbadge_id` int(11) NOT NULL,
-  `pbadge_name` varchar(64) NOT NULL,
-  `pbadge_description` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -330,16 +318,30 @@ CREATE TABLE `statuses` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `subscriptions`
+--
+
+DROP TABLE IF EXISTS `subscriptions`;
+CREATE TABLE `subscriptions` (
+  `userid` int(11) NOT NULL,
+  `lastpaytime` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `transactions`
 --
 
 DROP TABLE IF EXISTS `transactions`;
 CREATE TABLE `transactions` (
-  `ta_id` varchar(15) NOT NULL,
-  `ta_userid` int(11) NOT NULL,
-  `ta_assetcreator` int(11) DEFAULT NULL,
-  `ta_asset` varchar(15) DEFAULT NULL,
-  `ta_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` varchar(15) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `assetcreator` int(11) DEFAULT NULL,
+  `asset` varchar(15) DEFAULT NULL,
+  `method` int(1) NOT NULL,
+  `cost` int(11) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -359,11 +361,8 @@ CREATE TABLE `users` (
   `user_lastprofileupdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `user_setprofilepicture` int(1) NOT NULL DEFAULT 0,
   `user_currentappearancemd5` varchar(255) NOT NULL DEFAULT 'e729ef49ab16651b0826febda215862b',
-  `user_css` text NOT NULL DEFAULT '',
   `user_online` int(1) NOT NULL DEFAULT 0,
-  `user_joindate` timestamp NOT NULL DEFAULT current_timestamp(),
-  `user_profilebgm` varchar(255) DEFAULT NULL,
-  `user_lastbgmupdate` datetime DEFAULT NULL
+  `user_joindate` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -374,23 +373,25 @@ CREATE TABLE `users` (
 
 DROP TABLE IF EXISTS `users_settings`;
 CREATE TABLE `users_settings` (
-  `settings_userid` int(11) NOT NULL,
-  `settings_randoms` int(1) NOT NULL DEFAULT 1,
-  `settings_teto` int(1) NOT NULL DEFAULT 1,
-  `settings_emotesounds` int(1) NOT NULL DEFAULT 1,
-  `settings_accessbility` int(1) NOT NULL DEFAULT 0,
-  `settings_headshots` int(1) NOT NULL DEFAULT 1,
-  `settings_nightbg` int(1) NOT NULL DEFAULT 0
+  `userid` int(11) NOT NULL,
+  `randoms` int(1) NOT NULL DEFAULT 1,
+  `teto` int(1) NOT NULL DEFAULT 1,
+  `emotesounds` int(1) NOT NULL DEFAULT 1,
+  `accessbility` int(1) NOT NULL DEFAULT 0,
+  `headshots` int(1) NOT NULL DEFAULT 1,
+  `nightbg` int(1) NOT NULL DEFAULT 0,
+  `bgm` int(11) NOT NULL DEFAULT -1,
+  `css` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `visit`
+-- Table structure for table `visits`
 --
 
-DROP TABLE IF EXISTS `visit`;
-CREATE TABLE `visit` (
+DROP TABLE IF EXISTS `visits`;
+CREATE TABLE `visits` (
   `visit_place` int(11) NOT NULL,
   `visit_player` int(11) NOT NULL,
   `visit_time` timestamp NOT NULL DEFAULT current_timestamp()
@@ -467,22 +468,22 @@ ALTER TABLE `datastores`
   ADD PRIMARY KEY (`dkey`(100));
 
 --
--- Indexes for table `profilebadges_info`
---
-ALTER TABLE `profilebadges_info`
-  ADD PRIMARY KEY (`pbadge_id`);
-
---
 -- Indexes for table `statuses`
 --
 ALTER TABLE `statuses`
   ADD PRIMARY KEY (`status_id`);
 
 --
+-- Indexes for table `subscriptions`
+--
+ALTER TABLE `subscriptions`
+  ADD PRIMARY KEY (`userid`);
+
+--
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
-  ADD PRIMARY KEY (`ta_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -494,7 +495,7 @@ ALTER TABLE `users`
 -- Indexes for table `users_settings`
 --
 ALTER TABLE `users_settings`
-  ADD PRIMARY KEY (`settings_userid`);
+  ADD PRIMARY KEY (`userid`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -517,12 +518,6 @@ ALTER TABLE `asset_versions`
 --
 ALTER TABLE `cloudeditors`
   MODIFY `cloudeditor_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `profilebadges_info`
---
-ALTER TABLE `profilebadges_info`
-  MODIFY `pbadge_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`

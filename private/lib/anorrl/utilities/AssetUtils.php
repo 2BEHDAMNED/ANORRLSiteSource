@@ -50,7 +50,7 @@
 					}
 
 					if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
-						array_push($result_array, $asset);
+						$result_array[] = $asset;
 					}
 				}
 				return $result_array;
@@ -122,7 +122,7 @@
 					}
 
 					if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
-						array_push($result_array, $asset);
+						$result_array[] = $asset;
 					}
 				}
 				return $result_array;

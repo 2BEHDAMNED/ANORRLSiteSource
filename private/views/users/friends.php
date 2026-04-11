@@ -1,19 +1,9 @@
 <?php
 	use anorrl\Page;
 	use anorrl\User;
+	use anorrl\utilities\UtilUtils;
 
-	function IsRewrite() {
-		if(!empty($_SERVER['IIS_WasUrlRewritten']))
-			return true;
-		else if(array_key_exists('HTTP_MOD_REWRITE',$_SERVER))
-			return true;
-		else if( array_key_exists('REDIRECT_URL', $_SERVER))
-			return true;
-		else
-			return false;
-	}
-
-	if(!IsRewrite()) {
+	if(!UtilUtils::HasBeenRewritten()) {
 		die(header("Location: /my/home"));
 	}
 

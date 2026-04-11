@@ -1,115 +1,152 @@
 <?php
 	namespace anorrl;
 
+	use anorrl\Asset;
+	use anorrl\enums\AssetType;
+	use anorrl\Database;
+	use anorrl\utilities\UtilUtils;
+
+	use CSSValidator\CSSValidator;
+
 	class UserSettings {
 
 		public User|null $user;
 		public bool $randoms_enabled;
 		public bool $teto_enabled;
-		public bool $emotesounds_enabled;
 		public bool $accessibility_enabled;
 		public bool $headshots_enabled;
 		public bool $nightbg_enabled;
+		public Asset|null $background_music = null;
+		public string $css = "";
 
 		public static function Get(User|null $user = null) {
 			if($user == null) {
 				return new self([
-					"settings_userid" => -1,
-					"settings_randoms" => 1,
-					"settings_teto" => 1,
-					"settings_emotesounds" => 1,
-					"settings_accessbility" => 0,
-					"settings_headshots" => 0,
-					"settings_nightbg" => 0,
+					"userid" => -1,
+					"randoms" => 1,
+					"teto" => 1,
+					"accessbility" => 0,
+					"headshots" => 0,
+					"nightbg" => 0,
+					"bgm" => -1,
+					"css" => ""
 				]);
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `users_settings` WHERE `settings_userid` = ?");
-			$stmt_getuser->bind_param('i', $user->id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$db = Database::singleton();
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
+			$raw_settings = $db->run(
+				"SELECT * FROM `users_settings` WHERE `userid` = :id",
+				[":id" => $user->id]
+			)->fetch(\PDO::FETCH_OBJ);
+
+			if($raw_settings) {
+				return new self($raw_settings);
 			} else {
-				$stmt_getuser = $con->prepare("INSERT INTO `users_settings`(`settings_userid`) VALUES (?);");
-				$stmt_getuser->bind_param('i', $user->id);
-				$stmt_getuser->execute();
+				$db->run(
+					"INSERT INTO `users_settings`(`userid`) VALUES (:id);",
+					[":id" => $user->id]
+				);
+
 				return self::Get($user);
 			}
 		}
 
 		function __construct($rowdata) {
-			$this->user = User::FromID(intval($rowdata['settings_userid']));
-			$this->randoms_enabled = boolval($rowdata['settings_randoms']);
-			$this->teto_enabled = boolval($rowdata['settings_teto']);
-			$this->emotesounds_enabled = boolval($rowdata['settings_emotesounds']);
-			$this->accessibility_enabled = boolval($rowdata['settings_accessbility']);
-			$this->headshots_enabled = boolval($rowdata['settings_headshots']);
-			$this->nightbg_enabled = boolval($rowdata['settings_nightbg']);
+			$this->user = User::FromID(intval($rowdata->userid));
+			$this->randoms_enabled = boolval($rowdata->randoms);
+			$this->teto_enabled = boolval($rowdata->teto);
+			$this->accessibility_enabled = boolval($rowdata->accessbility);
+			$this->headshots_enabled = boolval($rowdata->headshots);
+			$this->nightbg_enabled = boolval($rowdata->nightbg);
+			$this->background_music = $rowdata->bgm <= 0 ? null : Asset::FromID($rowdata->bgm);
+			$this->css = $rowdata->css;
+			
+			if($this->background_music && $this->background_music->type != AssetType::AUDIO)
+				$this->background_music = null;
 		}
 
-		function SetRandomsEnabled(bool $value) {
-			$stmt_value = $value ? 1 : 0;
+		function setValue(string $name, bool|int $value) {
+			$stmt_value = null;
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_randoms` = ? WHERE `settings_userid` = ?;");
-			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
-			$stmt_updatesetting->execute();
+			if(is_bool($stmt_value))
+				$stmt_value = $value ? 1 : 0;
+			elseif(is_string($stmt_value))
+				$stmt_value = trim($stmt_value);
+			elseif(is_int($value))
+				$stmt_value = $value;
+
+
+			Database::singleton()->run(
+				"UPDATE `users_settings` SET `:name` = :value WHERE `userid` = :id;",
+				[
+					":name" => $name,
+					":value" => $stmt_value,
+					":id" => $this->user->id
+				]
+			);
+		}
+
+		function setRandomsEnabled(bool $value) {
+			$this->setValue("randoms", $value);
 			$this->randoms_enabled = $value;
 		}
 
-		function SetTetoEnabled(bool $value) {
-			$stmt_value = $value ? 1 : 0;
-
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_teto` = ? WHERE `settings_userid` = ?;");
-			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
-			$stmt_updatesetting->execute();
+		function setTetoEnabled(bool $value) {
+			$this->setValue("teto", $value);
 			$this->teto_enabled = $value;
 		}
 
-		function SetNightBGEnabled(bool $value) {
-			$stmt_value = $value ? 1 : 0;
-			
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_nightbg` = ? WHERE `settings_userid` = ?;");
-			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
-			$stmt_updatesetting->execute();
+		function setNightBGEnabled(bool $value) {
+			$this->setValue("nightbg", $value);
 			$this->nightbg_enabled = $value;
 		}
 
-		function SetEmoteSoundsEnabled(bool $value) {
-			$stmt_value = $value ? 1 : 0;
-
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_emotesounds` = ? WHERE `settings_userid` = ?;");
-			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
-			$stmt_updatesetting->execute();
-			$this->emotesounds_enabled = $value;
-		}
-
-		function SetAccessibilityEnabled(bool $value) {
-			$stmt_value = $value ? 1 : 0;
-
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_accessbility` = ? WHERE `settings_userid` = ?;");
-			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
-			$stmt_updatesetting->execute();
+		function setAccessibilityEnabled(bool $value) {
+			$this->setValue("accessbility", $value);
 			$this->accessibility_enabled = $value;
 		}
 
-		function SetHeadshotsEnabled(bool $value) {
-			$stmt_value = $value ? 1 : 0;
-
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_updatesetting = $con->prepare("UPDATE `users_settings` SET `settings_headshots` = ? WHERE `settings_userid` = ?;");
-			$stmt_updatesetting->bind_param('ii', $stmt_value, $this->user->id);
-			$stmt_updatesetting->execute();
+		function setHeadshotsEnabled(bool $value) {
+			$this->setValue("headshots", $value);
 			$this->headshots_enabled = $value;
 		}
 		
-		
+		function setBackgroundMusic(Asset|int|null $asset = null) {
+			$parsed_asset = is_int($asset) ? Asset::FromID($asset) : $asset;
+
+			if($parsed_asset && $parsed_asset->type == AssetType::AUDIO) {
+				$this->setValue("bgm", $parsed_asset->id);
+				$this->background_music = $parsed_asset;
+			} else {
+				$this->setValue("bgm", -1);
+				$this->background_music = null;
+			}
+		}
+
+		function setCSS(string $data = ""): bool {
+			$validator = new CSSValidator();
+
+			$result = $validator->validateFragment($data);
+
+			if($result->isValid()) {
+
+				if(!UtilUtils::IsValidCSS($data)) {
+					return false;
+				}
+
+				Database::singleton()->run(
+					"UPDATE `users` SET `user_css` = :css WHERE `user_id` = :id;",
+					[
+						":id" => $this->user->id,
+						":css" => $data
+					]
+				);
+
+				return true;
+			}
+
+			return false;
+		}
 	}
 ?>

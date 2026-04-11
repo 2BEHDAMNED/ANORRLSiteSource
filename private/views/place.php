@@ -24,7 +24,7 @@
 		if($user != null) {
 			$is_creator = $user->id == $asset->creator->id || $user->isAdmin();
 			$is_favourited = $asset->hasUserFavourited($user);
-			$is_bought = $user->Owns($asset);
+			$is_bought = $user->owns($asset);
 			
 			if(
 				isset($_POST['ANORRL$Comment$Post$Contents']) &&

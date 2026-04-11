@@ -127,7 +127,7 @@
 				]
 			];
 
-			$headers = array('Content-Type: application/json'); 
+			$headers = ['Content-Type: application/json'];
 
 			$ch = curl_init();
 			curl_setopt( $ch,CURLOPT_URL, $webhook_url );
@@ -216,7 +216,7 @@
 				$user = UserUtils::RetrieveUser();
 			}
 
-			if($user != null && !$user->IsBanned()) {
+			if($user != null && !$user->isBanned()) {
 				return self::CommitUpdateAsset($asset, null, $name, $description, $public, $on_sale, $comments_enabled, $cones, $lights, $user);
 			}
 
@@ -279,7 +279,7 @@
 			
 
 			$versionid = $con->insert_id;
-			
+
 			Database::singleton()->run(
 				"UPDATE `assets` SET `asset_currentversion` = :curver, `asset_lastedited` = now(), `asset_name` = :name, `asset_description` = :desc, `asset_public` = :public, `asset_onsale` = :onsale, `asset_cones` = :cones, `asset_lights` = :lights, `asset_comments_enabled` = :commentsenabled WHERE `asset_id` = :assetid",
 				[
@@ -307,7 +307,7 @@
 				$user = UserUtils::RetrieveUser();
 			}
 
-			if($user != null && !$user->IsBanned() && ($asset->creator->id == $user->id || $user->isAdmin())) {
+			if($user != null && !$user->isBanned() && ($asset->creator->id == $user->id || $user->isAdmin())) {
 				$name = $asset->name;
 				$description = $asset->description;
 				$public = $asset->public;
@@ -450,7 +450,7 @@
 				return ["error" => true, "reason" => "Invalid action!"];
 			}
 
-			if($user != null && !$user->IsBanned()) {
+			if($user != null && !$user->isBanned()) {
 
 				if($type == AssetType::IMAGE && $type == AssetType::LUA) {
 					if(!$user->isAdmin()) {

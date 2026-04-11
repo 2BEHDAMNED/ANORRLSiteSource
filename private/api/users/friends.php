@@ -10,10 +10,10 @@
 		$friends = $user->GetFriends();
 		$result = [];
 		foreach($friends as $friend) {
-			array_push($result, [
+			$result[] = [
 				"Id" => $friend->id,
 				"Username" => $friend->id
-			]);
+			];
 		}
 
 		die(json_encode($result));

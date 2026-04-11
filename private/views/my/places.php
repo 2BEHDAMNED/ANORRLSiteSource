@@ -1,6 +1,6 @@
 <?php
 	use anorrl\Page;
-	use anorrl\utilities\Splasher;
+	use anorrl\utilities\FileSplasher;
 	use anorrl\utilities\ClientDetector;
 	use anorrl\utilities\UtilUtils;
 
@@ -19,7 +19,7 @@
 
 	$domain = CONFIG->domain;
 
-	$splash = new Splasher("didyouknow")->getRandomSplash();
+	$splash = new FileSplasher("didyouknow")->getRandomSplash();
 
 	$page = new Page("ANORRL Studio");
 	$page->clearAll();

@@ -9,6 +9,7 @@
 	use anorrl\AssetVersion;
 	use anorrl\Page;
 	use anorrl\Place;
+	use anorrl\utilities\UtilUtils;
 
 	$user = SESSION ? SESSION->user : null;
 
@@ -34,11 +35,6 @@
 		$asset_description = $asset->description;
 	} else {
 		die(header("Location: /my/stuff"));
-	}
-
-	function ReturnNotUnicodedString(string $contents) {
-		$blockedchars = array('𒐫', '‮', '﷽', '𒈙', '⸻ ', '꧅');
-		return str_replace($blockedchars, '', trim($contents));
 	}
 
 	function CheckMimeType($contents) {
@@ -103,8 +99,8 @@
 
 		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 
-		$name = ReturnNotUnicodedString($_POST['ANORRL$EditItem$Name']);
-		$description = ReturnNotUnicodedString($_POST['ANORRL$EditItem$Description']);
+		$name = UtilUtils::StripUnicode($_POST['ANORRL$EditItem$Name']);
+		$description = UtilUtils::StripUnicode($_POST['ANORRL$EditItem$Description']);
 		$public = isset($_POST['ANORRL$EditItem$PublicBox']);
 		$comments_enabled = isset($_POST['ANORRL$EditItem$CommentsBox']);
 		$on_sale = isset($_POST['ANORRL$EditItem$OnSaleBox']);
@@ -168,16 +164,12 @@
 								imagepng($image, $_SERVER['DOCUMENT_ROOT']."/../assets/thumbs/$id");
 							}
 						}
-
-						
 					}
 				}
 			}
 		}
 
 		die(header("Location: /".$asset->getURLTitle()."-item?id=$id"));
-	
-
 		
 	} else if(isset($_FILES['ANORRL$PublishAsset$File']) &&
 	   isset($_POST['ANORRL$PublishAsset$Submit'])) {

@@ -6,5 +6,5 @@
 	} else {
 		$productId = (int)$_REQUEST['productId'];
 	}
-	echo json_encode(array('success' => 'true', 'status' => 'Bought', 'receipt' => $productId));
+	echo json_encode(['success' => 'true', 'status' => 'Bought', 'receipt' => $productId]);
 ?>

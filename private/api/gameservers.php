@@ -35,21 +35,21 @@
 					if($result_checkplayersfromserver->num_rows != 0) {
 						while($session_row = $result_checkplayersfromserver->fetch_assoc()) {
 							$player = User::FromID(intval($session_row['session_playerid']));
-							array_push($players, [
+							$players[] = [
 								"id" => $player->id,
 								"name" => $player->name
-							]);
+							];
 						}
 					}
 
 					$concurrentplayers += count($players);
 
-					array_push($data, [
+					$data[] = [
 						"id" => $server_row['server_id'],
 						"playercount" => $server_row['server_playercount'],
 						"maxplayercount" => $server_row['server_maxcount'],
 						"players" => $players
-					]);
+					];
 				}
 
 				$stmt_updateplayercount = $con->prepare("UPDATE `asset_places` SET `place_currently_playing` = ? WHERE `place_id` = ?");

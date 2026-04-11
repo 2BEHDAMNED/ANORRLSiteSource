@@ -1,20 +1,10 @@
 <?php
 	use anorrl\User;
-	
-	function IsRewrite() {
-		if(!empty($_SERVER['IIS_WasUrlRewritten']))
-			return true;
-		else if(array_key_exists('HTTP_MOD_REWRITE',$_SERVER))
-			return true;
-		else if( array_key_exists('REDIRECT_URL', $_SERVER))
-			return true;
-		else
-			return false;
-	}
+	use anorrl\utilities\UtilUtils;
 
 	header("Content-Type: application/json");
 
-	if(!IsRewrite()) {
+	if(!UtilUtils::HasBeenRewritten()) {
 		die("{}");
 	}
 

@@ -49,8 +49,7 @@
 		if($validresponse) {
 			foreach($paged_assets as $asset) {
 				if($asset instanceof anorrl\Asset){
-					array_push($result,
-					[
+					$result[] = [
 						"Asset" => [
 							"Id" => $asset->id,
 							"Name" => $asset->name,
@@ -69,7 +68,7 @@
 						"Voting" => [
 							"ShowVotes" => false
 						]
-					]);
+					];
 				}
 			}
 		}

@@ -24,7 +24,7 @@
 		if(count($statuses) != 0) {
 			foreach($statuses as $status) {
 				if($status instanceof Status) {
-					array_push($statuses_raw, [
+					$statuses_raw[] = [
 						"id" => $status->id,
 						"poster" => [
 							"id" => $status->poster->id,
@@ -33,7 +33,7 @@
 						"content" => $status->content,
 						"time_posted" => $status->time_posted->getTimestamp(),
 						"time_posted_label" => UtilUtils::GetTimeAgo($status->time_posted)
-					]);
+					];
 				}
 			}
 		}

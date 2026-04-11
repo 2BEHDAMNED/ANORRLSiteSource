@@ -2,17 +2,13 @@
 	use anorrl\utilities\AssetUploader;
 	use anorrl\utilities\ClientDetector;
 	use anorrl\utilities\UserUtils;
+	use anorrl\utilities\UtilUtils;
 
 	if(!SESSION) {
 		die("Hey have you tried logging in before doing this? <br><a href='javascript:window.close()'>No...</a>");
 	}
 
 	$user = SESSION->user;
-
-	function ReturnNotUnicodedString(string $contents) {
-		$blockedchars = array('𒐫', '‮', '﷽', '𒈙', '⸻ ', '꧅');
-		return str_replace($blockedchars, '', trim($contents));
-	}
 
 	function FunnyBoolToStr(bool $value) {
 		return $value ? "True" : "False";
@@ -27,8 +23,8 @@
 		isset($_POST['ANORRL$IDE$Publish$Place$Submit'])
 	) {
 
-		$name = ReturnNotUnicodedString($_POST['ANORRL$IDE$Publish$Place$Name']);
-		$description = ReturnNotUnicodedString($_POST['ANORRL$IDE$Publish$Place$Description']);
+		$name = UtilUtils::StripUnicode($_POST['ANORRL$IDE$Publish$Place$Name']);
+		$description = UtilUtils::StripUnicode($_POST['ANORRL$IDE$Publish$Place$Description']);
 		
 		$isclient = ClientDetector::IsAClient();
 

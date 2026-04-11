@@ -42,12 +42,12 @@
 
 		foreach($assets as $asset) {
 			if($asset instanceof anorrl\Asset) {
-				array_push($result, [
+				$result[] = [
 					"ID" => $asset->id,
 					"AssetID" => $asset->id,
 					"Name" => $asset->name,
 					"IsVotable" => false
-				]);
+				];
 			}
 		}
 		

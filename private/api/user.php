@@ -30,10 +30,10 @@
 				if(count($badges) != 0) {
 					foreach($badges as $asset) {
 						if($asset instanceof anorrl\Asset) {
-							array_push($badges_raw, [
+							$badges_raw[] = [
 								"id" => $asset->id,
 								"name" => $asset->name
-							]);
+							];
 						}
 					}
 				}

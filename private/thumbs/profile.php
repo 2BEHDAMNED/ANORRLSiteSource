@@ -2,6 +2,7 @@
 
 	use anorrl\User;
 	use anorrl\utilities\ImageUtils;
+	use anorrl\utilities\UtilUtils;
 	
 	if(isset($_GET['id']) || isset($_GET['userId'])) {
 		if(isset($_GET['id'])) {
@@ -21,7 +22,7 @@
 			if(file_exists($_SERVER['DOCUMENT_ROOT']."/../users/profile_$id.png")) {
 				$contents = file_get_contents($_SERVER['DOCUMENT_ROOT']."/../users/profile_$id.png");
 			} else {
-				$pictures = array_diff(scandir($_SERVER['DOCUMENT_ROOT']."/images/profile_pictures/"), array("..", "."));
+				$pictures = UtilUtils::GetFilesArray("/images/profile_pictures/");
 				 
 				$rand_pic = 1+rand(0, count($pictures) - 1);
 				

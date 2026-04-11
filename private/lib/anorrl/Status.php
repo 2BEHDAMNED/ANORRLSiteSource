@@ -2,6 +2,7 @@
 	namespace anorrl;
 
 	use anorrl\User;
+	use anorrl\utilities\UtilUtils;
 
 	class Status {
 
@@ -42,7 +43,7 @@
 		public static function Send(int $userid, string $contents) {
 			$user = User::FromID($userid);
 
-			if($user != null && !$user->IsBanned()) {
+			if($user != null && !$user->isBanned()) {
 				$latest_status = $user->GetLatestStatus();
 				if($latest_status != null) {
 					// check if user hasn't posted one in 30s
@@ -61,9 +62,8 @@
 					}
 				}
 
-				$blockedchars = array('𒐫', '‮', '﷽', '𒈙', '⸻ ', '꧅');
 				$status_id = self::GenerateID();
-				$status_content = str_replace($blockedchars, '', trim($contents));
+				$status_content = UtilUtils::StripUnicode($contents);
 
 				if(strlen($status_content) < 4) {
 					return ["error"=> true, "reason" => "Status was too short! (4 characters minimum)"];
@@ -95,7 +95,7 @@
 
 			if($result->num_rows != 0) {
 				while($row = $result->fetch_assoc()) {
-					array_push($result_array, new Status($row));
+					$result_array[] = new Status($row);
 				}
 				return $result_array;
 			}

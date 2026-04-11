@@ -206,14 +206,14 @@
 					if(count($assets) != 0) {
 						foreach($assets as $asset) {
 							if($asset instanceof anorrl\Asset) {
-								array_push($assets_raw, [
+								$assets_raw[] = [
 									"id" => $asset->id,
 									"name" => $asset->name,
 									"creator" => [
 										"id" => $asset->creator->id,
 										"name" => $asset->creator->name
 									],
-								]);
+								];
 							}
 						}
 					}
@@ -235,14 +235,14 @@
 				$assets_raw = [];
 
 				foreach($all_assets as $asset) {
-					array_push($assets_raw, [
+					$assets_raw = [
 						"id" => $asset->id,
 						"name" => $asset->name,
 						"creator" => [
 							"id" => $asset->creator->id,
 							"name" => $asset->creator->name
 						]
-					]);
+					];
 				}
 				die(json_encode([
 					"assets" => $assets_raw,
@@ -252,13 +252,13 @@
 			} else if($request == "wear" && isset($_POST['assetid'])) {
 				$asset = Asset::FromID(intval($_POST['assetid']));
 
-				if($asset != null && $user->Owns($asset)) {
+				if($asset != null && $user->owns($asset)) {
 					die(json_encode($user->Wear($asset)));
 				}				
 			} else if($request == "remove" && isset($_POST['assetid'])) {
 				$asset = Asset::FromID(intval($_POST['assetid']));
 
-				if($asset != null && $user->Owns($asset)) {
+				if($asset != null && $user->owns($asset)) {
 					die(json_encode($user->Unwear($asset)));
 				}				
 			} else if($request == "getwearing") {
@@ -270,14 +270,14 @@
 					foreach($wearing_array as $assetid) {
 						$asset = Asset::FromID($assetid);
 						if($asset != null && $asset instanceof anorrl\Asset) {
-							array_push($assets, [
+							$assets[] = [
 								"id" => $asset->id,
 								"name" => $asset->name,
 								"creator" => [
 									"id" => $asset->creator->id,
 									"name" => $asset->creator->name
 								],
-							]);
+							];
 						}
 					}
 				}
