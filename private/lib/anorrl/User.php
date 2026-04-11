@@ -250,7 +250,7 @@
 			$stmt->execute();
 
 			if($stmt->get_result()->num_rows == 0) {
-				$stmt = $con->prepare("INSERT INTO `profilebadges`(`badge_id`, `badge_userid`, `badge_admincorecore`) VALUES (?, ?, ?)");
+				$stmt = $con->prepare("INSERT INTO `profilebadges`(`badge_id`, `badge_userid`) VALUES (?, ?)");
 				$ordinal = $badge->ordinal();
 				$admin_badge = $badge == ANORRLBadge::ADMINISTRATOR ? 1 : 0;
 				$stmt->bind_param('iii`', $ordinal, $this->id, $admin_badge);
@@ -274,7 +274,7 @@
 		 */
 		function GetProfileBadges(): array {
 			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `badge_userid` = ? ORDER BY `badge_recieved` DESC, `badge_admincorecore` DESC");
+			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `badge_userid` = ? ORDER BY `badge_recieved` DESC, `badge_id` DESC");
 			$stmt->bind_param('i',$this->id);
 			$stmt->execute();
 
