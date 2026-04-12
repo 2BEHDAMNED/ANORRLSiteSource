@@ -61,7 +61,7 @@
 				position: fixed;
 				width: 100vw;
 				height: 100vh;
-				background: linear-gradient(#333, black);
+				background: linear-gradient(#33333355, #00000055);
 				z-index: 10000;
 				color: white;
 				text-align: center;
@@ -69,32 +69,52 @@
 				font-size: 16px;
 				justify-content: center;
 				align-items: center;
-				transition: opacity 1s;
+				transition: opacity 1.2s;
+				backdrop-filter: blur(10px);
+				display: none;
 			}
 
 			#LoadingScreen img[splash] {
 				border-radius: 5px;
+				border: 3px solid black;
+			}
+
+			#LoadingScreen img[loading] {
+				width: 100px;
 			}
 		</style>
 		<script>
 			const wait = (delay = 0) =>	new Promise(resolve => setTimeout(resolve, delay));
 
 			function setVisible(element, visible) {
-				$(element).css("display", visible ? "block" : "none");
+				$(element).css("display", visible ? "flex" : "none");
 			}
 
-			setVisible('#LoadingScreen', true);
+			// do loading screen if the page hasn't loaded in a second.
+
+			var hasLoaded = false;
+			var initiateLoading = false;
+
+			wait(1000).then(() => {
+				if(!hasLoaded) {
+					setVisible('#LoadingScreen', true);
+					initiateLoading = true;
+				}
+			})
 
 			document.addEventListener('DOMContentLoaded', function() {
-				// mom im a genius
-				wait(500).then(() => {
-					$("#LoadingScreen").css("opacity", "0");
-					$("#LoadingScreen").css("pointer-events", "none");
-					
-				});
-				wait(1500).then(() => {
-					setVisible('#LoadingScreen', false);
-				});
+				hasLoaded = true;
+				if(initiateLoading) {
+					// mom im a genius
+					wait(200).then(() => {
+						$("#LoadingScreen").css("opacity", "0");
+						$("#LoadingScreen").css("pointer-events", "none");
+						
+					});
+					wait(1500).then(() => {
+						setVisible('#LoadingScreen', false);
+					});
+				}
 			});
 		</script>
 		<?php endif ?>
@@ -105,7 +125,7 @@
 			<div>
 				<img src="/images/splashes/<?= $rand_splash_pic ?>" splash>
 				<p id="LoadingText">Loading <?= $this->title ?>...</p>
-				<img src="/images/ProgressIndicator4White.gif">
+				<img src="/images/ProgressIndicator4White.gif" loading>
 			</div>
 		</div>
 		<?php endif ?>
