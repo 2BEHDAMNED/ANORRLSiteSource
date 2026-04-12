@@ -1,11 +1,7 @@
-<?php 
-	require_once $_SERVER['DOCUMENT_ROOT']."/core/utilities/userutils.php";
+<?php
+	$user = SESSION->user;
 
-	$user = UserUtils::RetrieveUser();
-
-	if($user != null && $user->isAdmin()) {
-
-	} else {
+	if(!$user->isAdmin()) {
 		die("Hey... You're not an admin I don't think...");
 	}
 ?>
@@ -118,16 +114,16 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ScriptManager', 'aspnetForm',
 						 </div>
 					  </div>
 					  <div>
-						 <hr>
-						 <div>
+							<hr>
+							<div>
 							<h6><b>11</b> <a href="/Admi/Moderation/Default.aspx">abuse reports</a>, </h6>
 							<h6><b>44</b> <a href="/Admi/Moderation/AssetReview.aspx">images</a>, </h6>
 							<h6><b>5</b> <a>videos</a>, </h6>
 							<h6><b>74</b> <a href="/Admi/Users/ModerateUser.aspx">users</a></h6>
-						 </div>
-						 <div>
+							</div>
+							<div>
 							<a href="/">ANORRL</a>, <a href="/Admi/Users/Find.aspx">FindUser</a>
-						 </div>
+							</div>
 					  </div>
 				   </div>
 				</div>
