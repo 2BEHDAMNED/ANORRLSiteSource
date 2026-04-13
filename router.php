@@ -9,8 +9,9 @@
 		global $router;
 		$router->map($method, $path, function(...$params) use ($path, $file) {
 			if(
-				!isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) || 
-				(isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) && $_COOKIE['ANORRL$Hidden$Cookie$yaya'] != CONFIG->secret->token)) {
+				str_starts_with($path, "/private/views/") &&
+				(!isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) || 
+				(isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) && $_COOKIE['ANORRL$Hidden$Cookie$yaya'] != CONFIG->secret->token))) {
 						
 					if($path != "/goodbye")
 						die(header("Location: /goodbye"));
