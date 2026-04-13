@@ -210,7 +210,7 @@
 						[":aid" => $id]
 					);
 
-					return ["error" => true, "reason" => "Something went wrong idfk bitch about it to grace... ($error)"];
+					return ["error" => true, "reason" => "Something went wrong idfk bitch about it to grace... (SQLERROR$error)"];
 				}
 			}
 

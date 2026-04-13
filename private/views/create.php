@@ -52,7 +52,6 @@
 				isset($_FILES['ANORRL$CreateAsset$File'])
 			) {
 				
-				//if($user->isAdmin()) {
 				$result = null;
 				$name = trim($_POST['ANORRL$CreateAsset$Name']);
 
@@ -62,13 +61,6 @@
 				$on_sale = isset($_POST['ANORRL$CreateAsset$OnSale']);
 
 				$result = AssetUploader::UploadAsset($_FILES['ANORRL$CreateAsset$File'], $types[$type], $name, $description, $public, $on_sale, $comments_enabled);
-				
-				/*} else {
-					$result = [
-						"error" => true,
-						"reason" => "Hey so this is temporarily disabled for non admins... Testing new uploader system :P"
-					];
-				}*/
 				
 				if(isset($result)) {
 					if($result['error']) {
@@ -91,6 +83,7 @@
 
 	$page->addStylesheet("/css/new/create.css");
 	$page->addStylesheet("/css/new/stuff.css?v=1");
+	$page->addStylesheet("/css/new/forms.css?v=1");
 
 	$page->addScript("/js/create.js?t=1776011774");
 	$page->loadHeader();
@@ -167,6 +160,7 @@
 					<li>do not make a hat that alters the gameplay that can give you an advantage</li>
 					<li>if you are adding particle effects, DO NOT HAVE IT BE SUPER OBSTRUCTIVE</li>
 					<li>don't use the uploader to upload character meshes</li>
+					<li>don't reupload other people's hats. that wouldn't be nice!</li>
 				</ol>
 				<div style="margin: 15px;white-space: normal;">
 					<p><b>clarification on the 3rd rule:</b></p>	
@@ -195,16 +189,96 @@
 						<td><label for="files">Choose file</label><input id="files" style="display:none;" type="file"  name="ANORRL$CreateAsset$File" required><label id="filename">No file chosen</label></td>
 					</tr>
 					<tr>
-						<td><span style="margin-top: 8px;display: block;">Public</span></td>
-						<td><input name="ANORRL$CreateAsset$Public" type="checkbox" style="margin-top: 8px;" checked></td>
-					</tr>
-					<tr>
-						<td>Comments</td>
-						<td><input name="ANORRL$CreateAsset$CommentsEnabled" type="checkbox" checked></td>
-					</tr>
-					<tr>
-						<td>On Sale</td>
-						<td><input name="ANORRL$CreateAsset$OnSale" type="checkbox"></td>
+						<td><span style="margin-top: 10px;display: block;">Extras</span></td>
+						<td>
+							<style>
+								.Window {
+									width: fit-content;
+									*display: inline-block;
+								}
+
+								.Window #Name {
+									background: black;
+									padding: 5px;
+									text-align: center;
+									letter-spacing: 2px;
+									font-weight: bold;
+								}
+
+								.Window #Contents {
+									padding: 10px;
+									border: 2px solid black;
+								}
+
+								.Window input[type="number"] {
+									border: 2px solid black;
+									background: #444;
+									padding: 2px 4px;
+									color: white;
+									width: 125px;
+								}
+
+								.Window table td {
+									vertical-align: middle !important;
+								}
+							</style>
+							<table style="margin: -3px;">
+								<tr>
+									<td>
+										<div class="Window" style="margin-top: 5px; text-align: center">
+											<div id="Name">Toggles</div>
+											<div id="Contents" style="padding: 10px;">
+												<table>
+													<tr>
+														<td><label for="ANORRL_CreateAsset_Public">Public</label></td>
+														<td><input id="ANORRL_CreateAsset_Public" name="ANORRL$CreateAsset$Public" type="checkbox" checked></td>
+													</tr>
+													<tr>
+														<td><label for="ANORRL_CreateAsset_CommentsEnabled">Comments</label></td>
+														<td><input id="ANORRL_CreateAsset_CommentsEnabled" name="ANORRL$CreateAsset$CommentsEnabled" type="checkbox" checked></td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="Window" style="margin-top: 5px; text-align: center">
+											<div id="Name">Marketing <div style="font-size: 9px; color:#aaa;">(dont turn me into a plushie!)</div></div>
+											<div id="Contents">
+												<label for="ANORRL_CreateAsset_OnSale">On Sale</label>
+												<input id="ANORRL_CreateAsset_OnSale" name="ANORRL$CreateAsset$OnSale" type="checkbox" checked>
+												<hr>
+												<div>
+													<table>
+														<tr>
+															<td id="TrafficCones">Traffic Cones</td>
+															<td><input type="number" name="ANORRL$CreateAsset$Cost$Cones" min="0"></td>
+														</tr>
+
+														<tr>
+															<td id="TrafficLights">Traffic Lights</td>
+															<td><input type="number" name="ANORRL$CreateAsset$Cost$Lights" min="0"></td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="Window" style="margin-top: 5px; text-align: center">
+											<div id="Name">RandomImage</div>
+											<div id="Contents" style="padding: 00px;">
+												<img src="/images/placeholder.png">
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+
+							
+							
+						</td>
 					</tr>
 					<tr>
 						<td><input type="submit" value="Upload" style="margin-top:10px" name="ANORRL$CreateAsset$Submit" onclick="$(this).attr('disabled', 'true'); document.forms[0].submit()"></td>
