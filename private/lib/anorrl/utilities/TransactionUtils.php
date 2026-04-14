@@ -41,7 +41,7 @@
 
 			if($asset) {
 				Database::singleton()->run(
-					"INSERT INTO `transactions`(`id`, `userid`, `assetcreator`, `asset`, `method`, `cost`) VALUES (:id, :uid, :auid, :aid)",
+					"INSERT INTO `transactions`(`id`, `userid`, `assetcreator`, `asset`) VALUES (:id, :uid, :auid, :aid)",
 					[
 						":id"     => $ta_id,
 						":uid"    => $user->id,
@@ -51,7 +51,7 @@
 				);
 			} else {
 				Database::singleton()->run(
-					"INSERT INTO `transactions`(`id`, `userid`, `method`, `cost`) VALUES (:id, :uid)",
+					"INSERT INTO `transactions`(`id`, `userid`) VALUES (:id, :uid)",
 					[
 						":id"     => $ta_id,
 						":uid"    => $user->id,
