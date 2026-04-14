@@ -5,8 +5,6 @@
 	use anorrl\Asset;
 	use anorrl\Database;
 	use anorrl\User;
-	use anorrl\enums\TransactionType;
-
 
 	class TransactionUtils {
 		private static function getRandomString($length = 15): string {
@@ -38,68 +36,32 @@
 		}
 
 
-		public static function CommitTransaction(TransactionType $type, User $user, int $cost = 0, Asset|null $asset = null) {
+		public static function CommitTransaction(User $user, Asset|null $asset = null) {
 			$ta_id = self::GenerateID();
 
 			if($asset) {
 				Database::singleton()->run(
-					"INSERT INTO `transactions`(`id`, `userid`, `assetcreator`, `asset`, `method`, `cost`) VALUES (:id, :uid, :auid, :aid, :method, :cost)",
+					"INSERT INTO `transactions`(`id`, `userid`, `assetcreator`, `asset`, `method`, `cost`) VALUES (:id, :uid, :auid, :aid)",
 					[
 						":id"     => $ta_id,
 						":uid"    => $user->id,
 						":auid"   => $asset->creator->id,
 						":aid"    => $asset->id,
-						":method" => $type->ordinal(),
-						":cost"   => $cost
 					]
 				);
 			} else {
 				Database::singleton()->run(
-					"INSERT INTO `transactions`(`id`, `userid`, `method`, `cost`) VALUES (:id, :uid, :method, :cost)",
+					"INSERT INTO `transactions`(`id`, `userid`, `method`, `cost`) VALUES (:id, :uid)",
 					[
 						":id"     => $ta_id,
 						":uid"    => $user->id,
-						":method" => $type->ordinal(),
-						":cost"   => $cost
 					]
 				);
 			}
 		}
 
-		public static function CommitAssetTransaction(TransactionType $type, Asset $asset, User $user) {
-			$cost = 0;
-			switch($type) {
-				case TransactionType::CONES:
-					$cost = $asset->cones;
-					break;
-				case TransactionType::LIGHTS:
-					$cost = $asset->lights;
-					break;
-			}
-			self::CommitTransaction($type, $user, $cost, $asset);
-		}
-
-		public static function StipendCheckToUser(int $user_id) {
-			$user = User::FromID($user_id);
-			if($user != null && !$user->isBanned() && $user->pendingStipend()) {
-
-				$db = Database::singleton();
-
-				$rowexists = $db->run(
-					"SELECT * FROM `subscriptions` WHERE `userid` = :uid",
-					[":uid" => $user->id]
-				)->rowCount() == 1;
-
-				$db->run(
-					$rowexists ?
-						'UPDATE `subscriptions` SET `lastpaytime` = now() WHERE `userid` = :uid'
-						: 'INSERT INTO `subscriptions`(`userid`) VALUES (:uid)',
-					[":uid" => $user->id]
-				);
-
-				self::CommitTransaction(TransactionType::CONES, $user, 100);
-				self::CommitTransaction(TransactionType::LIGHTS, $user, 250);
-			}
+		public static function CommitAssetTransaction(Asset $asset, User $user) {
+			self::CommitTransaction($user, $asset);
 		}
 	}
 ?>

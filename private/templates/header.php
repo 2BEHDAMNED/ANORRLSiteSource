@@ -187,10 +187,6 @@
 					</div>
 					<hr>
 					<div id="CreditsRow">
-						<span title="Traffic Cones (ROBUX)"><img src="/images/icons/traffic_cone.png"> <?= $header_check_user->getNetCones() ?></span> <span class="Separator">|</span>
-						<span title="Traffic Lights (TIX)"><img src="/images/icons/traffic_light.png"> <?= $header_check_user->getNetLights() ?></span>
-
-						<hr>
 						<span title="Your pending requests"><a href="/my/friends"><img src="/images/icons/messages<?= $pendingreqscount == 0 ? "" : "_notify" ?>.png"> <?= $pendingreqscount ?></a></span> <span class="Separator">|</span>
 						<span title="Your friends"><a href="/my/friends"><img src="/images/icons/friends.png"> <?= $header_check_user->getFriendsCount() ?></a></span>
 						<hr>
@@ -228,12 +224,6 @@
 					<a href="/my/stuff"     <?php if($this->internal_name == "my/stuff"		 ):?>selected<?php endif ?>>Stuff</a>
 					<a href="/download"     <?php if($this->internal_name == "download/index"):?>selected<?php endif ?>>Download</a>
 				</div>
-				<?php if($header_check_user->pendingStipend()): ?>
-				<div id="StipendThingy">
-					<span style="font-size: 13px">Yoo bitch you got a paycheck incoming!!!</span>
-					<a href="javascript:ANORRL.CollectStipend()">Collect</a>
-				</div>
-				<?php endif ?>
 				<?php else: ?>
 				<div id="Links"></div>
 				<?php endif ?>

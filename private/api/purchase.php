@@ -1,7 +1,5 @@
 <?php
 	use anorrl\Asset;
-	use anorrl\utilities\TransactionUtils;
-	use anorrl\enums\TransactionType;
 	
 	header("Content-Type: application/json");
 
@@ -10,14 +8,13 @@
 
 
 	$user = SESSION->user;
-	if(!$user->isBanned() && isset($_POST['id']) && isset($_POST['typatransaction'])) {
-		$type = TransactionType::index(intval($_POST['typatransaction']));
+	if(!$user->isBanned() && isset($_POST['id'])) {
 		$asset = Asset::FromID(intval($_POST['id']));
 
 		if(!$asset)
 			die(json_encode(["error" => true, "message" => "Invalid purchase method."]));
 		
-		die(json_encode($asset->purchase($type, $user)));
+		die(json_encode($asset->purchase(/*$type, */$user)));
 	} else {
 		die(json_encode(["error" => true, "message" => "User is not authorised to perform this action."]));
 	}

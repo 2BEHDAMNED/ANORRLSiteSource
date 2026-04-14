@@ -99,8 +99,6 @@ CREATE TABLE `assets` (
   `favourites_count` int(11) NOT NULL DEFAULT 0,
   `comments_enabled` int(11) NOT NULL DEFAULT 1,
   `onsale` int(11) NOT NULL DEFAULT 0,
-  `cones` int(11) NOT NULL DEFAULT 0,
-  `lights` int(11) NOT NULL DEFAULT 0,
   `sales_count` int(11) NOT NULL DEFAULT 0,
   `relatedid` int(11) DEFAULT NULL,
   `currentversion` int(11) NOT NULL DEFAULT 1,
@@ -327,8 +325,6 @@ CREATE TABLE `transactions` (
   `userid` int(11) NOT NULL,
   `assetcreator` int(11) DEFAULT NULL,
   `asset` varchar(15) DEFAULT NULL,
-  `method` int(1) NOT NULL,
-  `cost` int(11) NOT NULL,
   `date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 

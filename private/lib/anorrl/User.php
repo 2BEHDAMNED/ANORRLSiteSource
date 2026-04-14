@@ -2,8 +2,6 @@
 
 	namespace anorrl;
 	
-	use anorrl\enums\TransactionType;
-	use CSSValidator\CSSValidator;
 	use anorrl\Asset;
 	use anorrl\Database;
 	use anorrl\Place;
@@ -1228,48 +1226,6 @@
 			return UtilUtils::GetTimeDifference($this->join_date);
 		}
 
-		function getNetLights(): int {
-			return $this->getNetAmount(TransactionType::LIGHTS);
-		}
-
-		function getNetCones(): int {
-			return $this->getNetAmount(TransactionType::CONES);
-		}
-
-		function getNetAmount(TransactionType $type): int {
-			
-			$fetch = Database::singleton()->run(
-				"SELECT * FROM `transactions` WHERE (`userid` = :id OR `assetcreator` = :id) AND `method` LIKE :type",
-				[
-					":id" => $this->id,
-					":type" => $type->ordinal()
-				]
-			)->fetchAll(\PDO::FETCH_OBJ);
-
-			$result_sum = 0;
-			
-			foreach($fetch as $row) {
-				if(!$row->asset || $row->userid != $this->id)
-					$result_sum += $row->cost;
-
-				elseif($row->userid == $this->id)
-					$result_sum -= $row->cost;
-			}
-
-			return $result_sum;
-		}
-
-		function canAfford(Asset $asset, TransactionType $type) {
-			switch($type) {
-				case TransactionType::LIGHTS:
-					return $this->getNetLights() - $asset->lights >= 0;
-				case TransactionType::CONES:
-					return $this->getNetLights() - $asset->cones >= 0;
-				default:
-					return true;
-			}
-		}
-
 		/**
 		 * Track user activity (aka set current time when they entered new page)
 		 * @param mixed $action What action took place?
@@ -1305,13 +1261,5 @@
 				);
 			}
 		}
-
-		function pendingStipend() {
-			return Database::singleton()->run(
-				"SELECT * FROM `subscriptions` WHERE `userid` = :id AND `lastpaytime` > DATE_SUB(NOW(),INTERVAL 1 DAY)",
-				[":id" => $this->id]
-			)->rowCount() == 0;
-		}
-
 	}
 ?>

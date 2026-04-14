@@ -20,7 +20,6 @@
 		</div>
 		<div id="TeapotsMayhem">
 			<iframe width="480" height="280" src="<?= $video_splash ?>" title="I CANT LET THESE BITCHES" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
-			<!--<a href="/images/frontpage/gang_clean.png" target="_blank"><img src="/images/frontpage/gang.png" title="created by grace and power!"></a>-->
 		</div>
 	</div>
 	

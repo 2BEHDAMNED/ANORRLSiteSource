@@ -3,7 +3,6 @@
 	namespace anorrl;
 
 	use anorrl\enums\AssetType;
-	use anorrl\enums\TransactionType;
 	use anorrl\utilities\AssetTypeUtils;
 	use anorrl\utilities\TransactionUtils;
 	use anorrl\utilities\UtilUtils;
@@ -27,10 +26,6 @@
 
 		public bool        $onsale;
 		public int         $sales_count;
-		/** cost */
-		public int         $cones;
-		/** cost */
-		public int         $lights;
 
 		public Asset|null  $relatedasset;
 		public bool        $notcatalogueable;
@@ -75,9 +70,6 @@
 				$this->onsale = boolval($rowdata['onsale']);
 				$this->sales_count = intval($rowdata['sales_count']);
 
-				$this->lights = intval($rowdata['lights']);
-				$this->cones = intval($rowdata['cones']);
-
 				$this->notcatalogueable = boolval($rowdata['nevershow']);
 				$this->relatedasset = Asset::FromID(intval($rowdata['relatedid']));
 				$this->current_version = intval($rowdata['currentversion']);
@@ -100,9 +92,6 @@
 	
 				$this->onsale = $asset_data->onsale;
 				$this->sales_count = $asset_data->sales_count;
-
-				$this->lights = $asset_data->lights;
-				$this->cones = $asset_data->cones;
 				
 				$this->notcatalogueable = $asset_data->notcatalogueable;
 				$this->relatedasset = $asset_data->relatedasset;
@@ -113,7 +102,7 @@
 			}
 		}
 
-		function purchase(TransactionType $type, User|null $user = null): array {
+		function purchase(User|null $user = null): array {
 			
 			if(!$user)
 				return ["error" => true, "reason" => "User not authorised to perform this action!"];
@@ -132,30 +121,8 @@
 					return ["error" => true, "reason" => "Item is off-sale sorry not sorry..."];
 				else
 					return ["error" => true, "reason" => "Item is not purchasable!"];
-			
-			$successful_navigation = false;
 
-			switch($type) {
-				case TransactionType::FREE:					
-					$successful_navigation = $this->cones == 0 && $this->lights == 0;
-					break;
-				case TransactionType::CONES:
-					$successful_navigation = $this->cones > 0;
-					break;
-				case TransactionType::LIGHTS:
-					$successful_navigation = $this->lights > 0;
-					break;
-				default:
-					$successful_navigation = false;
-			}
-			
-			if(!$successful_navigation)
-				return ["error" => true, "reason" => "Invalid purchasing method!"];
-			
-			if(!$user->canAfford($this, $type))
-				return ["error" => true, "reason" => "Hey wait you can't buy this item! YOU'RE FUCKING BROOKEEE!!!"];
-
-			TransactionUtils::CommitAssetTransaction($type, $this, $user);
+			TransactionUtils::CommitAssetTransaction($this, $user);
 
 			return ["error" => false];
 		}

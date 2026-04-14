@@ -28,6 +28,16 @@
 	margin: 0;
 }
 
+#StuffNavigation li {
+	cursor: pointer;
+}
+
+#StuffNavigation ul,
+#StuffNavigation li,
+#StuffNavigation li * {
+	user-select: none;
+}
+
 #StuffNavigation hr {
 	border: 0;
 }

@@ -142,7 +142,6 @@
 	route_api('GET|POST', 'purchase');
 	route_api('GET|POST', 'stuff');
 	route_api('GET|POST', 'ticketer');
-	route_api('GET|POST', 'stipend');
 	route_api('GET|POST', 'user');
 
 	route_api('GET|POST', 'gameservers/close');

@@ -28,10 +28,7 @@
 	<a id="NameAndThumbs">
 		<div id="FavouritesArea"><img src="/images/favourite_star.gif"> <span>0</span></div>
 		<img src="">
-		<div id="Pricing">
-			<span id="Cones" ><img src="/images/icons/traffic_cone.png" > <span id="Costing"></span></span>
-			<span id="Lights"><img src="/images/icons/traffic_light.png"> <span id="Costing"></span></span>
-		</div>
+		<div id="Pricing"></div>
 		<span>AssetName</span>
 	</a>
 	<a id="Creator"><span>AssetCreator</span></a>

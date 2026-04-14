@@ -3,7 +3,6 @@
 
 	use anorrl\Asset;
 	use anorrl\Database;
-	use anorrl\enums\TransactionType;
 	use anorrl\User;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetTypeUtils;
@@ -214,7 +213,7 @@
 				}
 			}
 
-			TransactionUtils::CommitAssetTransaction(TransactionType::FREE, new Asset($id), $user);
+			TransactionUtils::CommitAssetTransaction(new Asset($id), $user);
 
 			if($public && $on_sale && !$hidden) {
 				$asset = Asset::FromID($id);
@@ -231,8 +230,6 @@
 			bool $public = true,
 			bool $on_sale = true,
 			bool $comments_enabled = true,
-			int $cones = 0,
-			int $lights = 0,
 			User|null $user = null
 		): array {
 
@@ -241,7 +238,7 @@
 			}
 
 			if($user != null && !$user->isBanned()) {
-				return self::CommitUpdateAsset($asset, null, $name, $description, $public, $on_sale, $comments_enabled, $cones, $lights, $user);
+				return self::CommitUpdateAsset($asset, null, $name, $description, $public, $on_sale, $comments_enabled, $user);
 			}
 
 			return ["error" => true, "reason" => "User is not authorised to perform this action!"];
@@ -255,8 +252,6 @@
 			bool $public = true,
 			bool $on_sale = true,
 			bool $comments_enabled = true,
-			int $cones = 0,
-			int $lights = 0,
 			User $user
 		): array {
 			if($user->id != $asset->creator->id && !$user->isAdmin()) {
@@ -268,7 +263,6 @@
 			$parsed_public          = intval($public);
 			$parsed_onsale          = intval($on_sale);
 			$parsed_commentsenabled = intval($comments_enabled);
-			$parsed_type            = $asset->type->ordinal();
 
 			$new_versionid = $asset->current_version;
 
@@ -301,15 +295,13 @@
 			$versionid = $db->lastInsertId();
 			
 			$db->run(
-				"UPDATE `assets` SET `currentversion` = :curver, `lastedited` = now(), `name` = :name, `description` = :desc, `public` = :public, `onsale` = :onsale, `cones` = :cones, `lights` = :lights, `comments_enabled` = :commentsenabled WHERE `id` = :assetid",
+				"UPDATE `assets` SET `currentversion` = :curver, `lastedited` = now(), `name` = :name, `description` = :desc, `public` = :public, `onsale` = :onsale, `comments_enabled` = :commentsenabled WHERE `id` = :assetid",
 				[
 					":curver" => $new_versionid,
 					":name" => $name,
 					":desc" => $description,
 					":public" => $parsed_public,
 					":onsale" => $parsed_onsale,
-					":cones" => $cones,
-					":lights" => $lights,
 					":commentsenabled" => $parsed_commentsenabled,
 					":assetid" => $id,
 				]
@@ -333,8 +325,6 @@
 				$public = $asset->public;
 				$on_sale = $asset->onsale;
 				$comments_enabled = $asset->comments_enabled;
-				$cones = $asset->cones;
-				$lights = $asset->lights;
 				
 				if($asset->type == AssetType::IMAGE && $asset->type == AssetType::LUA) {
 					if(!$user->isAdmin()) {
@@ -386,7 +376,7 @@
 						return INVALIDFILE;
 					}
 
-					$result = self::CommitUpdateAsset($asset, $data, $name, $description, $public, $on_sale, $comments_enabled, $cones, $lights, $user);
+					$result = self::CommitUpdateAsset($asset, $data, $name, $description, $public, $on_sale, $comments_enabled, $user);
 					
 					if(!$result['error']) {
 						self::ExecuteRender($asset->id, $type, $data);
@@ -408,7 +398,7 @@
 					}
 					
 
-					$result = self::CommitUpdateAsset($asset, $data, $name, $description, $public, $on_sale, $comments_enabled, $cones, $lights, $user);
+					$result = self::CommitUpdateAsset($asset, $data, $name, $description, $public, $on_sale, $comments_enabled, $user);
 
 					if(!$result['error']) {
 						if(AssetTypeUtils::IsRenderable($type)) {
@@ -419,7 +409,7 @@
 					return $result;
 
 				} else if($asset->type == AssetType::LUA) {
-					return self::CommitUpdateAsset($asset, $data, $name, $description, $public, $on_sale, $comments_enabled, $cones, $lights, $user);
+					return self::CommitUpdateAsset($asset, $data, $name, $description, $public, $on_sale, $comments_enabled, $user);
 
 				} else {
 					return ["error" => true, "reason" => "Invalid asset type found!"];

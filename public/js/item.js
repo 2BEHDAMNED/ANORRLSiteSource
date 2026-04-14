@@ -15,52 +15,30 @@ ANORRL.Item = {
 		});
 	},
 	Purchasing: {
-		AllowedShittyIDs: [
-			"Lights",
-			"Cones",
-			"FreeItem"
-		],
-		
-		OpenPurchasePanel: function(panel) {
+		OpenPurchasePanel: function() {
 			$("#PurchasePanel").css("display", "block");
-			if(panel == "cones") {
-				$("#PurchaseCones").css("display", "block");
-			} else if(panel == "lights") {
-				$("#PurchaseLights").css("display", "block");
-			}
 		},
 		PurchaseItem: function() {
 			if($("#ModalPopup > div:visible").size() == 1) {
 				var prompt = $("#ModalPopup > div:visible");
 
 				prompt.css("display","none");
-				
-				var id = prompt.attr("id").replaceAll("Purchase", "");
-				var AllowedShittyIDsID = {
-					"Cones": 1,
-					"Lights": 2,
-					"FreeItem": 3
-				};
 
-				if(this.AllowedShittyIDs.includes(id)) {
-					ANORRL.Item.State = 1;
-					$("#ModalPopup #PurchaseProcessing").css("display", "block");
-					window.setTimeout(function() {
-						$.post("/api/purchase", { asset_id: Number($("#ModalPopup").attr("data-assetid")), typatransaction: AllowedShittyIDsID[id] }, function(data) {
-							if(data['error']) {
-								ANORRL.Item.Purchasing.PresentError(data['message']);
-							} else {
-								$("#ModalPopup > div:visible").each(function() {
-									$(this).css("display", "none");
-								});
-								ANORRL.Item.State = 2;
-								$("#PurchaseSuccess").css("display", "block");
-							}
-						})
-					}, 1500);
-				} else {
-					ANORRL.Item.Purchasing.PresentError("Something went wrong during the transaction... Sorry...")
-				}
+				ANORRL.Item.State = 1;
+				$("#ModalPopup #PurchaseProcessing").css("display", "block");
+				window.setTimeout(function() {
+					$.post("/api/purchase", { asset_id: Number($("#ModalPopup").attr("data-assetid")) }, function(data) {
+						if(data['error']) {
+							ANORRL.Item.Purchasing.PresentError(data['message']);
+						} else {
+							$("#ModalPopup > div:visible").each(function() {
+								$(this).css("display", "none");
+							});
+							ANORRL.Item.State = 2;
+							$("#PurchaseSuccess").css("display", "block");
+						}
+					})
+				}, 1500);
 			} else {
 				ANORRL.Item.Purchasing.PresentError("Something went wrong during the transaction... Sorry...");
 			}
