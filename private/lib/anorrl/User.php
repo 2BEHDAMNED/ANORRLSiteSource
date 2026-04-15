@@ -420,7 +420,7 @@
 
 			// this could DEF be done better.
 			if(count($excludedids) > 0) {
-				$processedids = "AND `id` NOT IN (";
+				$processedids = "AND `assets`.`id` NOT IN (";
 				foreach($excludedids as $id) {
 					$processedids .= $id.",";
 				}
@@ -438,7 +438,7 @@
 				$sql_extra .= " AND `public` = 1";
 			}
 			
-			$sql = "SELECT COUNT(`transactions`.`asset`) FROM `transactions`, `assets` WHERE `transactions`.`asset` = `assets`.`id` AND `userid` = ? AND `type` = ? AND `name` LIKE ? $sql_extra ORDER BY `date` DESC";
+			$sql = "SELECT COUNT(`transactions`.`id`) FROM `transactions`, `assets` WHERE `transactions`.`asset` = `assets`.`id` AND `userid` = ? AND `type` = ? AND `name` LIKE ? $sql_extra ORDER BY `date` DESC";
 
 			$stmt_getassets = $con->prepare("$sql");
 				
@@ -453,7 +453,7 @@
 			$result = $stmt_getassets->get_result();
 			$row = $result->fetch_assoc();
 
-			return $row['COUNT(`transactions`.`asset`)'];
+			return $row['COUNT(`transactions`.`id`)'];
 		}
 
 		function getAllOwnedAssets(): array {
