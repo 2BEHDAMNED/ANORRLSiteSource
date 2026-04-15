@@ -244,7 +244,7 @@ a:hover {
 	position: relative;
 	z-index: 2;
 
-	background: url(/images/header/navbar.jpg) repeat-x;
+	background: url(/public/images/header/navbar.jpg) repeat-x;
 	background-size: 49px auto;
 }
 
