@@ -206,7 +206,7 @@ hr {
 .ProfileGame #Play {
 	width: 212px;
 	height: 54px;
-	background: url("/images/buttons/Play.png");
+	background: url("/images/buttons/play.png");
 	display: inline-block;
 }
 

@@ -228,11 +228,11 @@ hr {
 }
 
 .PlaceButton[Play] {
-	background: url("/images/buttons/Play.png");
+	background: url("/images/buttons/play.png");
 }
 
 .PlaceButton[Edit] {
-	background: url("/images/buttons/Edit.png");
+	background: url("/images/buttons/edit.png");
 }
 
 .PlaceButton[Play],
