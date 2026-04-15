@@ -15,7 +15,7 @@
 
 	$page->loadHeader();
 ?>
-<h2 style="margin: 0; margin-top: 10px;"><?= $randomsplash ?></h2>
+<h2 style="margin: 0px; margin-top: 10px; width: 850px;"><marquee behavior="alternate" scrollamount="10"><?= $randomsplash ?></marquee></h2>
 <div id="Users">
 	<div method="GET" id="FormPanel">
 		<input id="SearchBox" name="query" type="text" placeholder="Look for users lol">

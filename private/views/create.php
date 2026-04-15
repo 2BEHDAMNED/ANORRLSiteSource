@@ -11,22 +11,21 @@
 	$user = SESSION->user;
 
 	$validtypes = [
+		"hats",
 		"faces",
 		"shirts",
 		"tshirts",
 		"pants",
+		"gears",
 
 		"audio",
 		"decals",
 		"models",
-
-		"gears",
-
 		"meshes",
+		"animations",
+
 		"images",
 		"lua",
-		"hats",
-		"animations",
 	];
 
 	$types = [
@@ -44,6 +43,9 @@
 		"hats" => AssetType::HAT,
 		"animations" => AssetType::ANIMATION,
 	];
+
+	if(!in_array($type, $validtypes))
+		die(header("Location: /create/hats"));
 
 	if(count($_POST) != 0) {
 		if(in_array($type, $validtypes)) {
@@ -81,7 +83,7 @@
 
 	$page = new Page("Create", "my/create");
 
-	$page->addStylesheet("/css/new/create.css?v=1");
+	$page->addStylesheet("/css/new/create.css?v=2");
 	$page->addStylesheet("/css/new/stuff.css?v=2");
 	$page->addStylesheet("/css/new/forms.css?v=1");
 
@@ -98,6 +100,7 @@
 <style>
 	.Window {
 		width: fit-content;
+		background: #222;
 	}
 
 	.Window #Name {
@@ -160,8 +163,63 @@
 		margin-right: 10px;
 	}
 </style>
+<style>
+	#CreationPanel #UploadPanel {
+		background: linear-gradient(#0a0a0a,#1a1a1a);
+	}
+
+	#StuffNavigation ul {
+		background: linear-gradient(#222, #111);
+	}
+
+	
+	/*#StuffNavigation li {
+		border-bottom: 2px solid black;
+		padding: 3px 15px;
+	}
+
+	#StuffNavigation li:nth-child(even) {
+		background: #111;
+	}
+
+	#StuffNavigation li:last-child {
+		border: none;
+	}
+
+	#StuffNavigation ul {
+		padding: 0px;
+		*margin: 15px;
+	}
+
+	#StuffNavigation li hr {
+		height: 0px;
+		margin: 0px;
+	}*/
+
+	#StuffNavigation li:hover a {
+		text-decoration: underline;
+		color: #ffc63f;
+	}
+
+	.RequiredThing {
+		color: red;
+		font-weight: bold;
+		user-select: none;
+	}
+	
+</style>
+<script>
+	$(function() {
+		$(".RequiredThing").each(function() {
+			$(this).attr("title", "This is required!");
+		});
+	})
+</script>
 <div id="StuffContainer">
-	<h1 style="width: 834px;">Creation Panel</h1>
+	<h1 style="width: 834px;">
+		<marquee scrollamount="20" direction="right" behavior="alternate">Creation Panel</marquee>
+		<marquee scrollamount="20" behavior="alternate" style="display: block;margin-top: -33px;z-index: 9;" direction="left">Creation Panel</marquee>
+	</h1>
 	<div id="StuffNavigation">							
 		<ul>
 			<li data_category="8" ><a>Hats</a></li>
@@ -169,6 +227,7 @@
 			<li data_category="11"><a>Shirts</a></li>
 			<li data_category="2" ><a>T-Shirts</a></li>
 			<li data_category="12"><a>Pants</a></li>
+			<li data_category="19"><a>Gears</a></li>
 			<hr>
 			<li data_category="3" ><a>Audio</a></li>
 			<li data_category="13"><a>Decals</a></li>
@@ -176,18 +235,14 @@
 			<li data_category="4"><a>Meshes</a></li>
 			<li data_category="24"><a>Animations</a></li>
 			
-			<hr>
-			<li data_category="19"><a>Gears</a></li>
-			<li data_category="32"><a>Packages</a></li>
-
 			<?php if($user->isAdmin()): ?>
 			<hr>
+			
 			<li data_category="1"><a>Images</a></li>
 			<li data_category="5"><a>Lua</a></li>
 			<?php endif ?>
 		</ul>
 	</div><div id="CreationPanel">	
-		<h3>Upload <span id="TypaLabel"></span></h3>
 		<div id="UploadPanel">
 			
 			<?php if(isset($_SESSION['ANORRL$CreateAsset$Error']) && isset($_SESSION['ANORRL$CreateAsset$Result'])): ?>
@@ -227,23 +282,25 @@
 			</div>
 			
 			<form method="POST" enctype="multipart/form-data" style="">
-				
-
 				<div class="Window" style="width: 100%;">
-					<div id="Name">Upload</div>
+					<div id="Name">Upload <span id="TypaLabel"></span></div>
 					<div id="Contents">
 						<table style="width: 100%">
 							<tr>
-								<td style="width: 70px;">Name</td>
-								<td><input type="text" name="ANORRL$CreateAsset$Name" minlength="3" maxlength="100" required></td>
+								<td style="width: 70px;">Name <span class="RequiredThing">*</span></td>
+								<td><input type="text" name="ANORRL$CreateAsset$Name" minlength="3" maxlength="100" required placeholder></td>
 							</tr>
 							<tr>
 								<td>Description</td>
 								<td><textarea name="ANORRL$CreateAsset$Description" maxlength="1000"></textarea></td>
 							</tr>
 							<tr>
-								<td>File</td>
-								<td><label for="files">Choose file</label><input id="files" style="display:none;" type="file"  name="ANORRL$CreateAsset$File" required><label id="filename">No file chosen</label></td>
+								<td>File <span class="RequiredThing">*</span></td>
+								<td>
+									<label for="files" style="margin-top: 5px;display: inline-block;">Choose file</label>
+									<input id="files" style="display:none;" type="file"  name="ANORRL$CreateAsset$File" required>
+									<label id="filename">No file chosen</label>
+								</td>
 							</tr>
 							<tr>
 								<td><span style="margin-top: 10px;display: block;">Extras</span></td>
@@ -267,7 +324,7 @@
 											</table>
 											
 											<div style="display: inline;">
-												<img src="/images/placeholder.png" style="width: 70px;margin-left: 10px;border: 2px solid black;">
+												<img src="/images/jane.png" style="width: 70px;margin-left: 10px;border: 2px solid black;">
 											</div>
 											
 											<div style="clear: both;"></div>
@@ -276,9 +333,11 @@
 								</td>
 							</tr>
 							<tr>
-								<td><input type="submit" value="Upload" style="margin-top:10px" name="ANORRL$CreateAsset$Submit" onclick="$(this).attr('disabled', 'true'); document.forms[0].submit()"></td>
+								<td></td>
+								<td><input type="submit" value="Upload" style="margin-top:5px" name="ANORRL$CreateAsset$Submit" onclick="$(this).attr('disabled', 'true'); document.forms[0].submit()"></td>
 							</tr>
 						</table>
+						<div style="font-size: 10px; color: #ccc; font-style: italic; margin-top: 5px;" title="You need to fill those out!"><span class="RequiredThing">*</span> means required fields!</div>
 					</div>
 				</div>
 

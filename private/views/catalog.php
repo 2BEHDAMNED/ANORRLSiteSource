@@ -33,7 +33,7 @@
 	</a>
 	<a id="Creator"><span>AssetCreator</span></a>
 </div>
-<h2 style="margin: 0px"><?= $randomsplash ?></h2>
+<h2 style="margin: 0px;width: 850px;"><marquee behavior="alternate" scrollamount="10"><?= $randomsplash ?></marquee></h2>
 <div id="CatalogContainer">
 	<div id="OptionsPanel">
 		<div id="CategoriesChooser">
