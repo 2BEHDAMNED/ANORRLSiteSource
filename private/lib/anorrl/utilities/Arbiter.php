@@ -29,6 +29,9 @@
 		}
 
 		public function request(string $endpoint, array $data = []): Object|null {
+			if(str_starts_with($endpoint, "/"))
+				$endpoint = substr($endpoint, 1);
+				
 			$ch = curl_init("http://{$this->location}:{$this->port}{$this->api_prefix}$endpoint");
 			error_log("http://{$this->location}:{$this->port}{$this->api_prefix}$endpoint");
 
