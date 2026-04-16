@@ -35,7 +35,7 @@
 	$catalog_filter = CatalogFilter::index($filter);
 	$asset_type = AssetType::index($type);
 
-	$total_pages = floor((AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query)/12) + 0.5)+1;
+	$total_pages = floor((AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query)/12) + 0.5);
 
 	if(AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query, $total_pages, 12) == 0) {
 		$total_pages--;
