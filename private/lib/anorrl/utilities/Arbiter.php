@@ -29,7 +29,7 @@
 			$this->token = strtoupper(hash("sha256", \CONFIG->arbiter->token));
 		}
 
-		public function request(string $endpoint, array $data = []): Object|null {
+		public function request(string $endpoint, array $data = [], bool $post = true): Object|null {
 			if(str_starts_with($endpoint, "/"))
 				$endpoint = substr($endpoint, 1);
 				
@@ -39,7 +39,7 @@
 			
 			curl_setopt_array($ch, [
 				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_POST => true,
+				CURLOPT_POST => $post,
 				CURLOPT_POSTFIELDS => json_encode($data),
 				CURLOPT_HTTPHEADER => [
 					"Authorization: Bearer {$this->token}",
@@ -51,8 +51,12 @@
 
 			$response = curl_exec($ch);
 
+			error_log($response === false ? "response failed" : "response worked");
+
 			if ($response === false)
 				return null;
+			
+			error_log($response . " code: " . (curl_getinfo($ch,CURLINFO_HTTP_CODE)));
 
 			$json = json_decode($response);
 
@@ -73,8 +77,10 @@
 
 		public function getGSMJob(string $jobid): GSMJob|null {
 
-			$job = $this->request("job/$jobid");
-
+			$job = $this->request("job/$jobid", [], false);
+			ob_clean();
+			print_r($job);
+			error_log(ob_get_clean());
 			if(!$job)
 				return null;
 
