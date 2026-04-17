@@ -39,8 +39,8 @@
 				"avatar",
 				[
 					"UserId" => $id,
-					"IsHeadshot" => false,
-					"IsClothing" => true
+					"IsHeadshot" => $headshot,
+					"IsClothing" => false
 				]
 			) : null;
 		}
