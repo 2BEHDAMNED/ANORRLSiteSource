@@ -75,6 +75,7 @@
 			
 			return $server;
 		} catch(Exception $e) {
+			error_log("Failed to start gameserver {$e->getMessage()}");
 			errorOut(1);
 		}
 	}
@@ -106,9 +107,10 @@
 			if(isset($_GET['placeId'])) {
 				$place = Place::FromID(intval($_GET['placeId']));
 
-				if(!$place)
+				if(!$place) {
+					error_log("Place was null");
 					errorOut(1);
-
+				}
 				if($user->isInAGame()) {
 					$active_server = $user->getActiveGame();
 					if($active_server)
@@ -126,8 +128,10 @@
 			} else if(isset($_GET['serverId'])) {
 				$server = GameServer::Get($_GET['serverId']);
 
-				if(!$server)
+				if(!$server) {
+					error_log("Server was null");
 					errorOut(1);
+				}
 
 				if($user->isInAGame()) {
 					$active_server = $user->getActiveGame();
@@ -148,8 +152,11 @@
 
 			if($session && $server)
 				die(createResponse($server, $session));
-			else
+			else {
+				error_log("Session or Server was null");
 				errorOut(0);
+			}
+				
 
 		} else if($_GET['request'] == "CloudEdit" && isset($_GET['placeId'])) {
 
