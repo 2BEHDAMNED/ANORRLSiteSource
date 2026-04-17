@@ -142,6 +142,8 @@
 					":playerid" => $userid
 				]
 			);
+
+			$this->place->visit($user);
 		}
 
 		function removePlayer(User|int $user, string|null $reason = null) {
