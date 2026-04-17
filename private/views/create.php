@@ -43,6 +43,7 @@
 		"hats" => AssetType::HAT,
 		"animations" => AssetType::ANIMATION,
 
+
 	];
 
 	if(!in_array($type, $validtypes))
@@ -53,7 +54,7 @@
 			if(isset($_POST['ANORRL$CreateAsset$Name']) &&
 				isset($_POST ['ANORRL$CreateAsset$Description']) &&
 				isset($_FILES['ANORRL$CreateAsset$File']) &&
-				isset($_FILES['ANORRL$CreateAsset$BodyType'])
+				isset($_POST['ANORRL$CreateAsset$BodyType'])
 			) {
 				
 				$result = null;
@@ -64,7 +65,7 @@
 				$comments_enabled = isset($_POST['ANORRL$CreateAsset$CommentsEnabled']);
 				$on_sale = isset($_POST['ANORRL$CreateAsset$Purchasable']);
 
-				$body_type = CharacterMeshType::index(intval($_FILES['ANORRL$CreateAsset$BodyType']));
+				$body_type = CharacterMeshType::index(intval($_POST['ANORRL$CreateAsset$BodyType']));
 
 				if($body_type == null) {
 					$_SESSION['ANORRL$CreateAsset$Error'] = true;
