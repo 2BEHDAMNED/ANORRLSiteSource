@@ -1269,7 +1269,7 @@
 				return null;
 
 			$rows = Database::singleton()->run(
-				"SELECT `serverid` FROM `active_players` WHERE `playerid` = ? AND `status` = 1 AND `teamcreate` = :teamcreate", 
+				"SELECT `serverid` FROM `active_players` WHERE `playerid` = :playerid AND `status` = 1 AND `teamcreate` = :teamcreate", 
 				[
 					":playerid" => $this->id,
 					":teamcreate" => $teamcreate
@@ -1301,7 +1301,7 @@
 		function isInAGame(bool $teamcreate = false) {
 			return 
 				Database::singleton()->run(
-					"SELECT * FROM `active_players` WHERE `playerid` = ? AND `status` = 1 AND `teamcreate` = :teamcreate", 
+					"SELECT * FROM `active_players` WHERE `playerid` = :playerid AND `status` = 1 AND `teamcreate` = :teamcreate", 
 					[
 						":playerid" => $this->id,
 						":teamcreate" => $teamcreate
