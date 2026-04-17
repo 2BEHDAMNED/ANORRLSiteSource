@@ -78,7 +78,7 @@
 		die(header("Location: /my/profile"));
 	}
 
-	$bgm = SESSION->settings->background_music;
+	$bgm = $settings->background_music;
 
 	if($bgm && !$bgm->isUsable()) {
 		$bgm = null;
@@ -125,6 +125,7 @@
 		</div>
 	</div>
 </form>
+<?php if($settings->profile_music_enabled): ?>
 <form method="POST" class="FormBox">
 	<div id="DetailsBox" style="margin-top: 5px;">
 		<h3>Profile Music</h3>
@@ -143,6 +144,7 @@
 		</div>
 	</div>
 </form>
+<?php endif ?>
 <form method="POST" class="FormBox">
 	<div id="DetailsBox" style="margin-top: 5px;">
 		<h3>Your Settings</h3>
