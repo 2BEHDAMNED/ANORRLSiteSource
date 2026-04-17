@@ -47,6 +47,11 @@
 				<li data_category="12"><a>Pants</a></li>
 				<li data_category="19"><a>Gears</a></li>
 				<li data_category="17"><a>Heads</a></li>
+				<li data_category="27"><a>Torsos</a></li>
+				<li data_category="28"><a>Left Arms</a></li>
+				<li data_category="29"><a>Right Arms</a></li>
+				<li data_category="30"><a>Left Legs</a></li>
+				<li data_category="31"><a>Right Legs</a></li>
 			</ul>
 			<h5>Development</h5>
 			<ul>
