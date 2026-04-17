@@ -273,16 +273,20 @@
 			Badges content in here
 		</div>
 		<div id="InfoBox" content="Servers" style="display:none">
-			<?php if($user == null): ?>
-			<div id="ServersBox">
-				<p id="NoGamesWarning">You need to be logged in to see the servers for this game!</p>
+			
+
+			<div class="Window" style="margin: 0 auto;">
+				<div id="Name">Servers<?php if($user): ?> <button onclick="ANORRL.PlaceLauncher.GrabGameservers(<?= $id ?>);">Refresh</button><?php endif ?></div>
+				<div id="Contents">
+					<div id="ServersBox">
+						<?php if($user == null): ?>
+						<p id="NoGamesWarning">You need to be logged in to see the servers for this game!</p>
+						<?php else: ?>
+							<p id="NoGamesWarning">There are no servers for this game!</p>
+						<?php endif ?>
+					</div>
+				</div>
 			</div>
-			<?php else: ?>
-			<h3>Servers <button onclick="ANORRL.PlaceLauncher.GrabGameservers(<?= $id ?>);">Refresh</button></h3>
-			<div id="ServersBox">
-				<p id="NoGamesWarning">There are no servers for this game!</p>
-			</div>
-			<?php endif ?>
 		</div>
 	</div>
 	<div id="CommentsContainer">

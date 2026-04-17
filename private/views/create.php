@@ -100,6 +100,7 @@
 	$page->addStylesheet("/css/new/create.css?v=2");
 	$page->addStylesheet("/css/new/stuff.css?v=2");
 	$page->addStylesheet("/css/new/forms.css?v=1");
+	$page->addStylesheet("/css/new/window.css");
 
 	$page->addScript("/js/create.js?t=1776449023");
 	$page->loadHeader();
@@ -111,72 +112,6 @@
 		<span>AssetName</span>
 	</a>
 </div>
-<style>
-	.Window {
-		width: fit-content;
-		background: #222;
-	}
-
-	.Window #Name {
-		background: black;
-		padding: 5px;
-		text-align: center;
-		letter-spacing: 2px;
-		font-weight: bold;
-		user-select: none;
-	}
-
-	.Window #Contents {
-		padding: 10px;
-		border: 2px solid black;
-	}
-
-	.Window input[type="number"] {
-		border: 2px solid black;
-		background: #444;
-		padding: 2px 4px;
-		color: white;
-		width: 125px;
-	}
-
-	.Window table td {
-		vertical-align: middle !important;
-	}
-
-	.Window ul {
-		margin-bottom: 0px;
-	}
-
-	.Window li {
-		padding: 5px;
-		border-bottom: 2px solid black;
-	}
-
-	.Window li:nth-child(even) {
-		background: #0a0a0a;
-	}
-
-	.Window li:last-child {
-		border: none;
-	}
-
-	.Window[id] {
-		margin-bottom: 10px;
-	}
-
-	.Window ul {
-		list-style: none;
-		padding-left: 0px;
-		background: #1a1a1a;
-		border: 2px solid black;
-		margin-top: 0px;
-	}
-
-	.Window .Number {
-		margin: 0px 5px;
-		margin-right: 10px;
-	}
-</style>
 <style>
 	#CreationPanel #UploadPanel {
 		background: linear-gradient(#0a0a0a,#1a1a1a);
