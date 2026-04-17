@@ -69,7 +69,7 @@
 	
 	$page->addStylesheet("/css/new/comments.css?v=1");
 	$page->addStylesheet("/css/new/item/item.css?v=2");
-	$page->addStylesheet("/css/new/item/place.css?v=3");
+	$page->addStylesheet("/css/new/item/place.css?v=4");
 	$page->addStylesheet("/css/new/my/home.css?v=2");
 	$page->addStylesheet("/css/new/window.css");
 	
@@ -279,7 +279,7 @@
 			<div class="Window" style="margin: 0 auto; width: 100%">
 				<div id="Name">Servers<?php if($user): ?> <button onclick="ANORRL.PlaceLauncher.GrabGameservers(<?= $id ?>);">Refresh</button><?php endif ?></div>
 				<div id="Contents">
-					<div id="ServersBox" style="border: none; background: none;">
+					<div id="ServersBox" style="border: none; background: none; padding: none;">
 						<?php if($user == null): ?>
 						<p id="NoGamesWarning">You need to be logged in to see the servers for this game!</p>
 						<?php else: ?>
