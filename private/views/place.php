@@ -71,6 +71,7 @@
 	$page->addStylesheet("/css/new/item/item.css?v=2");
 	$page->addStylesheet("/css/new/item/place.css?v=3");
 	$page->addStylesheet("/css/new/my/home.css?v=2");
+	$page->addStylesheet("/css/new/my/window.css");
 	
 
 	$page->addScript("/js/item.js?t=1776186351");
