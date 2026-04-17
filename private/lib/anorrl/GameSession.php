@@ -45,7 +45,7 @@
 
 		public static function GetPlayerInServer(int $id, string $serverID): self|null {
 			$row = Database::singleton()->run(
-				"SELECT * FROM `active_players` WHERE `playerid` = :playerid AND `serverid` = :serverid",
+				"SELECT * FROM `active_players` WHERE `playerid` = :playerid AND `serverid` = :serverid AND `status` = 1",
 				[
 					":playerid" => $id,
 					":serverid" => $serverID
