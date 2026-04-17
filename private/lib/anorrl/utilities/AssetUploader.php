@@ -99,9 +99,9 @@
 			 
 		}
 
-		private static function ExecuteRender(int $id, AssetType $type, string $data) {
+		private static function ExecuteRender(int $id, AssetType $type, string $input_data) {
 			$directory = $_SERVER['DOCUMENT_ROOT'];
-			$md5hashfile = self::GetMD5OfData($data);
+			$md5hashfile = self::GetMD5OfData($input_data);
 			$assetsdir = "$directory/../assets/thumbs/$md5hashfile";
 			if(!file_exists($assetsdir)) {
 				$render = self::GetRender($id, $type);
@@ -768,9 +768,10 @@
 								$mesh_asset_result = self::CommitAsset($data, AssetType::MESH, $name, $description, false, false, false, $user);
 
 								if(!$mesh_asset_result['error']) {
-									self::ExecuteRender($mesh_asset_result['id'], AssetType::MESH, $data);
-
-									$result = self::CommitAsset(AssetTypeUtils::GenerateCharacterMeshRBXM($mesh_asset_result['id'], $type), $type, $name, $description, $public, $on_sale, $comments_enabled, $user);
+									
+								self::ExecuteRender($mesh_asset_result['id'], AssetType::MESH, $data);
+									$data = AssetTypeUtils::GenerateCharacterMeshRBXM($mesh_asset_result['id'], $type);
+									$result = self::CommitAsset($data, $type, $name, $description, $public, $on_sale, $comments_enabled, $user);
 
 									if(!$result['error']) {
 										self::ExecuteRender($result['id'], $type, $data);
