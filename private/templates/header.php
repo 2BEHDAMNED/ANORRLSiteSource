@@ -1,5 +1,6 @@
 <?php
 	use anorrl\UserSettings;
+	use anorrl\utilities\ClientDetector;
 	use anorrl\utilities\Splasher;
 	use anorrl\utilities\FileSplasher;
 	use anorrl\utilities\UtilUtils;
@@ -57,7 +58,7 @@
 		<meta property="<?= $meta['type'] ?>" content="<?= $meta['contents'] ?>">
 		<?php endforeach ?>
 		
-		<?php if($this->settings->loadingscreens_enabled): ?>
+		<?php if($this->settings->loadingscreens_enabled && !ClientDetector::IsAClient()): ?>
 		<style>
 			#LoadingScreen {
 				inset: 0;

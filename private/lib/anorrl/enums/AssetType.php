@@ -166,8 +166,7 @@
 				AssetType::RIGHTARM 	=> CharacterMeshType::RIGHTARM,
 				AssetType::LEFTARM 		=> CharacterMeshType::LEFTARM,
 				AssetType::LEFTLEG 		=> CharacterMeshType::LEFTLEG,
-				AssetType::RIGHTLEG 	=> CharacterMeshType::RIGHTLEG,
-				default => false
+				AssetType::RIGHTLEG 	=> CharacterMeshType::RIGHTLEG
 			};
 		}
 	}
