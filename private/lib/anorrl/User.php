@@ -644,7 +644,7 @@
 
 						if(!$limitless) {
 							$item_count = $db->run(
-								"SELECT * FROM `inventory` WHERE `userid` = ? AND `assettype` = ?;",
+								"SELECT * FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assettype",
 								[
 									":userid" => $this->id,
 									":assettype" => $item->type->ordinal()
