@@ -298,7 +298,7 @@
 			$result_array = [];
 
 			$getallusers = Database::singleton()->run(
-				"SELECT * FROM `users` WHERE `name` LIKE ?",
+				"SELECT * FROM `users` WHERE `name` LIKE :query",
 				[
 					":query" => $queryfiltered
 				]
