@@ -101,19 +101,35 @@
 
 		private static function ExecuteRender(int $id, AssetType $type, string $input_data) {
 			$directory = $_SERVER['DOCUMENT_ROOT'];
+
+			$is3D = $type != AssetType::PLACE;
+			$loc = $is3D ? "3d" : "thumbs";
+			$ext = $is3D ? ".json" : "";
+
 			$md5hashfile = self::GetMD5OfData($input_data);
-			$assetsdir = "$directory/../assets/thumbs/$md5hashfile";
+			$assetsdir = "$directory/../assets/{$loc}/$md5hashfile$ext";
+
 			if(!file_exists($assetsdir)) {
 				$render = self::GetRender($id, $type);
 				if($render != null) {
-					$data = "data:image/png;base64,$render";
-					list($type, $data) = explode(';', $data);
-					list(, $data)      = explode(',', $data);
-					$data = base64_decode($data);
+					if($is3D) {
+						$data = trim($render);
+						$data = str_replace("\"x\":+", "\"x\":-", $data);
+						$data = str_replace("\"y\":+", "\"y\":-", $data);
+						$data = str_replace("\"z\":+", "\"z\":-", $data);
+						
+						if(str_ends_with($data, "==")) {
+							$data = substr($data, 0, strlen($data)-2);
+						}
 
-					$render_image = imagecreatefromstring($data);
-					imagesavealpha($render_image, true);
-					imagepng($render_image, $assetsdir);
+						file_put_contents($assetsdir, $data);
+					} else {
+						$data = base64_decode($render);
+						$render_image = imagecreatefromstring($data);
+						imagesavealpha($render_image, true);
+						imagepng($render_image, $assetsdir);
+					}
+					
 				}
 			}
 		}
