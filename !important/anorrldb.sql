@@ -366,7 +366,8 @@ CREATE TABLE `users_settings` (
   `nightbg` int(1) NOT NULL DEFAULT 0,
   `bgm` int(11) NOT NULL DEFAULT -1,
   `css` text NOT NULL DEFAULT '',
-  `loadingscreens` int(1) NOT NULL DEFAULT 1
+  `loadingscreens` int(1) NOT NULL DEFAULT 1,
+  `profilemusic` int(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
