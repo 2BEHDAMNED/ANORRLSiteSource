@@ -29,7 +29,7 @@ use anorrl\User;
 					$data = substr($data, 0, strlen($data)-2);
 				}*/
 
-				$data = base64_encode($render);
+				$data = base64_decode($render);
 
 				file_put_contents("$mediadir/$charactermd5.json", $data);
 			}
