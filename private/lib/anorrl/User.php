@@ -609,7 +609,7 @@
 				if($item->type->wearable()) {
 					if($item->type->wearone()) {
 						$is_wearing_type = $db->run(
-							"SELECT * FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assetype",
+							"SELECT * FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assettype",
 							[
 								":userid" => $this->id,
 								":assettype" => $item->type->ordinal()
