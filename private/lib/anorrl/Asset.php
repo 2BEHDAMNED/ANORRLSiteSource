@@ -429,8 +429,10 @@
 
 					//$data = preg_replace("/Player([0-9]+)Tex\.png/i", "scene.png", $data);
 
-					if(str_ends_with($data, "==")) {
-						$data = substr($data, 0, strlen($data)-2);
+					if(!str_ends_with($data, "}")) {
+						while(!str_ends_with($data, "}")) {
+							$data = substr($data, 0, strlen($data)-1);
+						}
 					}
 					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/3d/".AssetVersion::GetLatestVersionOf($this)->md5sig .".json", $data);
 				}
