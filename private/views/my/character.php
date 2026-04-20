@@ -4,7 +4,7 @@
 	$page = new Page("Your Character", "my/character");
 	
 	$page->addScript("/js/core/jquery-modal.js");
-	$page->addScript("/js/character.js?t=1776662059");
+	$page->addScript("/js/character.js?t=1776662128");
 
 	$page->addStylesheet("/css/new/stuff.css?v=2");
 	$page->addStylesheet("/css/new/my/character.css");
@@ -13,7 +13,7 @@
 	$page->loadHeader();
 ?>
 <script src="/public/js/3D/ThumbnailView.js"></script>
-<script src="/public/js/3D/ThreeDeeThumbnails.js?v=1"></script>
+<script src="/public/js/3D/ThreeDeeThumbnails.js?v=2"></script>
 <script src="/public/js/3D/three.min.js"></script>
 <script src="/public/js/3D/MTLLoader.js?v=1"></script>
 <script src="/public/js/3D/OBJMTLLoader.js"></script>

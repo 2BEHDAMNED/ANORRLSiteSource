@@ -516,7 +516,7 @@ ANORRL.Character  = {
 			if($(".thumbnail-span").length != 0) {
 				$("img#PlayerRender").css("display", "none");
 				$("div#PlayerRender").css("display", "block");
-				$(".thumbnail-span").load3DThumbnail(function(canvas) {
+				$(".thumbnail-span").load3DThumbnail("avatar", function(canvas) {
 					console.log("3D: complete!");
 				}, function() {
 					console.log("3D: I dont like you");
@@ -685,7 +685,7 @@ $(function(){
 	});
 
 	if($(".thumbnail-span").length != 0) {
-		$(".thumbnail-span").load3DThumbnail(function(canvas) {
+		$(".thumbnail-span").load3DThumbnail("avatar", function(canvas) {
 			console.log("3D: complete!");
 		}, function() {
 			console.log("3D: I dont like you");

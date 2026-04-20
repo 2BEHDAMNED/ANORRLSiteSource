@@ -90,7 +90,7 @@
         container.find("canvas").remove();
     }
 
-    $.fn.load3DThumbnail = function (callback, onError) {
+    $.fn.load3DThumbnail = function (type, callback, onError) {
         var cancelled = false;
 
         function cancelLoading() {
@@ -121,7 +121,7 @@
 
         function loadObjAndMtl(hash, container, json, callbackAfterLoaderIsDone) {
 
-            var baseUri = "/thumbnail/avatar/"; //server should provide
+            var baseUri = "/thumbnail/"+type+"/"; //server should provide
             var containerHeight = container.width(); //container.height();
             var containerWidth = container.width();
             var camera = new THREE.PerspectiveCamera(fieldOfView, containerWidth / containerHeight, minRenderDistance, maxRenderDistance);
