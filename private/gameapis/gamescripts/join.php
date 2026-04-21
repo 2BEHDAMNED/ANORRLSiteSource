@@ -2,86 +2,13 @@
 	
 	// rewrite to use proper json formatting#
 
-	use anorrl\Place;
-	use anorrl\User;
+	use anorrl\GameServer;
+	use anorrl\GameSession;
 	use anorrl\utilities\UserUtils;
 
-	function getSessionDetails(string $sessionID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_players` WHERE `id` = ?");
-		$stmt_getsessiondetails->bind_param("s", $sessionID);
-		$stmt_getsessiondetails->execute();
-
-		$result_getsessiondetails = $stmt_getsessiondetails->get_result();
-
-		if($result_getsessiondetails->num_rows != 0) {
-			return $result_getsessiondetails->fetch_assoc();
-		}
-
-		return null;
-	}
-
-	function getServerDetails(string $serverID): array|null {
-		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-		$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `id` = ?");
-		$stmt_getsessiondetails->bind_param("s", $serverID);
-		$stmt_getsessiondetails->execute();
-
-		$result_getsessiondetails = $stmt_getsessiondetails->get_result();
-
-		if($result_getsessiondetails->num_rows != 0) {
-			return $result_getsessiondetails->fetch_assoc();
-		}
-
-		return null;
-	}
-
 	$domain = CONFIG->domain;
-?>
-<?php if(!isset($_GET['serverToken']) && !isset($_GET['sessionToken']) && !isset($_GET['server'])):
-	$joinscript = [
-		"ClientPort" => 0,
-		"MachineAddress" => "localhost",
-		"ServerPort" => 53640,
-		"PingUrl" => "",
-		"PingInterval" => 120,
-		"UserName" => "Player",
-		"SeleniumTestMode" => true,
-		"UserId" => 0,
-		"SuperSafeChat" => false,
-		"CharacterAppearance" => "http://$domain/Asset/CharacterFetch.ashx?userId=1&placeId=0",
-		"ClientTicket" => "",
-		"GameId" => "00000000-0000-0000-0000-000000000000",
-		"PlaceId" => 0,
-		"MeasurementUrl" => "",
-		"WaitingForCharacterGuid" => "16be1dd8-5462-4ca5-a997-0725d997708b",
-		"BaseUrl" => "http://$domain/",
-		"ChatStyle" => "ClassicAndBubble",
-		"VendorId" => 0,
-		"ScreenShotInfo" => "",
-		"VideoInfo" => "",
-		"CreatorId" => 0,
-		"CreatorTypeEnum" => "User",
-		"MembershipType" => "None",
-		"AccountAge" => 0,
-		"CookieStoreFirstTimePlayKey" => "rbx_evt_ftp",
-		"CookieStoreFiveMinutePlayKey" => "rbx_evt_fmp",
-		"CookieStoreEnabled" => true,
-		"IsRobloxPlace" => true,
-		"GenerateTeleportJoin" => false,
-		"IsUnknownOrUnder13" => false,
-		"SessionId" => "",
-		"DataCenterId" => 0,
-		"UniverseId" => 0,
-		"BrowserTrackerId" => 0,
-		"UsePortraitMode" => false,
-		"FollowUserId" => 0,
-		"characterAppearanceId" => 1
-	];
 
-	function get_signature($script)
+	function get_signature($script) // one day someday... move this to a crypt class...
 	{
 		$signature = "";
 		openssl_sign($script, $signature, file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../PrivateKey.pem"), OPENSSL_ALGO_SHA1);
@@ -89,81 +16,81 @@
 	}    
 	header("Content-Type: application/json");
 
-	$script = "\r\n" . json_encode($joinscript);
-	$signature = get_signature($script);
+	$serverToken = $_GET['serverToken'] ?? '';
+	$sessionToken = $_GET['sessionToken'] ?? '';
+	$server = $_GET['server'] ?? "localhost";
 
-	die("--rbxsig%". $signature . "%" . $script);
-else: 
+	$serverDetails = GameServer::Get($serverToken); 
+	$sessionDetails = GameSession::Get($sessionToken);
 
+	$port = 53640;
+	$user_name = "Player";
+	$user_id = 0;
+	$user_age = 0;
+	$session_id = "";
+	$roblox_place = false;
+	$place_id = 0;
+	$place_creator_id = 0;
+	$place_chat_type = "ClassicAndBubble";
+	$unknown = true;
 
+	if($serverDetails && $sessionDetails) {
 
-	function get_signature($script)
-	{
-		$signature = "";
-		openssl_sign($script, $signature, file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../PrivateKey.pem"), OPENSSL_ALGO_SHA1);
-		return base64_encode($signature);
-	}    
-	header("Content-Type: application/json");
-
-	$serverToken = $_GET['serverToken'];
-	$sessionToken = $_GET['sessionToken'];
-	$server = $_GET['server'];
-
-	$serverDetails = getServerDetails($serverToken);
-	$sessionDetails = getSessionDetails($sessionToken);
-
-	if($serverDetails != null && $sessionDetails != null) {
-
-		$player = User::FromID(intval($sessionDetails['playerid']));
-		$place = Place::FromID(intval($serverDetails['placeid']));
+		$player = $sessionDetails->player;
+		$place = $serverDetails->place;
 		
-		if($player != null && !$player->isBanned() && $place != null) {
+		if($player && !$player->isBanned() && $place) {
 
 			if(UserUtils::RetrieveUser() == null) {
 				UserUtils::SetCookies($player->security_key);
 			}
 
-			$serverport = $serverDetails['port'];	
+			$port = $serverDetails->port;
+			$user_name = $player->name;
+			$user_id = $player->id;
+			$user_age = $player->getAccountAge();
+			$session_id = base64_encode($player->security_key);
+			$user_ticket = $sessionDetails->id;
+			$roblox_place = true;
+			$place_id = $place->id;
+			$place_creator_id = $place->creator->id;
+			$unknown = false;
 
 			$joinscript = [
 				"ClientPort" => 0,
-				"MachineAddress" => "$server",
-				"ServerPort" => (int)$serverport,
+				"MachineAddress" => $server,
+				"ServerPort" => $port,
 				"PingUrl" => "",
 				"PingInterval" => 120,
-				"UserName" => "{$player->name}",
+				"UserName" => $user_name,
 				"SeleniumTestMode" => false,
-				"UserId" => (int)$player->id,
-				"SuperSafeChat" => false,
-				"CharacterAppearance" => "http://$domain/Asset/CharacterFetch.ashx?userId={$player->id}",
-				"ClientTicket" => "{sessionid}",
+				"UserId" => (int)$user_id,
+				"SuperSafeChat" => $unknown,
+				"CharacterAppearance" => "http://$domain/Asset/CharacterFetch.ashx?userId={$user_id}",
+				"ClientTicket" => $user_ticket,
 				"GameId" => "00000000-0000-0000-0000-000000000000",
-				"PlaceId" => $place->id,
+				"PlaceId" => $place_id,
 				"MeasurementUrl" => "",
-				"WaitingForCharacterGuid" => 
-				"16be1dd8-5462-4ca5-a997-0725d997708b",
+				"WaitingForCharacterGuid" => "16be1dd8-5462-4ca5-a997-0725d997708b",
 				"BaseUrl" => "http://$domain/",
-				"ChatStyle" => "ClassicAndBubble",
+				"ChatStyle" => $place_chat_type, // move this to place soon
 				"VendorId" => 0,
 				"ScreenShotInfo" => "",
 				"VideoInfo" => "",
-				"CreatorId" => $place->creator->id,
+				"CreatorId" => $place_creator_id,
 				"CreatorTypeEnum" => "User",
-				"MembershipType" => "None",
-				"AccountAge" => $player->getAccountAge(),
+				"MembershipType" => "None", // maybe
+				"AccountAge" => $user_age,
 				"CookieStoreFirstTimePlayKey" => "rbx_evt_ftp",
 				"CookieStoreFiveMinutePlayKey" => "rbx_evt_fmp",
-				"CookieStoreEnabled" => true,
-				"IsRobloxPlace" => true,
+				"CookieStoreEnabled" => false,
+				"IsRobloxPlace" => $roblox_place,
 				"GenerateTeleportJoin" => false,
-				"IsUnknownOrUnder13" => false,
-				"SessionId" => "{sessionid}",
-				"DataCenterId" => 0,
-				"UniverseId" => 0,
-				"BrowserTrackerId" => 0,
-				"UsePortraitMode" => false,
+				"IsUnknownOrUnder13" => $unknown,
+				"SessionId" => $session_id,
+				"UniverseId" => $place_id,
 				"FollowUserId" => 0,
-				"characterAppearanceId" => $player->id
+				"characterAppearanceId" => $user_id
 			];
 
 			$script = "\r\n" . json_encode($joinscript);
@@ -174,4 +101,3 @@ else:
 		
 	}
 ?>
-<?php endif ?>

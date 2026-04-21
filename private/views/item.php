@@ -21,20 +21,6 @@
 			die(header("Location: /{$asset->getUrl()}"));
 		}
 
-		if($asset->type == AssetType::AUDIO) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare('SELECT * FROM `assets` WHERE `relatedid` = ? AND `type` = ?;');
-			$type = AssetType::AUDIO->ordinal();
-			$stmt->bind_param("ii", $id, $type);
-			$stmt->execute();
-			$stmt_result = $stmt->get_result();
-			if($stmt_result->num_rows == 0) {
-				$audio_asset_id = $id;
-			} else {
-				$audio_asset_id = $stmt_result->fetch_assoc()['id'];
-			}
-		}
-
 		if($user != null) {
 			$is_creator = $user->id == $asset->creator->id || $user->isAdmin();
 			$is_favourited = $asset->hasUserFavourited($user);
@@ -93,10 +79,10 @@
 	$page->addMeta("description", htmlspecialchars(substr($asset->description, 0, 128), ENT_QUOTES));
 	$page->addMeta("og:type", "website");
 	$page->addMeta("og:site_name", "ANORRL");
-	$page->addMeta("og:url", "https://{$domain}{$asset->getUrl()}");
+	$page->addMeta("og:url", "https://{$domain}/{$asset->getUrl()}");
 	$page->addMeta("og:title", htmlspecialchars($asset->name, ENT_QUOTES));
 	$page->addMeta("og:description", htmlspecialchars(substr($asset->description, 0, 128), ENT_QUOTES));
-	$page->addMeta("og:image", "https://{$domain}{$asset->getThumbsUrl()}");
+	$page->addMeta("og:image", "https://{$domain}/{$asset->getThumbsUrl()}");
 
 	$page->loadHeader();
 
@@ -230,7 +216,7 @@
 		<div id="Content">
 			<?php if($asset->type == AssetType::AUDIO): ?>
 			<img src="<?= $asset->getThumbsUrl(190) ?>&nocompress">
-			<audio src="/asset/?id=<?= $audio_asset_id ?>" controls>Your browser does not support HTML5 Audio</audio>
+			<audio src="/asset/?id=<?= $asset->id ?>" controls>Your browser does not support HTML5 Audio</audio>
 			<?php else: ?>
 				<?php if(AssetTypeUtils::IsRenderable($asset->type)): ?>
 					<div class="thumbnail-holder" style="width: 240px; height: 240px;">

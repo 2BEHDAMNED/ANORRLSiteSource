@@ -116,7 +116,7 @@
 		</div>
 	</div>
 </div>
-<?php if($bgm != null && $settings->profile_music_enabled): ?>
+<?php if($bgm != null && $settings->profile_music): ?>
 <audio id="bgm" loop muted volume="0.25"> <!-- autoplay m.i.a -->
 	<source src="/asset/?id=<?= $bgm->getAssetIDSafe() ?>">
 </audio>

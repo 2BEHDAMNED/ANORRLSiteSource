@@ -59,21 +59,21 @@
 	}
 	
 	if(isset($_POST['ANORRL$Update$Settings$Submit'])) {
-		$randoms_enabled = isset($_POST['ANORRL$Update$Settings$RandomsEnabled']);
-		$teto_enabled = isset($_POST['ANORRL$Update$Settings$TetoEnabled']);
-		$accessibility_enabled = isset($_POST['ANORRL$Update$Settings$AccessibilityEnabled']);
-		$headshots_enabled = isset($_POST['ANORRL$Update$Settings$HeadshotsEnabled']);
-		$nightbg_enabled = isset($_POST['ANORRL$Update$Settings$NightBGEnabled']);
-		$loadingscreens_enabled = isset($_POST['ANORRL$Update$Settings$LoadingScreensEnabled']);
-		$profile_music_enabled = isset($_POST['ANORRL$Update$Settings$ProfileMusicEnabled']);
+		$randoms = isset($_POST['ANORRL$Update$Settings$RandomsEnabled']);
+		$teto = isset($_POST['ANORRL$Update$Settings$TetoEnabled']);
+		$accessibility = isset($_POST['ANORRL$Update$Settings$AccessibilityEnabled']);
+		$headshots = isset($_POST['ANORRL$Update$Settings$HeadshotsEnabled']);
+		$nightbg = isset($_POST['ANORRL$Update$Settings$NightBGEnabled']);
+		$loadingscreens = isset($_POST['ANORRL$Update$Settings$LoadingScreensEnabled']);
+		$profile_music = isset($_POST['ANORRL$Update$Settings$ProfileMusicEnabled']);
 
-		$settings->setRandomsEnabled($randoms_enabled);
-		$settings->setTetoEnabled($teto_enabled);
-		$settings->setAccessibilityEnabled($accessibility_enabled);
-		$settings->setHeadshotsEnabled($headshots_enabled);
-		$settings->setNightBGEnabled($nightbg_enabled);
-		$settings->setLoadingScreensEnabled($loadingscreens_enabled);
-		$settings->setProfileMusicEnabled($profile_music_enabled);
+		$settings->setRandomsEnabled($randoms);
+		$settings->setTetoEnabled($teto);
+		$settings->setAccessibilityEnabled($accessibility);
+		$settings->setHeadshotsEnabled($headshots);
+		$settings->setNightBGEnabled($nightbg);
+		$settings->setLoadingScreensEnabled($loadingscreens);
+		$settings->setProfileMusicEnabled($profile_music);
 
 		die(header("Location: /my/profile"));
 	}
@@ -125,7 +125,7 @@
 		</div>
 	</div>
 </form>
-<?php if($settings->profile_music_enabled): ?>
+<?php if($settings->profile_music): ?>
 <form method="POST" class="FormBox">
 	<div id="DetailsBox" style="margin-top: 5px;">
 		<h3>Profile Music</h3>
@@ -153,43 +153,43 @@
 				<tr title="I love my random images, do you?">
 					<td>Random Images</td>
 					<td>
-						<input name="ANORRL$Update$Settings$RandomsEnabled" type="checkbox" <?php if($settings->randoms_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$RandomsEnabled" type="checkbox" <?php if($settings->randoms): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 				<tr title="Fatass Teto">
 					<td>Fatass Teto</td>
 					<td>
-						<input name="ANORRL$Update$Settings$TetoEnabled" type="checkbox" <?php if($settings->teto_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$TetoEnabled" type="checkbox" <?php if($settings->teto): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 				<tr id="Changes the punk font to a cleaner version">
 					<td>Accessibility</td>
 					<td>
-						<input name="ANORRL$Update$Settings$AccessibilityEnabled" type="checkbox" <?php if($settings->accessibility_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$AccessibilityEnabled" type="checkbox" <?php if($settings->accessibility): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 				<tr title="Shows headshots instead of profile pictures when available.">
 					<td>Headshots</td>
 					<td>
-						<input name="ANORRL$Update$Settings$HeadshotsEnabled" type="checkbox" <?php if($settings->headshots_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$HeadshotsEnabled" type="checkbox" <?php if($settings->headshots): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 				<tr title="Night time!">
 					<td>Night Background</td>
 					<td>
-						<input name="ANORRL$Update$Settings$NightBGEnabled" type="checkbox" <?php if($settings->nightbg_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$NightBGEnabled" type="checkbox" <?php if($settings->nightbg): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 				<tr title="Fun little splash screens!">
 					<td>Loading Screens</td>
 					<td>
-						<input name="ANORRL$Update$Settings$LoadingScreensEnabled" type="checkbox" <?php if($settings->loadingscreens_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$LoadingScreensEnabled" type="checkbox" <?php if($settings->loadingscreens): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 				<tr title="Do you want to hear other peoples' music? No? You're boring.">
 					<td>Profile Music</td>
 					<td>
-						<input name="ANORRL$Update$Settings$ProfileMusicEnabled" type="checkbox" <?php if($settings->profile_music_enabled): ?>checked<?php endif ?>>
+						<input name="ANORRL$Update$Settings$ProfileMusicEnabled" type="checkbox" <?php if($settings->profile_music): ?>checked<?php endif ?>>
 					</td>
 				</tr>
 			</table>

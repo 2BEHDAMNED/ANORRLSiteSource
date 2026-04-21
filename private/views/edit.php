@@ -94,9 +94,6 @@
 	if(isset($_POST['ANORRL$EditItem$Name']) &&
 	   isset($_POST['ANORRL$EditItem$Description'])
 	) {
-
-		include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
 		$name = UtilUtils::StripUnicode($_POST['ANORRL$EditItem$Name']);
 		$description = UtilUtils::StripUnicode($_POST['ANORRL$EditItem$Description']);
 		$public = isset($_POST['ANORRL$EditItem$PublicBox']);
@@ -131,9 +128,7 @@
 				$server_size = $allUsersCount;
 			}
 
-			$stmt = $con->prepare('UPDATE `places` SET `copylocked` = ?, `serversize` = ?, `original` = ?, `gears_enabled` = ? WHERE `id` = ?;');
-			$stmt->bind_param('iiiii', $copylocked, $server_size, $original, $gears, $id);
-			$stmt->execute();
+			$asset->update($copylocked, $server_size, $original, $gears); //Place::update
 
 			if(isset($_FILES['ANORRL$EditItem$Place$ThumbnailFile'])) {
 				$file = $_FILES['ANORRL$EditItem$Place$ThumbnailFile'];

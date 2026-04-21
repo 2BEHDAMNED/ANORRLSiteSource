@@ -1,6 +1,7 @@
 <?php
 	use anorrl\Place;
 	use anorrl\User;
+	use anorrl\Database;
 
 	header("Content-Type: application/xml");
 	function IsValidXML(string $xml): bool {
@@ -15,12 +16,13 @@
 
 	function IsTooManyBlobbers(Place $place, User $user) {
 		if(!$user->isBanned()) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
-			$stmt->bind_param("ii", $place->id, $user->id);
-			$stmt->execute();
-
-			return $stmt->get_result()->num_rows > 1;
+			return Database::singleton()->run(
+				"SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = :placeid AND `blob_playerid` = :userid",
+				[
+					":placeid" => $place->id,
+					":userid" => $user->id
+				]
+			)->rowCount() > 1;
 		}
 
 		return false;
@@ -28,12 +30,13 @@
 
 	function BlobberExists(Place $place, User $user) {
 		if(!$user->isBanned()) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
-			$stmt->bind_param("ii", $place->id, $user->id);
-			$stmt->execute();
-
-			return $stmt->get_result()->num_rows > 0;
+			return Database::singleton()->run(
+				"SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = :placeid AND `blob_playerid` = :userid",
+				[
+					":placeid" => $place->id,
+					":userid" => $user->id
+				]
+			)->rowCount() > 0;
 		}
 
 		return false;
@@ -41,24 +44,26 @@
 
 	function CreateBlobber(Place $place, User $user) {
 		if(!$user->isBanned() && !BlobberExists($place, $user)) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-			$stmt = $con->prepare("INSERT INTO `persistenceblobs`(`blob_placeid`, `blob_playerid`) VALUES (?, ?)");
-			$stmt->bind_param("ii", $place->id, $user->id);
-			$stmt->execute();
+			Database::singleton()->run(
+				"INSERT INTO `persistenceblobs`(`blob_placeid`, `blob_playerid`) VALUES (:placeid, :userid)",
+				[
+					":placeid" => $place->id,
+					":userid" => $user->id
+				]
+			);
 		}
 		
 	}
 
 	function GetDataBlob(Place $place, User $user) {
 		if(!$user->isBanned() && BlobberExists($place, $user)) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-			$stmt = $con->prepare("SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
-			$stmt->bind_param("ii", $place->id, $user->id);
-			$stmt->execute();
-
-			return $stmt->get_result()->fetch_assoc()['blob_data'];
+			return Database::singleton()->run(
+				"SELECT * FROM `persistenceblobs` WHERE `blob_placeid` = :placeid AND `blob_playerid` = :userid",
+				[
+					":placeid" => $place->id,
+					":userid" => $user->id
+				]
+			)->fetchObject()->blob_data;
 		}
 
 		return null;
@@ -70,14 +75,15 @@
 		$user = User::FromID(intval($_GET['userid']));
 
 		if($place != null && $user != null && !$user->isBanned() && CONFIG->asset->key == $_GET['access']) {
-
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
 			if(BlobberExists($place, $user)) {
 				if(IsTooManyBlobbers($place, $user)) {
-					$stmt = $con->prepare("DELETE FROM `persistenceblobs` WHERE `blob_placeid` = ? AND `blob_playerid` = ?");
-					$stmt->bind_param("ii", $place->id, $user->id);
-					$stmt->execute();
+					Database::singleton()->run(
+						"DELETE FROM `persistenceblobs` WHERE `blob_placeid` = :placeid AND `blob_playerid` = :userid",
+						[
+							":placeid" => $place->id,
+							":userid" => $user->id
+						]
+					);
 
 					CreateBlobber($place, $user);
 				}

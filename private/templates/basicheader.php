@@ -16,4 +16,4 @@
 		<meta property="<?= $meta['type'] ?>" content="<?= $meta['contents'] ?>">
 		<?php endforeach ?>
 	</head>
-	<body <?= $this->settings->nightbg_enabled ? "night" : "" ?>>
+	<body <?= $this->settings->nightbg ? "night" : "" ?>>

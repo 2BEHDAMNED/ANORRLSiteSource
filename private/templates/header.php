@@ -58,7 +58,7 @@
 		<meta property="<?= $meta['type'] ?>" content="<?= $meta['contents'] ?>">
 		<?php endforeach ?>
 		
-		<?php if($this->settings->loadingscreens_enabled && !ClientDetector::IsAClient()): ?>
+		<?php if($this->settings->loadingscreens && !ClientDetector::IsAClient()): ?>
 		<style>
 			#LoadingScreen {
 				inset: 0;
@@ -138,8 +138,8 @@
 		</script>
 		<?php endif ?>
 	</head>
-	<body <?= $this->settings->nightbg_enabled && !$hasBackground ? "night" : "" ?>>
-		<?php if($this->settings->loadingscreens_enabled && !ClientDetector::IsAClient()): ?>
+	<body <?= $this->settings->nightbg && !$hasBackground ? "night" : "" ?>>
+		<?php if($this->settings->loadingscreens && !ClientDetector::IsAClient()): ?>
 		<div id="LoadingScreen">
 			<div>
 				<img src="/public/images/splashes/<?= $rand_splash_pic ?>" splash>
@@ -156,10 +156,10 @@
 			}
 		</style>
 		<?php endif ?>
-		<?php if($this->settings->randoms_enabled): ?>
+		<?php if($this->settings->randoms): ?>
 		<img src="/public/images/randoms/<?= $rand_pic ?>" style="position: fixed;bottom: 0px;left: 0px;width: 250px;z-index: 9999;pointer-events: none;">
 		<?php endif ?>
-		<?php if($this->settings->teto_enabled): ?>
+		<?php if($this->settings->teto): ?>
 		<div id="TetoContainer">
 			<div id="TetoSplashContainer">
 				<p id="TetoSplash"><?= new FileSplasher("teto")->getRandomSplash(); ?></p>
@@ -167,7 +167,7 @@
 			<img id="Teto" src="/public/images/tetospeech.png">
 		</div>
 		<?php endif ?>
-		<?php if($this->settings->accessibility_enabled): ?>
+		<?php if($this->settings->accessibility): ?>
 		<style>
 			@font-face {
 				font-family: 'punk';

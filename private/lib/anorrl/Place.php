@@ -308,6 +308,19 @@
 		function getBadges(): array {
 			return [];
 		}
+
+		function update(bool $copylocked, int $server_size, bool $original, bool $gears) {
+			Database::singleton()->run(
+				"UPDATE `places` SET `copylocked` = :copylocked, `serversize` = :serversize, `original` = :original, `gears_enabled` = :gears WHERE `id` = :placeid",
+				[
+					":copylocked" => $copylocked,
+					":serversize" => $server_size,
+					":original" => $original,
+					":gears" => $gears,
+					":placeid" => $this->id
+				]
+			);
+		}
 	}
 
 ?>

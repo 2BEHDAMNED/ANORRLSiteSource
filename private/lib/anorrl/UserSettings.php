@@ -11,19 +11,19 @@
 	class UserSettings {
 
 		public User|null $user;
-		public bool $randoms_enabled;
-		public bool $teto_enabled;
-		public bool $accessibility_enabled;
-		public bool $headshots_enabled;
-		public bool $nightbg_enabled;
+		public bool $randoms;
+		public bool $teto;
+		public bool $accessibility;
+		public bool $headshots;
+		public bool $nightbg;
 		public Asset|null $background_music = null;
 		public string $css = "";
-		public bool $loadingscreens_enabled;
-		public bool $profile_music_enabled;
+		public bool $loadingscreens;
+		public bool $profile_music;
 
 		public static function Get(User|null $user = null) {
 			if($user == null) {
-				return new self([
+				return new self((Object)[
 					"userid" => -1,
 					"randoms" => 1,
 					"teto" => 1,
@@ -56,30 +56,35 @@
 			}
 		}
 
-		function __construct(array|Object $rowdata) {
-			if(is_array($rowdata)) {
-				$this->user = User::FromID(intval($rowdata['userid']));
-				$this->randoms_enabled = boolval($rowdata['randoms']);
-				$this->teto_enabled = boolval($rowdata['teto']);
-				$this->accessibility_enabled = boolval($rowdata['accessbility']);
-				$this->headshots_enabled = boolval($rowdata['headshots']);
-				$this->nightbg_enabled = boolval($rowdata['nightbg']);
-				$this->background_music = $rowdata['bgm'] <= 0 ? null : Asset::FromID($rowdata['bgm']);
-				$this->css = $rowdata['css'];
-				$this->loadingscreens_enabled = boolval($rowdata['loadingscreens']);
-				$this->profile_music_enabled = boolval($rowdata['profilemusic']);
-			} else {
-				$this->user = User::FromID(intval($rowdata->userid));
-				$this->randoms_enabled = boolval($rowdata->randoms);
-				$this->teto_enabled = boolval($rowdata->teto);
-				$this->accessibility_enabled = boolval($rowdata->accessbility);
-				$this->headshots_enabled = boolval($rowdata->headshots);
-				$this->nightbg_enabled = boolval($rowdata->nightbg);
-				$this->background_music = $rowdata->bgm <= 0 ? null : Asset::FromID($rowdata->bgm);
-				$this->css = $rowdata->css;
-				$this->loadingscreens_enabled = boolval($rowdata->loadingscreens);
-				$this->profile_music_enabled = boolval($rowdata->profilemusic);
+		private function CreateColumn(string $name, bool $default) {
+			//ALTER TABLE `users_settings` ADD `test` INT(1) NOT NULL DEFAULT '1';
+			Database::singleton()->run(
+				"ALTER TABLE `users_settings` ADD `$name` INT(1) NOT NULL DEFAULT :value",
+				[
+					":value" => $default ? 1 : 0
+				]
+			);
+
+			return $default;
+		}
+
+		function __construct(Object $rowdata) {
+			if(isset($rowdata->user)) {
+				throw new \Exception("Missing user_settings table");
 			}
+
+			$this->user = User::FromID(intval($rowdata->userid));
+
+			$this->randoms = !isset($rowdata->randoms) ? self::CreateColumn("randoms", true) : $rowdata->randoms;
+			$this->teto = !isset($rowdata->teto) ? self::CreateColumn("teto", true) : $rowdata->teto;
+			$this->accessibility = !isset($rowdata->accessibility) ? self::CreateColumn("accessibility", false) : $rowdata->accessibility;
+			$this->headshots = !isset($rowdata->headshots) ? self::CreateColumn("headshots", false) : $rowdata->headshots;
+			$this->nightbg = !isset($rowdata->nightbg) ? self::CreateColumn("nightbg", false) : $rowdata->nightbg;
+			$this->loadingscreens = !isset($rowdata->loadingscreens) ? self::CreateColumn("loadingscreens", true) : $rowdata->loadingscreens;
+			$this->profile_music = !isset($rowdata->profilemusic) ? self::CreateColumn("profilemusic", true) : $rowdata->profilemusic;
+
+			$this->background_music = $rowdata->bgm <= 0 ? null : Asset::FromID($rowdata->bgm);
+			$this->css = $rowdata->css;
 			
 			if($this->background_music && $this->background_music->type != AssetType::AUDIO)
 				$this->background_music = null;
@@ -106,32 +111,32 @@
 
 		function setRandomsEnabled(bool $value) {
 			$this->setValue("randoms", $value);
-			$this->randoms_enabled = $value;
+			$this->randoms = $value;
 		}
 
 		function setTetoEnabled(bool $value) {
 			$this->setValue("teto", $value);
-			$this->teto_enabled = $value;
+			$this->teto = $value;
 		}
 
 		function setNightBGEnabled(bool $value) {
 			$this->setValue("nightbg", $value);
-			$this->nightbg_enabled = $value;
+			$this->nightbg = $value;
 		}
 
 		function setAccessibilityEnabled(bool $value) {
 			$this->setValue("accessbility", $value);
-			$this->accessibility_enabled = $value;
+			$this->accessibility = $value;
 		}
 
 		function setHeadshotsEnabled(bool $value) {
 			$this->setValue("headshots", $value);
-			$this->headshots_enabled = $value;
+			$this->headshots = $value;
 		}
 
 		function setLoadingScreensEnabled(bool $value) {
 			$this->setValue("loadingscreens", $value);
-			$this->loadingscreens_enabled = $value;
+			$this->loadingscreens = $value;
 		}
 		
 		function setBackgroundMusic(Asset|int|null $asset = null) {
@@ -173,7 +178,7 @@
 
 		function setProfileMusicEnabled(bool $value) {
 			$this->setValue("profilemusic", $value);
-			$this->profile_music_enabled = $value;
+			$this->profile_music = $value;
 		}
 	}
 ?>

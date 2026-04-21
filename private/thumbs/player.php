@@ -18,10 +18,6 @@
 
 		$user = User::FromID($id);
 		if($user != null) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			
-			//base64_encode(
-
 			$md5hash = $user->currentoutfitmd5;
 
 			$path = $_SERVER['DOCUMENT_ROOT']."/../renders/$md5hash.png";

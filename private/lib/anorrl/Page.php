@@ -37,7 +37,7 @@
 				$this->settings = UserSettings::Get();
 			}
 
-			if($this->settings->teto_enabled) {
+			if($this->settings->teto) {
 				$this->addStylesheet("/css/new/teto.css?v=1");
 			}
 

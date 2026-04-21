@@ -352,21 +352,15 @@
 		}
 
 		function getRelatedAssets() {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-			$stmt = $con->prepare("SELECT `id` FROM `assets` WHERE `relatedid` = ?");
-			$stmt->bind_param("i", $this->id);
-			$stmt->execute();
-			
-			$stmt_result = $stmt->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT `id` FROM `assets` WHERE `relatedid` = :assetid",
+				[ ":assetid" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$result = [];
 
-			while($row = $stmt_result->fetch_assoc()) {
-				$asset = Asset::FromID(intval($row['id']));
-				if($asset) {
-					$result[] = $asset;
-				}
+			foreach($rows as $row) {
+				$result[] = Asset::FromID($row->id);
 			}
 
 			return $result;
@@ -389,8 +383,6 @@
 		}
 
 		function render(bool $is3D = false) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
 			$id = $this->id;
 			$type = $this->type;
 
@@ -413,14 +405,19 @@
 				$render = Renderer::RenderClothing($id, $is3D);
 			}
 
+			$latest_version = AssetVersion::GetLatestVersionOf($this);
+
+			if(!$latest_version)
+				return;
+
+			$latest_md5 = $latest_version->md5sig;
+
 			if($render != null) {
-				
-				
-				AssetVersion::GetLatestVersionOf($this)->setThumbnail($this);
+				$latest_version->setThumbnail($this);
 
 				if(!$is3D || $type == AssetType::PLACE) {
 					$data = base64_decode($render);
-					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/thumbs/".AssetVersion::GetLatestVersionOf($this)->md5sig, $data);
+					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/thumbs/{$latest_md5}", $data);
 				} else {
 					$data = trim($render);
 					$data = str_replace("\"x\":+", "\"x\":-", $data);
@@ -434,34 +431,38 @@
 							$data = substr($data, 0, strlen($data)-1);
 						}
 					}
-					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/3d/".AssetVersion::GetLatestVersionOf($this)->md5sig .".json", $data);
+					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/3d/{$latest_md5}.json", $data);
 				}
 				
 			} else {
-				if(file_exists($_SERVER['DOCUMENT_ROOT']."/../assets/thumbs/".AssetVersion::GetLatestVersionOf($this)->md5thumb)) {
+				if(file_exists($_SERVER['DOCUMENT_ROOT']."/../assets/thumbs/{$latest_md5}")) {
 
 				} else {
-					$stmt = $con->prepare("UPDATE `asset_versions` SET `md5thumb` = 'placeholder' WHERE `id` = ?");
-					$stmt->bind_param('i', AssetVersion::GetLatestVersionOf($this)->id);
-					$stmt->execute();
+					Database::singleton()->run(
+						"UPDATE `asset_versions` SET `md5thumb` = 'placeholder' WHERE `id` = :versionid",
+						[
+							":versionid" => $latest_version->id
+						]
+					);
 				}
 			}
 		}
 
 		function delete() {
 			if(\SESSION) {
-				if(\SESSION->user->isAdmin()) {
-					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-					$stmt = $con->prepare('DELETE FROM `inventory` WHERE `assetid` = ?');
-					$stmt -> bind_param("i", $id);
-					$stmt->execute();
-
+				if(\SESSION->user->isAdmin() || \SESSION->user->id == $this->creator->id) {
 					// update name to [Content Deleted]
 					// update description to [Content Deleted]
 					// update noncatalogable to true
 					// update status to private
 
-					/*$stmt = $con->prepare('DELETE FROM `transactions` WHERE `asset` = ?');
+					/*$stmt = $con->prepare('DELETE FROM `inventory` WHERE `assetid` = ?');
+					$stmt -> bind_param("i", $id);
+					$stmt->execute();
+
+					
+
+					$stmt = $con->prepare('DELETE FROM `transactions` WHERE `asset` = ?');
 					$stmt -> bind_param("i", $id);
 					$stmt->execute();
 
@@ -546,10 +547,6 @@
 			return null;
 		}
 
-		/**
-		 * I'm probably going to remove this completely
-		 * @return void
-		 */
 		private function checkAndDeleteFiles() {
 			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			if($asset != null) {
