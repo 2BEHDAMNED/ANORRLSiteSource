@@ -1,7 +1,4 @@
 <?php
-	
-	// rewrite to use proper json formatting#
-
 	use anorrl\GameServer;
 	use anorrl\GameSession;
 	use anorrl\utilities\UserUtils;
@@ -20,22 +17,24 @@
 	$sessionToken = $_GET['sessionToken'] ?? '';
 	$server = $_GET['server'] ?? "localhost";
 
-	$serverDetails = GameServer::Get($serverToken); 
-	$sessionDetails = GameSession::Get($sessionToken);
-
 	$port = 53640;
 	$user_name = "Player";
 	$user_id = 0;
 	$user_age = 0;
+	$user_ticket = "";
 	$session_id = "";
 	$roblox_place = false;
 	$place_id = 0;
 	$place_creator_id = 0;
-	$place_chat_type = "ClassicAndBubble";
+	$place_chat_type = "ClassicAndBubble"; // $place->getChatType()->name();
 	$unknown = true;
+	$game_id = "00000000-0000-0000-0000-000000000000";
+	
+	$serverDetails = GameServer::Get($serverToken);
+	$sessionDetails = GameSession::Get($sessionToken);
 
 	if($serverDetails && $sessionDetails) {
-
+		
 		$player = $sessionDetails->player;
 		$place = $serverDetails->place;
 		
@@ -55,49 +54,43 @@
 			$place_id = $place->id;
 			$place_creator_id = $place->creator->id;
 			$unknown = false;
-
-			$joinscript = [
-				"ClientPort" => 0,
-				"MachineAddress" => $server,
-				"ServerPort" => $port,
-				"PingUrl" => "",
-				"PingInterval" => 120,
-				"UserName" => $user_name,
-				"SeleniumTestMode" => false,
-				"UserId" => (int)$user_id,
-				"SuperSafeChat" => $unknown,
-				"CharacterAppearance" => "http://$domain/Asset/CharacterFetch.ashx?userId={$user_id}",
-				"ClientTicket" => $user_ticket,
-				"GameId" => "00000000-0000-0000-0000-000000000000",
-				"PlaceId" => $place_id,
-				"MeasurementUrl" => "",
-				"WaitingForCharacterGuid" => "16be1dd8-5462-4ca5-a997-0725d997708b",
-				"BaseUrl" => "http://$domain/",
-				"ChatStyle" => $place_chat_type, // move this to place soon
-				"VendorId" => 0,
-				"ScreenShotInfo" => "",
-				"VideoInfo" => "",
-				"CreatorId" => $place_creator_id,
-				"CreatorTypeEnum" => "User",
-				"MembershipType" => "None", // maybe
-				"AccountAge" => $user_age,
-				"CookieStoreFirstTimePlayKey" => "rbx_evt_ftp",
-				"CookieStoreFiveMinutePlayKey" => "rbx_evt_fmp",
-				"CookieStoreEnabled" => false,
-				"IsRobloxPlace" => $roblox_place,
-				"GenerateTeleportJoin" => false,
-				"IsUnknownOrUnder13" => $unknown,
-				"SessionId" => $session_id,
-				"UniverseId" => $place_id,
-				"FollowUserId" => 0,
-				"characterAppearanceId" => $user_id
-			];
-
-			$script = "\r\n" . json_encode($joinscript);
-			$signature = get_signature($script);
-
-			exit("--rbxsig%". $signature . "%" . $script);
+			$game_id = $server->jobid;
 		}
-		
 	}
+	
+	$joinscript = [
+		"ClientPort" => 0,
+		"MachineAddress" => $server,
+		"ServerPort" => $port,
+		"PingUrl" => "http://$domain/Game/GamerPinger.ashx?serverID={$serverDetails->id}&jobID={$game_id}",
+		"PingInterval" => 120,
+		"UserName" => $user_name,
+		"SeleniumTestMode" => false,
+		"UserId" => (int)$user_id,
+		"SuperSafeChat" => $unknown,
+		"CharacterAppearance" => "http://$domain/Asset/CharacterFetch.ashx?userId={$user_id}",
+		"ClientTicket" => $user_ticket,
+		"GameId" => $game_id,
+		"PlaceId" => $place_id,
+		"MeasurementUrl" => "",
+		"WaitingForCharacterGuid" => "16be1dd8-5462-4ca5-a997-0725d997708b",
+		"BaseUrl" => "http://$domain/",
+		"ChatStyle" => $place_chat_type, // move this to place soon
+		"CreatorId" => $place_creator_id,
+		"CreatorTypeEnum" => "User",
+		"MembershipType" => "None", // maybe
+		"AccountAge" => $user_age,
+		"CookieStoreEnabled" => false,
+		"IsRobloxPlace" => $roblox_place,
+		"GenerateTeleportJoin" => false,
+		"IsUnknownOrUnder13" => $unknown,
+		"SessionId" => $session_id,
+		"UniverseId" => $place_id,
+		"characterAppearanceId" => $user_id
+	];
+
+	$script = "\r\n" . json_encode($joinscript);
+	$signature = get_signature($script);
+
+	exit("--rbxsig%". $signature . "%" . $script);
 ?>

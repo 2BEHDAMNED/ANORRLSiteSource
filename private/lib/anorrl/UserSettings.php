@@ -58,12 +58,16 @@
 
 		private function CreateColumn(string $name, bool $default) {
 			//ALTER TABLE `users_settings` ADD `test` INT(1) NOT NULL DEFAULT '1';
-			Database::singleton()->run(
-				"ALTER TABLE `users_settings` ADD `$name` INT(1) NOT NULL DEFAULT :value",
-				[
-					":value" => $default ? 1 : 0
-				]
-			);
+			try {
+				Database::singleton()->run(
+					"ALTER TABLE `users_settings` ADD `$name` INT(1) NOT NULL DEFAULT :value",
+					[
+						":value" => $default
+					]
+				);
+			} catch(\PDOException $e) {
+				error_log("Failed to create default value for $name!!!!");
+			}
 
 			return $default;
 		}
@@ -100,13 +104,18 @@
 			elseif(is_int($value))
 				$stmt_value = $value;
 
-			Database::singleton()->run(
-				"UPDATE `users_settings` SET `$name` = :value WHERE `userid` = :id;",
-				[
-					":value" => $stmt_value,
-					":id" => $this->user->id
-				]
-			);
+			try {
+				Database::singleton()->run(
+					"UPDATE `users_settings` SET `$name` = :value WHERE `userid` = :id;",
+					[
+						":value" => $stmt_value,
+						":id" => $this->user->id
+					]
+				);
+			} catch(\PDOException $e) {
+				error_log("Failed to set value for $name!");
+				throw new \Exception("Failed to set value for $name! Missing column?");
+			}
 		}
 
 		function setRandomsEnabled(bool $value) {
