@@ -132,11 +132,11 @@ end
 	}    
 	header("Content-Type: text/plain");
 
-	$user = SESSION->user;
 	$username = "Player";
 	$userid = 1;
 	$userage = 0;
-	if($user != null) {
+	if(SESSION) {
+		$user = SESSION->user;
 		$username = $user->name;
 		$userid = $user->id;
 		$userage = $user->getAccountAge();
