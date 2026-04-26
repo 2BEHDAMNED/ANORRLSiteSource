@@ -105,7 +105,7 @@
 			if(!$this->active()) { $this->destroy(); return []; }
 
 			$rows = Database::singleton()->run(
-				"SELECT * FROM `active_players` WHERE `serverid` = :id AND `status` = 1 AND `teamcreate` = :teamcreate;",
+				"SELECT `id` FROM `active_players` WHERE `serverid` = :id AND `status` = 1 AND `teamcreate` = :teamcreate;",
 				[
 					":id" => $this->id,
 					":teamcreate" => $this->teamcreate
@@ -113,12 +113,17 @@
 			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$sessions = [];
+			$playerids = [];
 
 			foreach($rows as $row) {
-				$session = new GameSession($row);
+				$session = GameSession::Get($row->id);
 
-				if($session->player)
-					$sessions[] = $session;
+				if($session->player){
+					if(!in_array($session->player->id, $playerids)) {
+						$sessions[] = $session;
+						$playerids[] = $session->player->id; // stupid fucking hack for stupid shit
+					}
+				}
 			}
 
 			return $sessions;
@@ -147,8 +152,10 @@
 		}
 
 		function removePlayer(User|int $user, string|null $reason = null) {
-			if(!$this->active()) { $this->destroy(); return; }
-
+			if(!$this->active()) { 
+				$this->destroy();
+				error_log("Server of jobid: {$this->jobid} tried to removePlayer while DEAD");
+			}
 			if(!$this->isPlayerInServer($user)) return;
 
 			$userid = is_int($user) ? $user : $user->id;
@@ -162,9 +169,9 @@
 		function renewLease(int $time = 35) {
 			if(!$this->active()) { $this->destroy(); return; }
 
-			Arbiter::singleton()->request("renewlease", [
-				"jobId" => $this->jobid,
-				"seconds" => $time
+			Arbiter::singleton()->requestGS("renewlease", [
+				"gameId" => $this->jobid,
+				"expirationInSeconds" => $time
 			]);
 		}
 
