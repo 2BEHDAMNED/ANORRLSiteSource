@@ -325,6 +325,9 @@
 		call_user_func_array($match['target'], $match['params']);
 	} else {
 		header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+		if(!SESSION && isset(CONFIG->secret)) {
+			die(header("Location: /goodbye"));
+		}
 		require __DIR__.'/private/views/errors/404.php';
 		exit();
 	}
