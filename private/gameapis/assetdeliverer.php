@@ -3,6 +3,7 @@
 	use anorrl\Place;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\MeshConverter;
+	use anorrl\utilities\ClientDetector;
 
 	if(!isset($_GET['id']) && !isset($_GET['ID']) && !isset($_GET['Id'])) {
 		die(http_response_code(500));
@@ -21,7 +22,6 @@
 		return $file_info->buffer($contents);
 	}
 
-	$access = CONFIG->asset->key;
 	$domain = CONFIG->domain;
 	
 	$user = SESSION ? SESSION->user : null;
@@ -38,25 +38,22 @@
 				
 				if($place->copylocked) {
 					$error = false;
-					if($user == null && !isset($_GET['access'])) {
+					if($user == null && !ClientDetector::HasAccess()) {
 						$error = true;
 					} 
-					
-					if(!$error && (isset($_GET['access']) && trim($_GET['access']) != $access)) {
-						$error = true;
-					}
 
 					if(!$error && $user != null && $place->creator->id != $user->id && !$user->isAdmin()) {
 						$error = true;
 					}
 
 					if($error) {
-						if(!($_SERVER['HTTP_USER_AGENT'] == "ANORRL/WinInet" || $_SERVER['HTTP_USER_AGENT'] == "Roblox/WinHttp"))
+						if(!ClientDetector::HasAccess())
 							die(http_response_code(503));
 					}
 				}
 			} else{
-				if (isset($_GET['serverplaceid'])) {
+				// might break who knows
+				if (isset($_GET['serverplaceid']) && isset($_GET['clientinsert'])) {
 					$serverplace = Place::FromID(intval($_GET['serverplaceid']));
 					
 					if ($serverplace == null && intval($_GET['serverplaceid']) != 0) {
