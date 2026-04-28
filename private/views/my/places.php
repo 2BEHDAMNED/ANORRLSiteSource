@@ -29,6 +29,19 @@
 			var placeid = $(this).attr("data-place-id");
 			window.external.StartGame("http://<?= $domain ?>/","http://<?= $domain ?>/","http://<?= $domain ?>/game/edit.ashx?placeId=" + placeid);
 		});
+
+		function onResizeWindow() {
+			var n = $("#PlacesContainer:visible");
+
+			$(window).height() < n.height() ?
+				$("#Sidebar").height(n.height()) :
+				$("#Sidebar").height($(window).height()-114), n.height($(window).height()-114)
+		}
+
+		$(window).resize(onResizeWindow);
+
+		onResizeWindow(); // set the heights and stuff when it loads
+
 		
 		$("#Sidebar a").each(function() {
 			$(this).attr("href", "#");

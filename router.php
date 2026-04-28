@@ -113,7 +113,7 @@
 		$name = "a";
 		require __DIR__.'/private/views/place.php';
 	});
-	
+
 	route('GET|POST', '/users/[i:id]/profile', '/private/views/users/profile.php');
 	route('GET',      '/users/[i:id]/css', '/private/views/users/css.php');
 	route('GET',      '/users/[i:id]/followers', '/private/views/users/followers.php');
@@ -152,8 +152,7 @@
 	route('GET', '/thumbnail/asset/generate', '/private/api/thumbnail/asset/generate.php');
 
 	route('GET', '/thumbnail/get', '/private/api/thumbnail/get.php');
-	
-	
+
 	// Apis!
 	route_api('GET|POST', 'catalog');
 	route_api('GET|POST', 'character');
@@ -194,6 +193,7 @@
 	route('GET',      '/IDE/Upload.aspx', '/private/views/ide/publish.php');
 	route('GET|POST', '/IDE/PublishNewPlace.aspx', '/private/views/ide/publishnewplace.php');
 	route('GET',      '/IDE/ClientToolbox.aspx', '/private/views/ide/toolbox.php');
+	route('GET',      '/ide/toolbox', '/private/views/ide/toolbox.php');
 	route('GET|POST', '/Data/Upload.ashx', '/private/gameapis/ide/upload.php');
 	route('GET|POST', '/Game/Upload.ashx', '/private/views/ide/goingupload.php');
 
