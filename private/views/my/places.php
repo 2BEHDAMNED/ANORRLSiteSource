@@ -83,7 +83,7 @@
 
 						echo <<<EOT
 						<td>
-							<div class="Place" data-place-id="{$place->id}">
+							<div class="Place" data-place-id="{$place->id}" title="{$place->name}">
 								<a href="#">
 									<img src="{$place->getThumbsUrl(229, 132)}">
 									<div id="Name">{$place->name}</div>
@@ -105,7 +105,7 @@
 			</table>
 		</div>
 		<div id="CollaborativeProjectsView" style="display: none">
-			<table style="width: calc(100vw - 280px);">
+			<table style="width: 100%">
 				<?php
 					$places_count = count($teamplaces);
 					$count = 0;
