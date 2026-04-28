@@ -213,6 +213,7 @@
 	route('GET',      '/Setting/QuietGet/AndroidAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientSharedSettings/', '/private/gameapis/settings/ClientSharedSettings.json');
+	route('GET',      '/Setting/QuietGet/ACCService'.CONFIG->asset->key.'/', '/private/gameapis/settings/ClientSharedSettings.json');
 	
 	// oh hello 2014 and what are you even doing here?
 	route('GET',      '/Setting/QuietGet/2014AppSettings/', '/private/gameapis/settings/2014ClientAppSettings.json');

@@ -27,7 +27,7 @@
 	$(function() {
 		$(".Place").on("click", function() {
 			var placeid = $(this).attr("data-place-id");
-			window.external.startGame("http://<?= $domain ?>/","http://<?= $domain ?>/","http://<?= $domain ?>/game/edit.ashx?placeId=" + placeid);
+			window.external.StartGame("http://<?= $domain ?>/","http://<?= $domain ?>/","http://<?= $domain ?>/game/edit.ashx?placeId=" + placeid);
 		});
 		
 		$("#Sidebar a").each(function() {

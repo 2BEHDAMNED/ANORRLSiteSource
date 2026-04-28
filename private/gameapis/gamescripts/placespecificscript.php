@@ -3,11 +3,11 @@ game:GetService("Players"):SetSaveDataUrl("http://{domain}/Persistence/SetBlob.a
 game:GetService("Players"):SetLoadDataUrl("http://{domain}/Persistence/GetBlob.ashx?placeid={id}&userid=%d&access={access}")
 
 game:GetService("Players").PlayerAdded:connectFirst(function(player)
-	player:LoadData()
+--	player:LoadData()
 end)
 
 game:GetService("Players").PlayerRemoving:connectLast(function(player)
-	player:SaveData()
+--	player:SaveData()
 end)
 <?php
 	use anorrl\Place;
