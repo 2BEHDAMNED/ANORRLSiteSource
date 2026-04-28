@@ -9,7 +9,8 @@
 		   !str_contains($_SERVER['SERVER_NAME'], "localhost") && 
 		   isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) &&
 		   $_COOKIE['ANORRL$Hidden$Cookie$yaya'] == CONFIG->secret->token &&
-		   $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https"
+		   $_SERVER['HTTP_X_FORWARDED_PROTO'] == "https" &&
+		   !str_contains($_SERVER['REQUEST_URI'], "PlaceLauncher.ashx")
 		) {
 			die(header("Location: https://anorrl.lambda.cam".$_SERVER['REQUEST_URI']));
 		}
@@ -135,6 +136,9 @@
 	route('GET|POST', '/my/profile', '/private/views/my/profile.php');
 	route('GET|POST', '/my/character', '/private/views/my/character.php');
 	route('GET|POST', '/my/places', '/private/views/my/places.php');
+
+	route('GET|POST', '/ide/publish', '/private/views/my/places.php');
+
 	route('GET|POST', '/my/stuff', '/private/views/my/stuff.php');
 	route('GET|POST', '/my/friends', '/private/views/my/friends.php');
 	route('GET|POST', '/my/', '/private/views/my/index.php');
@@ -276,7 +280,7 @@
 	route('GET',      '/universes/get-universe-containing-place', '/private/gameapis/universes/get-universe-containing-place.php');
 	route('GET',      '/universes/[i:universeId]/cloudeditenabled', '/private/gameapis/universes/cloudeditenabled.php');
 	route('GET',      '/universes/[i:universeId]/game-start-info', '/private/gameapis/universes/game-start-info.php');
-	route('GET',      '/universes/[i:universeId]/enablecloudedit', '/private/gameapis/universes/enablecloudedit.php');
+	route('GET|POST', '/universes/[i:universeId]/enablecloudedit', '/private/gameapis/universes/enablecloudedit.php');
 	route('GET',      '/universes/[i:universeId]/disablecloudedit', '/private/gameapis/universes/disablecloudedit.php');
 	route('GET',      '/universes/[i:universeId]/listcloudeditors', '/private/gameapis/universes/listcloudeditors.php');
 	route('GET',      '/universes/[i:universeId]/addcloudeditor', '/private/gameapis/universes/addcloudeditor.php');
