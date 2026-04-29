@@ -214,15 +214,22 @@
 	route('GET',      '/Thumbs/Asset.ashx', '/private/thumbs/rawasset.php');
 	route('GET',      '/thumbnail/avatar-headshot', '/private/thumbs/fakeheadshot.php');
 
-	route('GET',      '/Game/PlaceSpecificScript.ashx', '/private/gameapis/gamescripts/placespecificscript.php');
 	route('GET',      '/Game/LuaWebService/HandleSocialRequest.ashx', '/private/gameapis/social/socialrequests.php');
 	route('GET|POST', '/game/PlaceLauncher.ashx', '/private/gameapis/gamescripts/placelauncher.php');
 	route('GET|POST', '/Game/PlaceLauncher.ashx', '/private/gameapis/gamescripts/placelauncher.php');
+
+	// signed luas
+	route('GET',      '/Game/PlaceSpecificScript.slua', '/private/gameapis/gamescripts/placespecificscript.php');
+	route('GET',      '/Game/LoadPlaceInfo.slua', '/private/gameapis/gamescripts/loadplaceinfo.php');
+	route('GET',      '/game/gameserver.slua', '/private/gameapis/gamescripts/gameserver.php');
+	route('GET',      '/game/join.slua', '/private/gameapis/gamescripts/join.php');
+	route('GET',      '/game/visit.slua', '/private/gameapis/gamescripts/visit.php');
+	route('GET',      '/game/edit.slua', '/private/gameapis/gamescripts/edit.php');
+
+	route('GET',      '/Game/PlaceSpecificScript.ashx', '/private/gameapis/gamescripts/placespecificscript.php');
 	route('GET',      '/Game/LoadPlaceInfo.ashx', '/private/gameapis/gamescripts/loadplaceinfo.php');
-	route('GET',      '/game/gameserver.ashx', '/private/gameapis/gamescripts/gameserver.php');
 	route('GET',      '/game/join.ashx', '/private/gameapis/gamescripts/join.php');
-	route('GET',      '/game/visit.ashx', '/private/gameapis/gamescripts/visit.php');
-	route('GET',      '/game/edit.ashx', '/private/gameapis/gamescripts/edit.php');
+
 	route('GET',      '/game/load-place-info', '/private/gameapis/places/load-place-info.php');
 
 	route('GET',      '/GetAllowedMD5Hashes/', '/private/gameapis/authentication/getallowedmd5hashes.php');

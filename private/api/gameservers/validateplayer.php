@@ -5,7 +5,7 @@
 
 	if(!ClientDetector::HasAccess()) {
 		echo "NOT OK";
-		exit(http_response_code(503));
+		exit(http_response_code(403));
 	}
 
 	// to-do: use json?

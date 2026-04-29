@@ -69,7 +69,7 @@
 			$port = $gsr->port;
 			$pid = $gsr->pid;
 
-			$server = GameServer::Create($gsr->jobId, $place, $port, $pid);
+			$server = GameServer::Create($gsr->jobId, $place, $port, $pid, $teamcreate);
 			
 			if(!$server || ($server && !$server->active()))
 				throw new Exception("Failed to create gameserver.");

@@ -10,16 +10,16 @@
 	header("Content-Type: text/plain");
 
 	if(!SESSION || !isset($_GET['placeId']))
-		die(http_response_code(503));
+		die(http_response_code(403));
 
 	$user = SESSION->user;
 	$place = Place::FromID(intval($_GET['placeId']));
 
 	if(!$place)
-		die(http_response_code(503));
+		die(http_response_code(403));
 
 	if(!$place->isEditable($user))
-		die(http_response_code(503));
+		die(http_response_code(403));
 
 
 	$uploadurl = "http://{domain}/Data/Upload.ashx?assetid=".$place->id;

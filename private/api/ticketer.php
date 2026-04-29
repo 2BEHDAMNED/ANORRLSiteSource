@@ -16,7 +16,7 @@
 				$placeID = $place->id;
 				$clientticket = base64_encode($user->security_key);
 
-				$placelauncherurl = urlencode("http://{$domain}/game/edit.ashx?placeId={$place->id}");
+				$placelauncherurl = urlencode("http://{$domain}/game/edit.slua?placeId={$place->id}");
 				$session = urlencode(base64_encode($user->security_key));
 
 				die("anorrl-studio:1+script:{$placelauncherurl}+placeid:{$place->id}+launchmode:edit+gameinfo:{$session}");

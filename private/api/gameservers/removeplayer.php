@@ -4,7 +4,7 @@
 	use anorrl\utilities\ClientDetector;
 
 	if(!ClientDetector::HasAccess())
-		die(http_response_code(503));
+		die(http_response_code(403));
 
 	if(isset($_GET['jobID']) && isset($_GET['userID'])) {
 		$gameserver = GameServer::GetFromJobID($_GET['jobID']);

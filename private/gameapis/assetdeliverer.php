@@ -48,7 +48,7 @@
 
 					if($error) {
 						if(!ClientDetector::HasAccess())
-							die(http_response_code(503));
+							die(http_response_code(403));
 					}
 				}
 			} else{
