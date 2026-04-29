@@ -282,7 +282,7 @@ $(function() {
 			</div>
 			<?php if ($bgm): ?>
 			<div id="OnlineStatusArea" style="padding-top:0px; margin-top:-5px;">
-				<span><b>This user has a custom profile music, If it dosen't play then click anywhere to play it!</b></span>
+				<span><b>This user has a custom profile music, If it doesn't play then click anywhere to play it!</b></span>
 			</div>
 			<?php endif; ?>
 			<div id="Blurb">
