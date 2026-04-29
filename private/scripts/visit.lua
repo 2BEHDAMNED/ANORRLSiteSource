@@ -34,7 +34,7 @@ pcall(function() game:SetCreatorID(creatorID, Enum.CreatorType.User) end)
 pcall(function() game:SetScreenshotInfo("") end)
 pcall(function() game:SetVideoInfo("") end)
 
-pcall(function() settings().Rendering.EnableFRM = true end)
+pcall(function() settings().Rendering.EnableFRM = false end)
 pcall(function() settings()["Task Scheduler"].PriorityMethod = Enum.PriorityMethod.AccumulatedError end)
 
 game:GetService("ChangeHistoryService"):SetEnabled(false)
