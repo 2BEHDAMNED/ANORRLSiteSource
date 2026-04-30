@@ -38,6 +38,19 @@
 				8 => CatalogFilter::MostVisited,
 			};
 		}
+
+		public function getSQL(): string {
+			return match($this) {
+				CatalogFilter::RecentlyUploaded => "ORDER BY `created` DESC",
+				CatalogFilter::RecentlyUpdated  => "ORDER BY `lastedited` DESC",
+				CatalogFilter::OldestUploaded   => "ORDER BY `created` ASC",
+				CatalogFilter::OldestUpdated    => "ORDER BY `lastedited` ASC",
+				CatalogFilter::MostSold         => "ORDER BY `sales_count` DESC, `lastedited` DESC",
+				CatalogFilter::MostFavourited   => "ORDER BY `favourites_count` DESC, `lastedited` DESC",
+				CatalogFilter::MostPopular      => "ORDER BY `currently_playing_count` DESC, `visit_count` DESC, `lastedited` DESC",
+				CatalogFilter::MostVisited      => "ORDER BY `visit_count` DESC"
+			};
+		}
 	}
 
 ?>

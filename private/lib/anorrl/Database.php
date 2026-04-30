@@ -1,6 +1,8 @@
 <?php
 	namespace anorrl;
 	
+	define("SQL_ALLOK", "00000");
+
 	/**
 	 * Lifted from fubuki by parakeet
 	 */

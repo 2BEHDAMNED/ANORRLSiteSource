@@ -71,38 +71,32 @@
 		}
 
 		public static function FromID(int $id): Place|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `places` WHERE `id` = ?");
-			$stmt_getuser->bind_param('i', $id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$row = Database::singleton()->run(
+				"SELECT * FROM `places` WHERE `id` = :id",
+				[
+					":id" => $id
+				]
+			)->fetch(\PDO::FETCH_OBJ);
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
-			} else {
-				return null;
-			}
+			return $row ? new self($row) : null;
 		}
 
-		function __construct($rowdata) {
-			parent::__construct(intval($rowdata['id']));
+		function __construct(object $rowdata) {
+			parent::__construct($rowdata->id);
 
 			$this->friends_only = $this->public;
-			$this->copylocked = boolval($rowdata['copylocked']);
-			$this->server_size = intval($rowdata['serversize']);
-			$this->visit_count = intval($rowdata['visit_count']);
-			$this->current_playing_count = intval($rowdata['currently_playing_count']);
-			$this->teamcreate_enabled = boolval($rowdata['teamcreate_enabled']);
+			$this->copylocked = $rowdata->copylocked;
+			$this->server_size = $rowdata->serversize;
+			$this->visit_count = $rowdata->visit_count;
+			$this->current_playing_count = $rowdata->currently_playing_count;
+			$this->teamcreate_enabled = $rowdata->teamcreate_enabled;
 
-			$this->is_original = boolval($rowdata['original']);
-			$this->gears_enabled = boolval($rowdata['gears_enabled']);
+			$this->is_original = $rowdata->original;
+			$this->gears_enabled = $rowdata->gears_enabled;
 		}
 
 		function enableTeamCreate() {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_enableteamcreate = $con->prepare('UPDATE `places` SET `teamcreate_enabled` = 1 WHERE `id` = ?');
-			$stmt_enableteamcreate->bind_param('i', $this->id);
-			$stmt_enableteamcreate->execute();
+			Database::singleton()->run("UPDATE `places` SET `teamcreate_enabled` = 1 WHERE `id` = :id", [ ":id" => $this->id ]);
 
 			if(!$this->isCloudEditor($this->creator)) {
 				$this->addCloudEditor($this->creator);
@@ -124,74 +118,73 @@
 					]
 				);
 
-				// rewrite to pdo later
-				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-				$stmt_getactiveservers = $con->prepare("SELECT * FROM `active_servers` WHERE `placeid` = ? AND `teamcreate` = 1");
-				$stmt_getactiveservers->bind_param("i", $this->id);
-				$stmt_getactiveservers->execute();
+				$teamcreate_servers = $this->getServers(true);
 
-				$result_getactiveservers = $stmt_getactiveservers->get_result();
-
-				if($result_getactiveservers->num_rows != 0) {
-					$row = $result_getactiveservers->fetch_assoc();
-
-					Arbiter::singleton()->requestGS("kill", ["pid" => $row['pid']]);
-
-					$db->run("DELETE FROM `active_servers` WHERE `jobid` = :jobid;", [ ":jobid" => $row['jobid'] ]);
+				foreach($teamcreate_servers as $server) {
+					$server->destroy();
 				}
 			}
 		}
 
 		function isCloudEditor(User $user) {
 			if($this->teamcreate_enabled) {
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt_checkiseditor = $con->prepare('SELECT * FROM `cloudeditors` WHERE `userid` = ? AND `placeid` = ?;');
-				$stmt_checkiseditor->bind_param('ii', $user->id, $this->id);
-				$stmt_checkiseditor->execute();
-
-				return $stmt_checkiseditor->get_result()->num_rows != 0;
+				return Database::singleton()->run(
+					"SELECT `id` FROM `cloudeditors` WHERE `userid` = :uid AND `placeid` = :pid",
+					[
+						":uid" => $user->id,
+						":pid" => $this->id
+					]
+				)->rowCount() != 0;
 			}
 			return false;
 		}
 
 		function addCloudEditor(User $user) {
-			if(!$this->isCloudEditor($user)) {
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt_addeditor = $con->prepare('INSERT INTO `cloudeditors`(`userid`, `placeid`) VALUES (?, ?)');
-				$stmt_addeditor->bind_param('ii', $user->id, $this->id);
-				$stmt_addeditor->execute();
+			if(!$this->isCloudEditor($user) && !$user->isBanned()) {
+				return Database::singleton()->run(
+					"INSERT INTO `cloudeditors`(`userid`, `placeid`) VALUES (:uid, :pid)",
+					[
+						":uid" => $user->id,
+						":pid" => $this->id
+					]
+				);
 			}	
 		}
 
 		function removeCloudEditor(User $user) {
 			if($this->isCloudEditor($user) && $user->id != $this->creator->id) {
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt_addeditor = $con->prepare('DELETE FROM `cloudeditors` WHERE `userid` = ? AND `placeid` = ?;');
-				$stmt_addeditor->bind_param('ii', $user->id, $this->id);
-				$stmt_addeditor->execute();
+				return Database::singleton()->run(
+					"DELETE FROM `cloudeditors` WHERE `userid` = :uid AND `placeid` = :pid",
+					[
+						":uid" => $user->id,
+						":pid" => $this->id
+					]
+				);
 			}	
 		}
 
 		function getCloudEditors() {
 			if($this->teamcreate_enabled) {
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt_geteditors = $con->prepare('SELECT `userid` FROM `cloudeditors` WHERE `placeid` = ?;');
-				$stmt_geteditors->bind_param('i', $this->id);
-				$stmt_geteditors->execute();
+				$rows = Database::singleton()->run(
+					"SELECT `userid` FROM `cloudeditors` WHERE `placeid` = :place",
+					[ ":place" => $this->id ]
+				)->fetchAll(\PDO::FETCH_OBJ);
+				
+				$editors = [];
 
-				$result_geteditors = $stmt_geteditors->get_result();
-
-				$result = [];
-
-				while($row = $result_geteditors->fetch_assoc()) {
+				foreach($rows as $row) {
 					$user = User::FromID(intval($row['userid']));
 
-					if($user && !$user->isBanned()) {
-						$result[] = $user;
-					}
+					if(!$user)
+						continue;
+
+					if(!$user->isBanned())
+						$editors[] = $user;
+					else
+						$this->removeCloudEditor($user);
 				}
 
-				return $result;
+				return $editors;
 			}
 			return [];
 		}
@@ -215,26 +208,13 @@
 			$this->visit_count = $visits;
 		}
 
-		function visit(User|int $user) {
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-
-			$placeid = $this->id;
-
-			$stmt_checkvisit = $con->prepare('SELECT * FROM `visits` WHERE `place` = ? AND `player` = ? AND `time` >= CURDATE() - INTERVAL 1 HOUR;');
-			$stmt_checkvisit->bind_param('ii', $placeid, $userid);
-			$stmt_checkvisit->execute();
-
-			if($stmt_checkvisit->get_result()->num_rows == 0) {
-				$stmt_addvisit = $con->prepare('INSERT INTO `visits`(`place`, `player`) VALUES (?, ?)');
-				$stmt_addvisit->bind_param('ii', $placeid, $userid);
-				$stmt_addvisit->execute();
-
-				// Update
+		function visit(User $user) {
+			if(!$user->hasVisited($this)) {
+				// insert visit... move to User?
+				Database::singleton()->run(
+					"INSERT INTO `visits`(`place`, `player`) VALUES (:place, :player)",
+					[ ":place" => $this->id, ":player" => $user->id ]
+				);
 
 				$this->updateVisitCount();
 
@@ -248,7 +228,7 @@
 			}
 		}
 
-		function getServers(bool $teamcreate = false, bool $active = true): array {
+		function getServers(bool $teamcreate = false): array {
 			$rows = Database::singleton()->run(
 				"SELECT * FROM `active_servers` WHERE `placeid` = :placeid AND `teamcreate` = :teamcreate",
 				[

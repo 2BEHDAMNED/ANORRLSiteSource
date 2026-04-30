@@ -65,16 +65,20 @@
 			}
 
 			$discordid = self::UseAccessKey($accesskey);
-			$hashedpass = password_hash($password, PASSWORD_DEFAULT);
+			$hashedpass = password_hash($password, PASSWORD_ARGON2ID);
 			$securitykey = self::GenerateSecurityKey();
-
-			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
-
-			$stmt_insertuser = $con->prepare("INSERT INTO `users`(`name`, `blurb`, `discord`, `password`, `security`) VALUES (?,'',?,?,?);");
-			$stmt_insertuser->bind_param('ssss', $username, $discordid, $hashedpass, $securitykey);
-			if($stmt_insertuser->execute()) {
+			
+			if(Database::singleton()->run(
+				"INSERT INTO `users`(`name`, `blurb`, `discord`, `password`, `security`) VALUES (:name,'',:discord,:password,:security);",
+				[
+					":name" => $username,
+					":discord" => $discordid,
+					":password" => $hashedpass,
+					":security" => $securitykey
+				]
+			)->errorInfo()[0] == SQL_ALLOK) {
 				self::SetCookies($securitykey);
-				return "success";
+				return "success"; // todo return ["error" => false] bc what the fuck is this
 			}
 
 			return ['unknown'=>"Something went wrong!"];
@@ -89,7 +93,6 @@
 		public static function LoginUser(string $username, string $password): string|array {
 			$errors = [];
 
-			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
 			$pass_username = trim($username);
 			$pass_password = trim($password);
 
@@ -111,23 +114,17 @@
 				return $errors;
 			}
 
-			// login user
-			$stmt_grabuser = $con->prepare('SELECT * FROM `users` WHERE `name` = ?;');
-			$stmt_grabuser->bind_param('s', $username);
-			$stmt_grabuser->execute();
-			$result_grabuser = $stmt_grabuser->get_result();
+			$user = User::FromNamePercise($username);
 
-			if($result_grabuser->num_rows == 1) {
-				$user_row = $result_grabuser->fetch_assoc();
-
-				if(password_verify($pass_password, $user_row['password'])) {
-					self::SetCookies($user_row['security']);
+			if($user) {
+				if(password_verify($pass_password, $user->password)) {
+					self::SetCookies($user->security_key);
 					if(session_status() != PHP_SESSION_ACTIVE) {
 						session_start();
 					}
 
-					$_SESSION['SESSION_TOKEN_YAA'] = $user_row['security'];
-					return  ['login' => $user_row['security']];
+					$_SESSION['SESSION_TOKEN_YAA'] = $user->security_key;
+					return  ['login' => $user->security_key]; // why what
 				}
 			}
 
@@ -152,17 +149,10 @@
 		 * @return string|null
 		 */
 		static function UseAccessKey(string $accesskey): string|null {
-			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
-			$stmt_checkkey = $con->prepare('SELECT `discorduid` FROM `accesskeys` WHERE `key` = ?;');
-			$stmt_checkkey->bind_param('s', $accesskey);
-			$stmt_checkkey->execute();
-			$result_checkkey = $stmt_checkkey->get_result();
-
-			$discorduid = $result_checkkey->fetch_assoc()['discorduid'];
-
-			$stmt_usekey = $con->prepare('DELETE FROM `accesskeys` WHERE `key` = ?;');
-			$stmt_usekey->bind_param('s', $accesskey);
-			$stmt_usekey->execute();
+			$db = Database::singleton();
+			// yup
+			$discorduid =  $db->run("SELECT `discorduid` FROM `accesskeys` WHERE `key` = :key", [":key" => $accesskey])->fetchObject()->discorduid;
+			/* use key */  $db->run("DELETE FROM `accesskeys` WHERE `key` = :key", [":key" => $accesskey]);
 
 			return $discorduid;
 		}
@@ -173,26 +163,11 @@
 		 * @return bool True if it's not being used
 		 */
 		public static function IsUsernameAvailable(string $username): bool {
-			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
-			$stmt_checkusername = $con->prepare('SELECT `name` FROM `users` WHERE `name` LIKE ?;');
-			$stmt_checkusername->bind_param('s', $username);
-			$stmt_checkusername->execute();
-			$result_checkusername = $stmt_checkusername->get_result();
-			return $result_checkusername->num_rows == 0;
+			return User::FromName($username) == null;
 		}
 
 		public static function IsUsernameValid(string $username): bool {
 			return preg_match("/^[a-zA-Z0-9]{3,20}$/", $username);
-		}
-
-		private static function StringContainsFromArray(array $array, string $string) {
-			foreach($array as $item) {
-				if(str_contains($string, $item)) {
-					return true;
-				}
-			}
-
-			return false;
 		}
 		
 		public static function RetrieveUser(): User|null {

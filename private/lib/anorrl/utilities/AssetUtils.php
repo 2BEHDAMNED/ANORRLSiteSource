@@ -2,6 +2,7 @@
 	namespace anorrl\utilities;
 
 	use anorrl\Asset;
+	use anorrl\Database;
 	use anorrl\Place;
 	use anorrl\enums\AssetType;
 	use anorrl\enums\CatalogFilter;
@@ -10,8 +11,9 @@
 	class AssetUtils {
 		
 		public static function Get(AssetType $type, string $query = "", int $page = -1, int $count = -1): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 			$user = UserUtils::RetrieveUser();
+			$db = Database::singleton();
+
 			if($user == null) 
 				return [];
 			
@@ -22,42 +24,48 @@
 			
 			$stmt_query = "%$query%";
 			$stmt_type = $type->ordinal();
+			
+			$rows = [];
 
 			if($page == -1 || $count == -1) {
-				$stmt_getuser = $con->prepare("SELECT * FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter");
-				$stmt_getuser->bind_param('si', $stmt_query, $stmt_type);
-				$stmt_getuser->execute();
+				$rows = $db->run(
+					"SELECT `id`,`type` FROM `assets` WHERE `name` LIKE :search AND `type` = :type $query_filter",
+					[
+						":search" => $stmt_query,
+						":type" => $stmt_type
+					]
+				)->fetchAll(\PDO::FETCH_OBJ);
+
 				// show all
 			} else {
-				$stmt_page = (($page-1)*$count);
-				
-				$stmt_getuser = $con->prepare("SELECT * FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter LIMIT ?, ?");
-				$stmt_getuser->bind_param('siii', $stmt_query, $stmt_type, $stmt_page, $count);
-				$stmt_getuser->execute();
 				// pagify
-			}
 
-			$result = $stmt_getuser->get_result();
+				$rows = $db->run(
+					"SELECT `id`,`type` FROM `assets` WHERE `name` LIKE :search AND `type` = :type $query_filter LIMIT :page, :size",
+					[
+						":search" => $stmt_query,
+						":type" => $stmt_type,
+						":page" => (($page-1)*$count),
+						":size" => $count
+					]
+				)->fetchAll(\PDO::FETCH_OBJ);
+			}
 
 			$result_array = [];
-
-			if($result->num_rows != 0) {
-				while($row = $result->fetch_assoc()) {
-					if($row['type'] == AssetType::PLACE->ordinal()) {
-						$asset = Place::FromID($row['id']);
-					} else {
-						$asset = new Asset($row);
-					}
-
-					if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
-						$result_array[] = $asset;
-					}
+			
+			foreach($rows as $row) {
+				if($type == AssetType::PLACE->ordinal()) {
+					$asset = Place::FromID($row->id);
+				} else {
+					$asset = Asset::FromID($row->id);
 				}
-				return $result_array;
+
+				if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
+					$result_array[] = $asset;
+				}
 			}
 
-			return [];
-
+			return $result_array;
 		}
 		
 		public static function GetFiltered(CatalogFilter $filter, AssetType $type, string $query, int $page = -1, int $count = -1) {
@@ -78,33 +86,24 @@
 				$query_filter = "AND `nevershow` = 0";
 			}
 
-			$base_sql_query = "SELECT * FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter";
+			$base_sql_query = "SELECT `id` FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter";
 			if($type == AssetType::PLACE) {
-				$base_sql_query = "SELECT places.* FROM `places`, `assets` WHERE assets.id = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
+				$base_sql_query = "SELECT places.id FROM `places`, `assets` WHERE assets.id = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
 			}
 			
-			$filter = match($filter) {
-				CatalogFilter::RecentlyUploaded => "ORDER BY `created` DESC",
-				CatalogFilter::RecentlyUpdated  => "ORDER BY `lastedited` DESC",
-				CatalogFilter::OldestUploaded   => "ORDER BY `created` ASC",
-				CatalogFilter::OldestUpdated    => "ORDER BY `lastedited` ASC",
-				CatalogFilter::MostSold         => "ORDER BY `sales_count` DESC, `lastedited` DESC",
-				CatalogFilter::MostFavourited   => "ORDER BY `favourites_count` DESC, `lastedited` DESC",
-				CatalogFilter::MostPopular      => "ORDER BY `currently_playing_count` DESC, `visit_count` DESC, `lastedited` DESC",
-				CatalogFilter::MostVisited      => "ORDER BY `visit_count` DESC"
-			};
+			$sql_filter = $filter->getSQL();
 			
 			$stmt_query = "%$query%";
 			$stmt_type = $type->ordinal();
 
 			if($page == -1 || $count == -1) {
-				$stmt_getuser = $con->prepare("$base_sql_query $filter");
+				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter");
 				$stmt_getuser->bind_param('si', $stmt_query, $stmt_type);
 				$stmt_getuser->execute();
 			} else {
 				$stmt_page = (($page-1)*$count);
 				
-				$stmt_getuser = $con->prepare("$base_sql_query $filter LIMIT ?, ?");
+				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter LIMIT ?, ?");
 				$stmt_getuser->bind_param('siii', $stmt_query, $stmt_type, $stmt_page, $count);
 				$stmt_getuser->execute();
 			}
@@ -139,7 +138,6 @@
 			}
 
 			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-
 			
 			$user = UserUtils::RetrieveUser();
 			if($user == null) 
@@ -155,28 +153,19 @@
 				$base_sql_query = "SELECT COUNT(`places`.`id`) FROM `places`, `assets` WHERE assets.id = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
 			}
 			
-			$filter = match($filter) {
-				CatalogFilter::RecentlyUploaded => "ORDER BY `created` DESC",
-				CatalogFilter::RecentlyUpdated  => "ORDER BY `lastedited` DESC",
-				CatalogFilter::OldestUploaded   => "ORDER BY `created` ASC",
-				CatalogFilter::OldestUpdated    => "ORDER BY `lastedited` ASC",
-				CatalogFilter::MostSold         => "ORDER BY `sales_count` DESC, `lastedited` DESC",
-				CatalogFilter::MostFavourited   => "ORDER BY `favourites_count` DESC, `lastedited` DESC",
-				CatalogFilter::MostPopular      => "ORDER BY `currently_playing_count` DESC, `visit_count` DESC, `lastedited` DESC",
-				CatalogFilter::MostVisited      => "ORDER BY `visit_count` DESC"
-			};
+			$sql_filter = $filter->getSQL();
 			
 			$stmt_query = "%$query%";
 			$stmt_type = $type->ordinal();
 
 			if($page == -1 || $count == -1) {
-				$stmt_getuser = $con->prepare("$base_sql_query $filter");
+				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter");
 				$stmt_getuser->bind_param('si', $stmt_query, $stmt_type);
 				$stmt_getuser->execute();
 			} else {
 				$stmt_page = (($page-1)*$count);
 				
-				$stmt_getuser = $con->prepare("$base_sql_query $filter LIMIT ?, ?");
+				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter LIMIT ?, ?");
 				$stmt_getuser->bind_param('siii', $stmt_query, $stmt_type, $stmt_page, $count);
 				$stmt_getuser->execute();
 			}
@@ -195,10 +184,5 @@
 			
 			return $row['COUNT(`id`)'];
 		}
-		/*
-		SELECT COUNT(column_name)
-FROM table_name
-WHERE condition; */
-
 	}
 ?>

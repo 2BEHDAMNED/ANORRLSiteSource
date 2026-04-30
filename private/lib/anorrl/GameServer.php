@@ -133,18 +133,16 @@
 			return GameSession::GetPlayerInServer(is_int($user) ? $user : $user->id, $this->id) != null;
 		}
 
-		function addPlayer(User|int $user) {
+		function addPlayer(User $user) {
 			if(!$this->active()) { $this->destroy(); return; }
 
 			if($this->isPlayerInServer($user)) return;
-
-			$userid = is_int($user) ? $user : $user->id;
 
 			Database::singleton()->run(
 				"UPDATE `active_players` SET `status` = 1 WHERE `serverid` = :id AND `playerid` = :playerid",
 				[
 					":id" => $this->id,
-					":playerid" => $userid
+					":playerid" => $user->id
 				]
 			);
 

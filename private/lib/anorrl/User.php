@@ -57,17 +57,27 @@
 		 * @return User|null
 		 */
 		public static function FromName(string $name) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `users` WHERE `name` LIKE ?");
-			$stmt_getuser->bind_param('s', $name);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$row = Database::singleton()->run(
+				"SELECT * FROM `users` WHERE `name` LIKE :name",
+				[":name" => $name]
+			)->fetch(\PDO::FETCH_OBJ);
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
-			} else {
-				return null;
-			}
+			return $row ? self::FromID($row->id) : null;
+		}
+
+		/**
+		 * Attempts to grab userdata from given id.<br>
+		 * Returns null if user of id was not found.
+		 * @param string $name
+		 * @return User|null
+		 */
+		public static function FromNamePercise(string $name) {
+			$row = Database::singleton()->run(
+				"SELECT * FROM `users` WHERE `name` = :name",
+				[":name" => $name]
+			)->fetch(\PDO::FETCH_OBJ);
+
+			return $row ? self::FromID($row->id) : null;
 		}
 
 		/**
@@ -1503,6 +1513,23 @@
 
 		private function getJsonRenderPath(): string {
 			return $_SERVER['DOCUMENT_ROOT']."/../renders/3d/{$this->currentoutfitmd5}.json";
+		}
+
+		/**
+		 * ... In the past hour...
+		 * @param Place $place
+		 * @param int $hours Default 1 hour
+		 * @return bool
+		 */
+		function hasVisited(Place $place, int $hours = 1) {
+			return Database::singleton()->run(
+				"SELECT * FROM `visits` WHERE `place` = :place AND `player` = :player AND `time` >= CURDATE() - INTERVAL :hours HOUR;",
+				[
+					":place" => $place->id,
+					":player" => $this->id,
+					":hours" => $hours
+				]
+			)->rowCount() != 0;
 		}
 	}
 ?>
