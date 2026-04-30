@@ -15,6 +15,6 @@
 		if($userToAdd != null) {
 			$place->removeCloudEditor($userToAdd);
 			echo "{}";
-		]
+		}
 	}
 ?>
