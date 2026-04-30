@@ -93,8 +93,11 @@
 
 			ob_clean();
 
-			echo GetDataBlob($place, $user);
-
+			$data = GetDataBlob($place, $user);
+			if($data)
+				return $data;
+			else
+				return "<Table></Table>";
 		}
 	}
 ?>
