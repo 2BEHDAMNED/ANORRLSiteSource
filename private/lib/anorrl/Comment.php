@@ -14,26 +14,24 @@
 		public string $contents;
 		public \DateTime $postdate;
 
-		function __construct($rowdata) {
-			$this->id = strval($rowdata['id']);
-			$this->poster = User::FromID($rowdata['poster']);
+		function __construct(object $rowdata) {
+			$this->id = $rowdata->id;
+			$this->poster = User::FromID($rowdata->poster);
 			
-			if(str_starts_with($rowdata['parent'], 'a!')) {
-				$this->parent = Asset::FromID(substr($rowdata['parent'], 2));
+			if(str_starts_with($rowdata->parent, 'a!')) {
+				$this->parent = Asset::FromID(substr($rowdata->parent, 2));
 			} else {
-				$this->parent = User::FromID(substr($rowdata['parent'], 2));
+				$this->parent = User::FromID(substr($rowdata->parent, 2));
 			}
 
-			$this->contents = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata['content']));
-			$this->postdate = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['postdate']);
+			$this->contents = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata->content));
+			$this->postdate = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->postdate);
 		
 		}
 
 		function PrintComment() {
 			$contents = str_replace(PHP_EOL, "<br>", $this->contents);
 			$user_id = $this->poster->id;
-			$user_name = $this->poster->name;
-			$profileurl = $this->poster->setprofilepicture ? "profile" : "headshot";
 			$formatted_datetime = $this->postdate->format("d/m/Y");
 
 			$timeago = UtilUtils::GetTimeAgo($this->postdate);
@@ -47,7 +45,7 @@
 				</div>
 				<div id="CommentPartArea">
 					<div id="CommentInfoArea">
-						<a href="/users/$user_id/profile">$user_name</a>&nbsp;<span>Posted on $formatted_datetime ($timeago)</span>
+						<a href="/users/$user_id/profile">{$this->poster->name}</a>&nbsp;<span>Posted on $formatted_datetime ($timeago)</span>
 					</div>
 					<code>$contents</code>
 				</div>
@@ -69,53 +67,38 @@
 		}
 
 		static function GenerateID() {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			
 			$id = self::GetRandomString();
-			$stmt = $con->prepare('SELECT * FROM `comments` WHERE `id` = ?');
-			$stmt->bind_param('s', $id);
-			$stmt->execute();
-			$stmt->store_result();
-			
-			$instances = $stmt->num_rows;
-			
-			if($instances != 0) {
-				self::GenerateID();
-			} else {
-				return $id;
-			}
+			$instances = Database::singleton()->run(
+				"SELECT * FROM `comments` WHERE `id` = :id",
+				[":id" => $id]
+			)->rowCount();
+
+			return $instances == 0 ? $id : self::GenerateID();
 		}
 
 		static function GetLatestCommentFromUser(User $user): Comment|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `comments` WHERE `poster` = ? ORDER BY `postdate` DESC");
-			$stmt_getuser->bind_param('i', $user->id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$row = Database::singleton()->run(
+				"SELECT * FROM `comments` WHERE `poster` = :poster ORDER BY `postdate` DESC",
+				[":poster" => $user->id]
+			)->fetch(\PDO::FETCH_OBJ);
 
-			if($result->num_rows == 0) {
-				return null;
-			}
-
-			return new Comment($result->fetch_assoc());
+			return $row ? new Comment($row) : null;
 		}
 
 		public static function Post(Asset|User|null $parent, string $contents): array {
 			$user = UserUtils::RetrieveUser();
 
-			if($user == null) {
+			if(!$user)
 				return [
 					"error" => true,
 					"reason" => "User is not authorised to perform this action!"
 				];
-			}
 
-			if($parent == null) {
+			if(!$parent)
 				return [
 					"error" => true,
 					"reason" => "Destination is null!"
 				];
-			}
 
 			$parent_id = "a!".$parent->id;
 			if($parent instanceof User) {
@@ -123,9 +106,6 @@
 			}
 
 			$waittime = 5;
-
-			$comment_id = self::GenerateID();
-			$comment = UtilUtils::StripUnicode($contents);
 			$lastpost = self::GetLatestCommentFromUser($user);
 			
 			if($lastpost != null) {
@@ -134,6 +114,9 @@
 				$difference_in_seconds = 6;
 			}
 			if($difference_in_seconds > $waittime) {
+				$comment_id = self::GenerateID();
+				$comment = UtilUtils::StripUnicode($contents);
+
 				$error_check = false;
 				if(strlen($comment) < 4) {
 					$error_check = true;
@@ -147,11 +130,16 @@
 				$comment = SlurUtils::ProcessText($comment);
 
 				if(!$error_check) {
-					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-					$stmt = $con->prepare('INSERT INTO `comments`(`id`, `parent`, `poster`, `content`) VALUES (?, ?, ?, ?)');
-					$stmt->bind_param('ssss',  $comment_id, $parent_id, $user->id, $comment);
-					
-					$stmt->execute();
+					Database::singleton()->run(
+						"INSERT INTO `comments`(`id`, `parent`, `poster`, `content`) VALUES (:id, :pid, :poster, :contents)",
+						[
+							":id" => $comment_id,
+							":pid" => $parent_id,
+							":poster" => $user->id,
+							":contents" => $comment
+						]
+					);
+
 					return [
 						"error" => false,
 						"id"    => $comment_id
@@ -177,15 +165,14 @@
 				$parent_id = "u!".$parent->id;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `comments` WHERE `parent` = ? ORDER BY `postdate` DESC;");
-			$stmt_getuser->bind_param('s', $parent_id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT * FROM `comments` WHERE `parent` = :parent ORDER BY `postdate` DESC;",
+				[ ":parent" => $parent_id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$comments = [];
 
-			while($row = $result->fetch_assoc()) {
+			foreach($rows as $row) {
 				$comments[] = new Comment($row);
 			}
 			return $comments;
