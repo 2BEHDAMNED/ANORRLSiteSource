@@ -14,9 +14,7 @@
 				str_starts_with($file, "/private/views/") &&
 				(!isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) || 
 				(isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) && $_COOKIE['ANORRL$Hidden$Cookie$yaya'] != CONFIG->secret->token))) {
-						
-					if($path != "/")
-						die(header("Location: https://arl.lambda.cam/goodbye"));
+					die(header("Location: https://arl.lambda.cam/goodbye"));
 			} else {
 				$secret_enabled = false;
 			}
@@ -227,6 +225,7 @@
 	route('GET',      '/Setting/QuietGet/WindowsBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
 	route('GET',      '/Setting/QuietGet/WindowsStudioBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
 
+	route('GET|POST', '/v1.0/MultiIncrement/', '/private/templates/responses/nothing.txt');
 	route('GET|POST', '/Error/Dmp.ashx', '/private/templates/responses/nothing.txt');
 	route('GET|POST', '/v1.1/Counters/Increment/', '/private/templates/responses/nothing.txt');
 	route('GET|POST', '/v1.1/counters/increment/', '/private/templates/responses/nothing.txt');
@@ -335,7 +334,7 @@
 	} else {
 		header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
 		if(!SESSION && isset(CONFIG->secret)) {
-			die(header("Location: /"));
+			die(header("Location: https://arl.lambda.cam/goodbye"));
 		}
 		require __DIR__.'/private/views/errors/404.php';
 		exit();
