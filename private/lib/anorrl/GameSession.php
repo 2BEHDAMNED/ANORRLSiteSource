@@ -70,7 +70,7 @@
 				]
 			);
 
-			return self::Get($id);
+			return self::Get($id, $teamcreate);
 		}
 
 		function __construct(Object $rowdata) {

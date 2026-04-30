@@ -10,5 +10,6 @@
 
 	if($place != null && $user != null && ($user->id == $place->creator->id || $user->isAdmin())) {
 		$place->enableTeamCreate();
+		echo "{}";
 	}
 ?>

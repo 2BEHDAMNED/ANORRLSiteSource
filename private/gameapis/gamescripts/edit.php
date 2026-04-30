@@ -9,11 +9,11 @@
 
 	header("Content-Type: text/plain");
 
-	if(!SESSION || !isset($_GET['placeId']))
+	if(!SESSION || !isset($_GET['placeId']) && !isset($_GET['PlaceID']))
 		die(http_response_code(403));
 
 	$user = SESSION->user;
-	$place = Place::FromID(intval($_GET['placeId']));
+	$place = Place::FromID(intval(isset($_GET['placeId']) ? $_GET['placeId'] : $_GET['PlaceID']));
 
 	if(!$place)
 		die(http_response_code(403));

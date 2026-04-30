@@ -1,4 +1,3 @@
-
 <?php
 
 	use anorrl\User;
@@ -12,7 +11,7 @@
 		foreach($friends as $friend) {
 			$result[] = [
 				"Id" => $friend->id,
-				"Username" => $friend->id
+				"Username" => $friend->name
 			];
 		}
 

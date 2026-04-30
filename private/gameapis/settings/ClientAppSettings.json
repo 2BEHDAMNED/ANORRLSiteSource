@@ -1,5 +1,6 @@
 {
-	"FFlagKickUsersWhenTheyLoseAccessToCloudEdit": "True",
+	"FFlagTeamCreateEnableCompleterFix": "True",
+	"FFlagKickUsersWhenTheyLoseAccessToCloudEdit": "False",
 	"FFlagTeamCreateCheckInvalidUniverse": "False",
 	"FFlagRCCSupportCloudEdit": "True",
 	"FFlagDebugLocalRccServerConnection": "False",
@@ -806,7 +807,7 @@
 	"FFlagGameExplorerImagesInsertEnabled": "True",
 	"FFlagGameExplorerMoveImagesUnderAssetsGroup": "True",
 	"FFlagGameExplorerPublishEnabled": "True",
-	"FFlagGameExplorerUseV2AliasEndpoint": "True",
+	"FFlagGameExplorerUseV2AliasEndpoint": "False",
 	"FFlagGameNameAtTopOfExplorer": "True",
 	"FFlagGameNameLabelEnabled": "True",
 	"FFlagGamepadCursorChanges": "True",

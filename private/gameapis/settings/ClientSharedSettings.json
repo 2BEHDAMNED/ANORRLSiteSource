@@ -1,5 +1,6 @@
 {
-	"FFlagKickUsersWhenTheyLoseAccessToCloudEdit": "True",
+	"FFlagTeamCreateEnableCompleterFix": "True",
+	"FFlagKickUsersWhenTheyLoseAccessToCloudEdit": "False",
 	"FFlagTeamCreateCheckInvalidUniverse": "False",
 	"FFlagRCCSupportCloudEdit": "True",
 	"DFFlagAvatarFetchBuildUrlChange": "True",
@@ -1129,7 +1130,7 @@
 	"FFlagUseNewAppBridgeOSX": "True",
 	"FFlagNewColor3Functions": "True",
 	"DFFlagSmootherVehicleSeatControlSystem": "True",
-	"FFlagGameExplorerUseV2AliasEndpoint": "True",
+	"FFlagGameExplorerUseV2AliasEndpoint": "False",
 	"FFlagDisableAbortRender": "True",
 	"DFFlagInstancePredeleteNuke": "True",
 	"DFFlagSimpleHermiteSplineInterpolate": "False",

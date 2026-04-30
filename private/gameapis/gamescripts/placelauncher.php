@@ -63,20 +63,32 @@
 				]
 			);
 
-			if(!$gsr || ($gsr && $gsr->status == "killed"))
-				throw new Exception("Failed to create gameserver.");
+			ob_clean();
+			print_r($gsr);
+			error_log(ob_get_clean());
 
+			if(!$gsr ||
+				($gsr && isset($gsr->message)&& $gsr->message == "killed") ||
+				($gsr && (!isset($gsr->jobId) || !isset($gsr->port) || !isset($gsr->pid)))
+			) {
+				throw new Exception("Failed to create gameserver.");
+			}
+			
 			$port = $gsr->port;
 			$pid = $gsr->pid;
 
 			$server = GameServer::Create($gsr->jobId, $place, $port, $pid, $teamcreate);
 			
-			if(!$server || ($server && !$server->active()))
-				throw new Exception("Failed to create gameserver.");
-			
+			if(!$server || ($server && !$server->active())) {
+				if(!$server)
+					$reason = "Server was null";
+				else
+					$reason = "Server was somehow inactive";
+				throw new Exception("Failed to create gameserver. ($reason)");
+			}
 			return $server;
 		} catch(Exception $e) {
-			error_log("Failed to start gameserver");
+			error_log($e);
 			errorOut(1);
 		}
 	}
@@ -88,9 +100,7 @@
 	// gender=
 	// isTeleport=false
 
-	if(
-		isset($_GET['request'])
-	) {
+	if(isset($_GET['request'])) {
 		if(
 			(isset($_GET['placeId']) || isset($_GET['serverId'])) &&
 			isset($_GET['isTeleport']) &&
@@ -195,14 +205,14 @@
 					"settings" => [
 						"ClientPort" => 0,
 						"MachineAddress" => CONFIG->arbiter->location->public,
-						"ServerPort" => $port,
+						"ServerPort" => $server->port,
 						"PingUrl" => "",
 						"PingInterval" => 120,
 						"UserName" => $user->name,
 						"UserId" => $user->id,
 						"SuperSafeChat" => false,
 						"CharacterAppearance" => "http://$domain/Asset/CharacterFetch.ashx?userId={$user->id}",
-						"ClientTicket" => $sessionID,
+						"ClientTicket" => $session->id,
 						"GameId" =>"00000000-0000-0000-0000-000000000000",
 						"PlaceId" => $place->id,
 						"MeasurementUrl" => "",
@@ -220,6 +230,13 @@
 				$json = str_replace("\\\\", "",$json);
 				$json = str_replace("\\", "", $json); 
 				die($json);
+			}
+			else {
+				if(!$session)
+					error_log("Session was null");
+				if(!$server)
+					error_log("Server was null");
+				//error_log("Session or Server was null");
 			}
 		}
 	}

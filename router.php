@@ -29,7 +29,7 @@
 				(!isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) || 
 				(isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) && $_COOKIE['ANORRL$Hidden$Cookie$yaya'] != CONFIG->secret->token))) {
 						
-					if($path != "/goodbye")
+					if($path != "/goodbye" && $path != "/users/[i:id]/friends")
 						die(header("Location: /goodbye"));
 			} else {
 				$secret_enabled = false;
@@ -239,7 +239,7 @@
 	route('GET',      '/Setting/QuietGet/AndroidAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientSharedSettings/', '/private/gameapis/settings/ClientSharedSettings.json');
-	route('GET',      '/Setting/QuietGet/ACCService'.CONFIG->asset->key.'/', '/private/gameapis/settings/ClientSharedSettings.json');
+	route('GET',      '/Setting/QuietGet/ACCService'.CONFIG->asset->key.'/', '/private/gameapis/settings/ACCService.json');
 	route('GET',      '/Setting/QuietGet/WindowsBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
 	route('GET',      '/Setting/QuietGet/WindowsStudioBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
 
@@ -288,10 +288,10 @@
 	route('GET',      '/universes/[i:universeId]/cloudeditenabled', '/private/gameapis/universes/cloudeditenabled.php');
 	route('GET',      '/universes/[i:universeId]/game-start-info', '/private/gameapis/universes/game-start-info.php');
 	route('GET|POST', '/universes/[i:universeId]/enablecloudedit', '/private/gameapis/universes/enablecloudedit.php');
-	route('GET',      '/universes/[i:universeId]/disablecloudedit', '/private/gameapis/universes/disablecloudedit.php');
+	route('GET|POST', '/universes/[i:universeId]/disablecloudedit', '/private/gameapis/universes/disablecloudedit.php');
 	route('GET',      '/universes/[i:universeId]/listcloudeditors', '/private/gameapis/universes/listcloudeditors.php');
-	route('GET',      '/universes/[i:universeId]/addcloudeditor', '/private/gameapis/universes/addcloudeditor.php');
-	route('GET',      '/universes/[i:universeId]/removecloudeditor', '/private/gameapis/universes/removecloudeditor.php');
+	route('GET|POST', '/universes/[i:universeId]/addcloudeditor', '/private/gameapis/universes/addcloudeditor.php');
+	route('GET|POST', '/universes/[i:universeId]/removecloudeditor', '/private/gameapis/universes/removecloudeditor.php');
 	route('GET',      '/places/[i:placeId]/settings', '/private/gameapis/places/settings.php');
 	route('GET',      '/places/[i:placeId]/settings', '/private/gameapis/places/settings.php');
 	route('GET',      '/universes/get-info', '/private/gameapis/universes/get-info.php');
@@ -299,7 +299,8 @@
 	route('GET',      '/universes/get-universe-places', '/private/gameapis/universes/get-universe-places.php');
 	route('GET',      '/universes/get-aliases', '/private/gameapis/universes/get-aliases.php');
 	route('GET',      '/developerproducts/list', '/private/gameapis/universes/developerproducts.php');
-	
+	route('GET',      '/badges/list-badges-for-place/json', '/private/gameapis/places/list-badges-for-place.php');
+
 	route('GET',      '/Asset/BodyColors.ashx', '/private/gameapis/character/bodycolors.php');
 	route('GET',      '/Asset/CharacterFetch.ashx', '/private/gameapis/character/characterfetch.php');
 
@@ -316,6 +317,7 @@
 	route('GET|POST', '/moderation/filtertext/', '/private/gameapis/moderation/filtertext.php');
 
 	route('GET',      '/marketplace/productinfo', '/private/gameapis/marketplace/productinfo.php');
+	route('GET',      '/Marketplace/ProductInfo', '/private/gameapis/marketplace/productinfo.php');
 	route('GET',      '/marketplace/productDetails', '/private/gameapis/marketplace/productinfo.php');
 	route('GET',      '/marketplace/purchase', '/private/gameapis/marketplace/purchase.php');
 	route('GET',      '/ownership/hasasset', '/private/gameapis/marketplace/hasasset.php');

@@ -6,8 +6,11 @@
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetUploader;
 	use anorrl\utilities\ClientDetector;
-
-	$user = SESSION->user;
+	
+	if(!SESSION)
+		$user = null;
+	else
+		$user = SESSION->user;
 
 	function FunnyStrToBool(string $value): bool {
 		return $value == "True";

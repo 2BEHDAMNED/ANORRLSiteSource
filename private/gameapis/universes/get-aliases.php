@@ -3,7 +3,7 @@
 	
 	echo json_encode([
 		"FinalPage" => true,
-		"Aliases" => [[]],
+		"Aliases" => [],
 		"PageSize" => 50
 	]);
 

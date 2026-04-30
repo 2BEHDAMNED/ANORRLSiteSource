@@ -4,7 +4,7 @@ use anorrl\Place;
 
 header('Content-type: application/json');
 
-$place = Place::FromID(intval($_GET['placeId']));
+$place = Place::FromID(intval($placeId));
 
 if($place != null) {
 	echo json_encode([

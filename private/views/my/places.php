@@ -9,7 +9,35 @@
 	$isclient = ClientDetector::IsAClient();
 	if(!$isclient)
 		die("Hey something isn't right here... You sure you're using the right studio?");
+
+	$extra_places = [];
+	if(isset($_GET['filepath'])) {
+		$raw_crap = explode("&", str_replace("/my/places?", "", $_SERVER['REQUEST_URI']));
+
+		$filenames = [];
+		$filepaths = [];
+
+		foreach($raw_crap as $bit) {
+			if(strlen(trim($bit)) != 0) {
+				if(str_starts_with($bit, "filename="))
+					$filenames[] = urldecode(str_replace("filename=", "", $bit));
+				elseif(str_starts_with($bit, "filepath="))
+					$filepaths[] = urldecode(str_replace("filepath=", "", $bit));
+			}
+		}
+
+		if(count($filenames) == count($filepaths)) {
+			for($i = 0; $i < count($filenames); $i++) {
+				$extra_places[] = [
+					"name" => $filenames[$i],
+					"path" => $filepaths[$i]
+				];
+			}
+		}
+	}
+	//print_r($extra_places);
 	
+
 	$places = $user->getPlaces(false);
 	$teamplaces = $user->getPlaces(true);
 
@@ -74,6 +102,9 @@
 		<ul>
 			<li><a href="" data-view="Main" selected>Your Projects</a></li>
 			<li><a href="" data-view="Collaborative">Collaborated Projects</a></li>
+			<?php if(count($extra_places) != 0): ?>
+			<li><a href="" data-view="RecentlyOpened">Recently Opened Files</a></li>
+			<?php endif ?>
 		</ul>
 		<div id="DidYouKnow">
 			<p style="font-size: 16px"><b>Did you know?</b></p>
@@ -149,6 +180,37 @@
 						if($count == 4) {
 							echo "</tr>";
 						}
+					}
+				?>
+			</table>
+		</div>
+		<div id="RecentlyOpenedProjectsView" style="display: none">
+			<table style="width: 100%">
+				<?php
+					$extra_places_count = count($extra_places);
+					$count = 0;
+					$pre_count = 0;
+
+					foreach($extra_places as $place) {
+						if($count == 0) {
+							echo "<tr>";
+						}
+						$filename = $place["name"];
+						$filepath = $place["path"];
+						echo <<<EOT
+						<td>
+							<div class="Place" data-place-id="$filepath">
+								<a href="#">
+									<img src="/public/images/rejected.png">
+									<div id="Name">$filename</div>
+								</a>
+							</div>
+						</td>
+						EOT;
+						$pre_count++;
+						$count = $pre_count % 4;
+						if($count == 4)
+							echo "</tr>";
 					}
 				?>
 			</table>

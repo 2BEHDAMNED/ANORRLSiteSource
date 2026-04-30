@@ -3,10 +3,6 @@
 	use anorrl\User;
 	use anorrl\utilities\UtilUtils;
 
-	if(!UtilUtils::HasBeenRewritten()) {
-		die(header("Location: /my/home"));
-	}
-
 	// No id parameter? GET OUT!
 	if(!isset($id)) {
 		die(header("Location: /my/home"));
@@ -26,6 +22,9 @@
 			die("{}");
 		}
 	}
+
+	if(!SESSION)
+		die(header("Location: /goodbye"));
 	
 	$user = SESSION->user;
 
