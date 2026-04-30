@@ -185,17 +185,18 @@
 
 		function getAllVersions(): array {
 			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `asset_versions` WHERE `assetid` = ? ORDER BY `id` DESC");
+			$stmt_getuser = $con->prepare();
 			$stmt_getuser->bind_param('i', $this->id);
-			$stmt_getuser->execute();
 
-			$result = $stmt_getuser->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT `id` FROM `asset_versions` WHERE `assetid` = ? ORDER BY `id` DESC",
+				[ ":aid" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
+
 			$result_array = [];
 
-			if($result->num_rows != 0) {
-				while($row = $result->fetch_assoc()) {
-					$result_array[] = new AssetVersion($row);
-				}
+			foreach($rows as $row) {
+				$result_array[] = AssetVersion::FromID($row->id);
 			}
 
 			return $result_array;

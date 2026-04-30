@@ -58,7 +58,7 @@
 	) {
 		$version_id = intval($_POST['versionid']);
 		
-		$version = AssetVersion::GetVersionFromID($version_id);
+		$version = AssetVersion::FromID($version_id);
 
 		if($version != null && $version->asset->id == $asset->id) {
 			header("Content-Type: application/json");

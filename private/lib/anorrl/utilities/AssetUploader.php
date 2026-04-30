@@ -442,17 +442,23 @@
 			$result = self::UploadAsset(null, AssetType::PLACE, $name, $description, $public, false, $comments_enabled, $user);
 
 			if(!$result['error']) {
-				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-				$stmt_addplace = $con->prepare("INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (?, ?, ?, ?, ?)");
-				
-				$place_copylocked = $copylocked ? 1 : 0;
-				$place_gears = $gears_enabled ? 1 : 0;
-				$place_original = $original ? 1 : 0;
-				$stmt_addplace->bind_param('iiiii', $result['id'], $place_copylocked, $server_size, $place_gears, $place_original);
-				if(!$stmt_addplace->execute()) {
-					$stmt = $con->prepare('DELETE FROM `assets` WHERE `id` = ?;');
-					$stmt->bind_param('i', $result['id']);
-					$stmt->execute();
+				$db = Database::singleton();
+
+				try {
+					$db->run(
+						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (:id, :copylocked, :serversize, :gears, :original);",
+						[
+							":id" => 0,
+							":copylocked" => $copylocked,
+							":serversize" => $server_size,
+							":gears" => $gears_enabled,
+							":original" => $original
+						]
+					);
+				} catch(\PDOException $e) {
+					error_log($e->getMessage());
+
+					$db->run("DELETE FROM `assets` WHERE `id` = :aid", [ ":aid" => $result['id'] ]);
 
 					return INTERNALSQLERROR;
 				}
@@ -678,17 +684,13 @@
 									$result = self::CommitAsset($data, $type, $name, $description, $public, $on_sale, $comments_enabled, $user);
 
 									if(!$result['error']) {
-										include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-										$stmt = $con->prepare("UPDATE `assets` SET `relatedid` = ? WHERE `id` = ?;");
-										$stmt->bind_param('ii', $result['id'], $image_id);
-										$stmt->execute();
-
-										if($type == AssetType::DECAL || $type == AssetType::FACE) {
-											/*$stmt = $con->prepare("UPDATE `asset_versions` SET `md5thumb` = ? WHERE `assetid` = ?");
-											$stmt->bind_param('si', $md5hashfile, $result['id']);
-											$stmt->execute();*/
-										}
+										Database::singleton()->run(
+											"UPDATE `assets` SET `relatedid` = :raid WHERE `id` = :aid",
+											[
+												":raid" => $result['id'],
+												":aid" => $image_id
+											]
+										);
 
 										if($type == AssetType::TSHIRT) {
 											$directory = $_SERVER['DOCUMENT_ROOT'];

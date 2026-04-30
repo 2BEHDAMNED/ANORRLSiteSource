@@ -683,32 +683,26 @@
 				$assetid = $asset->id;
 			}
 			
-			if(!$this->owns($asset) || Asset::FromID($assetid) == null) {
+			if(!$this->owns($asset) || Asset::FromID($assetid) == null)
 				return ["error"=>true, "reason"=>"Invalid item"];
-			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-
-			if(!$this->isWearing($asset)) {
+			if(!$this->isWearing($asset))
 				return ["error" => false];
-			} else {
-				$item = Asset::FromID($assetid);
-				$assettype = $item->type->ordinal();
+			
+			$item = Asset::FromID($assetid);
 
-				if($item->type->wearable()) {
-					if($item->type->wearone()) {
-						$stmt_deleteitem = $con->prepare("DELETE FROM `inventory` WHERE `userid` = ? AND `assettype` = ?;");
-						$stmt_deleteitem->bind_param('ii', $this->id, $assettype);
-						$stmt_deleteitem->execute();
-					} else {
-						$stmt_deleteitem = $con->prepare("DELETE FROM `inventory` WHERE `userid` = ? AND `assetid` = ?;");
-						$stmt_deleteitem->bind_param('ii', $this->id, $assetid);
-						$stmt_deleteitem->execute();
-					}
-				} else {
-					return ["error" => true, "reason" => "Invalid item"];
-				}
-			}
+			if(!$item->type->wearable())
+				return ["error" => true, "reason" => "Invalid item"];
+
+			$typacolumn = $item->type->wearone() ? "type" : "id";
+
+			Database::singleton()->run(
+				"DELETE FROM `inventory` WHERE `userid` = :userid AND `asset$typacolumn` = :asset$typacolumn",
+				[
+					":userid" => $this->id,
+					":asset$typacolumn" => $item->type->wearone() ? $item->type->ordinal() : $item->id
+				]
+			);
 
 			return ["error" => false];
 		}

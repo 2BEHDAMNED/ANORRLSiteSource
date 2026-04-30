@@ -140,12 +140,10 @@
 		 * @return bool
 		 */
 		static function IsValidKey(string $accesskey): bool {
-			include $_SERVER['DOCUMENT_ROOT'].'/private/connection.php';
-			$stmt_checkkey = $con->prepare('SELECT `key` FROM `accesskeys` WHERE `key` = ?;');
-			$stmt_checkkey->bind_param('s', $accesskey);
-			$stmt_checkkey->execute();
-			$result_checkkey = $stmt_checkkey->get_result();
-			return $result_checkkey->num_rows != 0;
+			return Database::singleton()->run(
+				'SELECT `key` FROM `accesskeys` WHERE `key` = :key',
+				[":key" => $accesskey]
+			)->rowCount() != 0;
 		}
 
 		/**

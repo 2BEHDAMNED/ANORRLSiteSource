@@ -14,15 +14,14 @@
 		public string $md5thumb;
 		public \DateTime $publish_date;
 
-		public static function GetVersionFromID(int $versionid) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `asset_versions` WHERE `id` = ?");
-			$stmt_getuser->bind_param('i', $versionid);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+		public static function FromID(int $versionid) {
+			$row = Database::singleton()->run(
+				"SELECT * FROM `asset_versions` WHERE `id` = :id",
+				[ ":id" => $versionid ]
+			)->fetch(\PDO::FETCH_OBJ);
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
+			if($row) {
+				return new self($row);
 			} else {
 				return null;
 			}
@@ -42,28 +41,31 @@
 			if($asset instanceof Asset) {
 				$id = $asset->id;
 			}
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `asset_versions` WHERE `assetid` = ? AND `subid` = ?");
-			$stmt_getuser->bind_param('ii', $id, $version);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
+			$row = Database::singleton()->run(
+				"SELECT * FROM `asset_versions` WHERE `assetid` = :aid AND `subid` = :verid",
+				[
+					":aid" => $id,
+					":verid" => $version
+				]
+			)->fetch(\PDO::FETCH_OBJ);
+
+			if($row) {
+				return new self($row);
 			} else {
 				return null;
 			}
 		}
 
 
-		function __construct($rowdata) {
-			$this->id = intval($rowdata['id']);
-			$this->asset = Asset::FromID(intval($rowdata['assetid']));
-			$this->sub_id = intval($rowdata['subid']);
-			$this->md5sig = strval($rowdata['md5sig']);
-			$this->md5thumb = strval($rowdata['md5thumb']);
+		function __construct(object $rowdata) {
+			$this->id = intval($rowdata->id);
+			$this->asset = Asset::FromID(intval($rowdata->assetid));
+			$this->sub_id = intval($rowdata->subid);
+			$this->md5sig = strval($rowdata->md5sig);
+			$this->md5thumb = strval($rowdata->md5thumb);
 
-			$this->publish_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['publishdate']);	
+			$this->publish_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->publishdate);	
 		}
 
 		function ResetThumbnail() {
