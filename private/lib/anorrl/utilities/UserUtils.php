@@ -271,14 +271,14 @@
 			$result_array = [];
 
 			$getallusers = Database::singleton()->run(
-				"SELECT * FROM `users` WHERE `name` LIKE :query",
+				"SELECT `id` FROM `users` WHERE `name` LIKE :query",
 				[
 					":query" => $queryfiltered
 				]
-			)->fetchAll(\PDO::FETCH_ASSOC);
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			foreach($getallusers as $user) {
-				$result_array[] = new User($user);
+				$result_array[] = User::FromID($user->id);
 			}
 			
 			return $result_array;

@@ -37,14 +37,10 @@ pcall(function() game:SetCreatorID({creatorid}, Enum.CreatorType.User) end)
 pcall(function() game:SetScreenshotInfo("") end)
 pcall(function() game:SetVideoInfo("") end)
 
-
-
 message.Text = "Loading Place. Please wait..." 
 coroutine.yield() 
 game:Load("http://{domain}/Asset/?id={placeid}") 
 visit:SetUploadUrl("{uploadurl}")
-
-
 
 message.Parent = nil
 

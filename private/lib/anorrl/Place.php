@@ -81,7 +81,7 @@
 			return $row ? new self($row) : null;
 		}
 
-		function __construct(object $rowdata) {
+		private function __construct(object $rowdata) {
 			parent::__construct($rowdata->id);
 
 			$this->friends_only = $this->public;

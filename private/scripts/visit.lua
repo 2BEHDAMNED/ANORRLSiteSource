@@ -76,7 +76,7 @@ if not addedBuildTools then
 	local playerName = Instance.new("StringValue")
 	playerName.Name = "PlayerName"
 	playerName.Value = player.Name
-	playerName.RobloxLocked = true
+	playerName.ANORRLLocked = true
 	playerName.Parent = screenGui
 				
 	pcall(function() game:GetService("ScriptContext"):AddCoreScript(59431535,screenGui,"BuildToolsScript") end)

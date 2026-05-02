@@ -55,7 +55,7 @@
 			}
 		}
 
-		function __construct(array|int $rowdata) {
+		protected function __construct(array|int $rowdata) {
 			if(is_array($rowdata)) {
 				$this->id = intval($rowdata['id']);
 				$this->creator = User::FromID($rowdata['creator']);

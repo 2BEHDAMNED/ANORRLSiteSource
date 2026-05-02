@@ -109,7 +109,7 @@
 			return self::FromID($id) != null;
 		}
 
-		function __construct($rowdata) {
+		private function __construct($rowdata) {
 			$this->id = intval($rowdata['id']);
 			$this->name = strval($rowdata['name']);
 			$this->blurb = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata['blurb']));
@@ -545,21 +545,12 @@
 		}
 
 		function getLatestAssetUploaded(): Asset|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `assets` WHERE `creator` = ? ORDER BY `id` DESC");
-			$stmt_getuser->bind_param('i', $this->id);
-			$stmt_getuser->execute();
+			$row = Database::singleton()->run(
+				"SELECT `id` FROM `assets` WHERE `creator` = :id ORDER BY `id` DESC",
+				[ ":id" => $this->id ]
+			)->fetch(\PDO::FETCH_OBJ);
 
-			$result = $stmt_getuser->get_result();
-
-			$result_array = [];
-
-			if($result->num_rows != 0) {
-				$row = $result->fetch_assoc();
-				return new Asset($row);
-			} else {
-				return null;
-			}
+			return $row ? Asset::FromID($row->id) : null;
 		}
 
 		function isWearing(Asset|int $asset): bool {
