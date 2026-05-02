@@ -5,18 +5,23 @@
 	if(isset($_GET['headshot'])) {
 		die(include $_SERVER['DOCUMENT_ROOT']."/core/thumbs/headshot.php");
 	}
-	if(isset($_GET['id']) || isset($_GET['userId'])) {
-		if(isset($_GET['id'])) {
-			$id = intval($_GET['id']);
+	if(isset($_GET['id']) || isset($_GET['userId']) || isset($_GET['username'])) {
+		if(!isset($_GET['username'])) {
+			if(isset($_GET['id'])) {
+				$id = intval($_GET['id']);
+			} else {
+				$id = intval($_GET['userId']);
+			}
+			
+			$user = User::FromID($id);
 		} else {
-			$id = intval($_GET['userId']);
+			$user = User::FromName($_GET['username']);
 		}
-		
+
 		$nocompress = isset($_GET['nocompress']);
 
 		$specialcase = false;
 
-		$user = User::FromID($id);
 		if($user != null) {
 			$md5hash = $user->currentoutfitmd5;
 

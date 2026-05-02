@@ -117,7 +117,7 @@
 					if($type == AssetType::PLACE) {
 						$asset = Place::FromID($row['id']);
 					} else {
-						$asset = new Asset($row);
+						$asset = Asset::FromID($row['id']);
 					}
 
 					if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
