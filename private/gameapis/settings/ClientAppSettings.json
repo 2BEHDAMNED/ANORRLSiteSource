@@ -1,4 +1,5 @@
 {
+	"FFlagUseNewAppBridgeInputWindows": "False",
 	"FFlagTeamCreateEnableCompleterFix": "True",
 	"FFlagKickUsersWhenTheyLoseAccessToCloudEdit": "False",
 	"FFlagTeamCreateCheckInvalidUniverse": "False",

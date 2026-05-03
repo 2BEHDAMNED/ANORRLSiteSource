@@ -213,9 +213,9 @@
 
 	route('GET',      '/game/load-place-info', '/private/gameapis/places/load-place-info.php');
 
-	route('GET',      '/GetAllowedMD5Hashes/', '/private/gameapis/authentication/getallowedmd5hashes.php');
-	route('GET',      '/GetAllowedSecurityKeys/', '/private/gameapis/authentication/getallowedsecuritykeys.php');
-	route('GET',      '/GetAllowedSecurityVersions/', '/private/gameapis/authentication/getallowedsecurityversions.php');
+	route('GET',      '/GetAllowedMD5Hashes/', '/private/gameapis/authentication/getallowedmd5hashes.json');
+	route('GET',      '/GetAllowedSecurityKeys/', '/private/gameapis/authentication/getallowedsecuritykeys.json');
+	route('GET',      '/GetAllowedSecurityVersions/', '/private/gameapis/authentication/getallowedsecurityversions.json');
 
 	route('GET',      '/Setting/QuietGet/AndroidAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');

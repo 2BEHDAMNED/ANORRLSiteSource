@@ -173,7 +173,7 @@
 				$editors = [];
 
 				foreach($rows as $row) {
-					$user = User::FromID(intval($row['userid']));
+					$user = User::FromID($row->userid);
 
 					if(!$user)
 						continue;
