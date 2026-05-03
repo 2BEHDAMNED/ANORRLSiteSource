@@ -161,6 +161,17 @@
 			});
 		}
 	}
+
+	function Shutdown() {
+		if(window.confirm("Are you sure you want to shutdown ALL servers??")) {
+			$.post( "/api/gameservers/shutdown", { placeID: <?= $asset->id ?> }).done(function( data ) {
+				ANORRL.PlaceLauncher.GrabGameservers(<?= $asset->id ?>);
+				if(data['error']) {
+					window.alert(data['reason']);
+				}
+			});
+		}
+	}
 	<?php endif ?>
 </script>
 
@@ -227,6 +238,7 @@
 					<a href="/edit?id=<?= $asset->id ?>">Configure</a>
 					<?php if($asset->isUsable()): ?>
 					<a href="javascript:Render()" id="RenderButton">Render this asset</a>
+					<a href="javascript:Shutdown()">Shutdown all servers</a>
 					<?php endif ?>
 					<a href="javascript:Delete()">Delete this asset</a>
 					<?php endif ?>
