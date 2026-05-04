@@ -22,12 +22,12 @@ var categoryFileTypes = {
 	12:"image/*",
 	3: ".mp3,.ogg,.wav",
 	13:"image/*",
-	10:".rbxm,.rbxmx",
+	10:".arlm,.arlmx",
 	4:"*",
 	5:".txt,.lua",
-	8: ".rbxm,.rbxmx",
-	24: ".rbxm,.rbxmx",
-	61: ".rbxm,.rbxmx",
+	8: ".arlm,.arlmx",
+	24: ".arlm,.arlmx",
+	61: ".arlm,.arlmx",
 }
 
 var versionshit = [

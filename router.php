@@ -263,8 +263,8 @@
 	route('GET',      '/user/get-friendship-count', '/private/gameapis/social/get-friendship-count.php');
 	route('GET|POST', '/user/follow', '/private/gameapis/social/follow.php');
 	route('GET|POST', '/user/unfollow', '/private/gameapis/social/unfollow.php');
-	route('GET',      '/user/request-friendship', '/private/gameapis/social/request-friendship.php');
-	route('GET',      '/user/decline-friend-request', '/private/gameapis/social/decline-friend-request.php');
+	route('GET|POST',      '/user/request-friendship', '/private/gameapis/social/request-friendship.php');
+	route('GET|POST',      '/user/decline-friend-request', '/private/gameapis/social/decline-friend-request.php');
 	route('GET|POST', '/Game/AreFriends', '/private/gameapis/social/arefriends.php');
 
 	route('GET',      '/universes/get-universe-containing-place', '/private/gameapis/universes/get-universe-containing-place.php');

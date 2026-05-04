@@ -1,5 +1,4 @@
-<?php
-	use anorrl\Asset;
+<?php	use anorrl\Asset;
 	use anorrl\Place;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\MeshConverter;
@@ -38,11 +37,8 @@
 				
 				if($place->copylocked) {
 					$error = false;
-					if($user == null || !ClientDetector::HasAccess()) {
-						$error = true;
-					} 
 
-					if(!$error && $user != null && !$place->isOwner($user)) {
+					if($user == null || (!ClientDetector::HasAccess() && $user != null && !$place->isOwner($user))) {
 						$error = true;
 					}
 
@@ -175,7 +171,14 @@
 			}
 
 			Header('Content-Disposition: attachment; filename="rbx_'.$id.'"');
-			echo $contents;	
+
+			if(str_contains($contents, "<roblox")) {
+                                $contents = str_replace("<roblox", "<anorrl", $contents);
+                                $contents = str_replace("roblox>", "anorrl>", $contents);
+                                $contents = str_replace("rbxasset", "arlasset", $contents);
+                        }
+
+			echo $contents;
 		
 		} else {
 			if(!file_exists($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""))) {
