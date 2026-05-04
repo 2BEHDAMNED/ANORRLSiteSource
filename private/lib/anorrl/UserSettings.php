@@ -5,6 +5,7 @@
 	use anorrl\enums\AssetType;
 	use anorrl\Database;
 	use anorrl\utilities\UtilUtils;
+	use anorrl\utilities\ClientDetector;
 
 	use CSSValidator\CSSValidator;
 
@@ -25,14 +26,14 @@
 			if($user == null) {
 				return new self((Object)[
 					"userid" => -1,
-					"randoms" => 1,
-					"teto" => 1,
-					"accessbility" => 0,
-					"headshots" => 0,
-					"nightbg" => 0,
+					"randoms" => !ClientDetector::IsAClient(),
+					"teto" => !ClientDetector::IsAClient(),
+					"accessbility" => false,
+					"headshots" => false,
+					"nightbg" => false,
 					"bgm" => -1,
 					"css" => "",
-					"loadingscreens" => true,
+					"loadingscreens" => !ClientDetector::IsAClient(),
 					"profilemusic" => true
 				]);
 			}

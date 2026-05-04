@@ -30,7 +30,8 @@
 		public Asset|null  $relatedasset;
 		public bool        $notcatalogueable;
 		public int         $current_version;
-		
+
+		public Universe|null $universe;
 
 		public \DateTime    $last_updatetime;
 		public \DateTime    $created_at;
@@ -55,6 +56,8 @@
 			}
 		}
 
+
+		// kill associated arrays
 		protected function __construct(array|int $rowdata) {
 			if(is_array($rowdata)) {
 				$this->id = intval($rowdata['id']);
@@ -73,6 +76,9 @@
 				$this->notcatalogueable = boolval($rowdata['nevershow']);
 				$this->relatedasset = Asset::FromID(intval($rowdata['relatedid']));
 				$this->current_version = intval($rowdata['currentversion']);
+
+				// if the universe is not null, its most likely a developer product or place.
+				$this->universe = Universe::FromID($rowdata['universe']);
 	
 				$this->last_updatetime = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['lastedited']);
 				$this->created_at      = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['created']);	
@@ -179,7 +185,7 @@
 		}
 
 		function getURL() {
-			$typa = $this instanceof Place ? "place" : "item";
+			$typa = $this->type == AssetType::PLACE ? "place" : "item";
 			return "{$this->getURLTitle()}-{$typa}?id={$this->id}";
 		}
 
@@ -605,8 +611,8 @@
 			return "/thumbs/?id=" . $this->id . $size_params;
 		}
 
-		function isOwner(User|null $user) {
-			return $user && ($user->id == $this->creator->id || $user->isAdmin());
+		function isOwner(User|null $user, bool $explicit = false) {
+			return $user && ($user->id == $this->creator->id || ($user->isAdmin() && !$explicit));
 		}
 
 	}

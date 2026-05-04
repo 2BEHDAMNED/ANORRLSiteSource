@@ -245,7 +245,7 @@
 			foreach($grabbedplaces as $asset) {
 				$place = Place::FromID($asset->id);
 				if($place instanceof Place) {
-					if(($teamcreate && $place->teamcreate_enabled && $place->isCloudEditor($this)) || (!$teamcreate && !$place->teamcreate_enabled)) {
+					if(($teamcreate && $place->teamcreate && $place->isCloudEditor($this)) || (!$teamcreate && !$place->teamcreate)) {
 						$result[] = $place;
 					}
 				}
@@ -1521,6 +1521,23 @@
 					":hours" => $hours
 				]
 			)->rowCount() != 0;
+		}
+
+		function visit(Place $place) {
+			if($place->isOwner($this, true)) {
+				if(rand(0, 5) > 3) { // why not
+					return;
+				}
+			}
+
+			if(!$this->hasVisited($place)) {
+				Database::singleton()->run(
+					"INSERT INTO `visits`(`place`, `player`) VALUES (:place, :player)",
+					[ ":place" => $place->id, ":player" => $this->id ]
+				);
+
+				$place->updateVisitCount();
+			}
 		}
 	}
 ?>

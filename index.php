@@ -26,6 +26,10 @@
 	} else {
 		define('SESSION', false);
 	}
+
+	function set_header(string $name, string $value) {
+		header("$name: $value");
+	}
 	
 	require_once __DIR__ . "/router.php";
 

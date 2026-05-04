@@ -12,16 +12,11 @@
 	use anorrl\Universe;
 
 	class Place extends Asset {
-		/** is the same as Asset::public */
-		// public Universe $universe;
-		public bool $friends_only;
-		public bool $copylocked;
 		public int  $server_size;
 		public int  $visit_count;
 		public int  $current_playing_count;
-		public bool $is_original;
-		public bool $gears_enabled;
-		public bool $teamcreate_enabled;
+		public bool $copylocked;
+		public bool $teamcreate;
 
 		public static function UpdatePlaceStats(int $placeID) {
 			$place = Place::FromID($placeID);
@@ -86,117 +81,13 @@
 		private function __construct(object $rowdata) {
 			parent::__construct($rowdata->id);
 
-			$this->friends_only = $this->public;
-			$this->copylocked = $rowdata->copylocked;
 			$this->server_size = $rowdata->serversize;
 			$this->visit_count = $rowdata->visit_count;
 			$this->current_playing_count = $rowdata->currently_playing_count;
-			$this->teamcreate_enabled = $rowdata->teamcreate_enabled;
+			$this->teamcreate = $rowdata->teamcreate_enabled;
 
-			$this->is_original = $rowdata->original;
-			$this->gears_enabled = $rowdata->gears_enabled;
-
-			/* yes high as hell code
-			if(!Universe::GetFromPlace($this))
+			if(!$this->universe)
 				$this->universe = Universe::Create($this);
-			} else {
-				$this->universe = Universe::FromID($rowdata->universe)
-			}
-			*/
-		}
-
-		function enableTeamCreate() {
-			Database::singleton()->run("UPDATE `places` SET `teamcreate_enabled` = 1 WHERE `id` = :id", [ ":id" => $this->id ]);
-
-			if(!$this->isCloudEditor($this->creator)) {
-				$this->addCloudEditor($this->creator);
-			}
-		}
-
-		function disableTeamCreate() {
-
-			$db = Database::singleton();
-
-			$db->run("UPDATE `places` SET `teamcreate_enabled` = 0 WHERE `id` = :placeid", [":placeid" => $this->id]);
-
-			if($this->teamcreate_enabled) {
-				$db->run(
-					"DELETE FROM `cloudeditors` WHERE `userid` != :creator AND `placeid` = :placeid;",
-					[
-						":creator" => $this->creator->id,
-						":placeid" => $this->id
-					]
-				);
-
-				$teamcreate_servers = $this->getServers(true);
-
-				foreach($teamcreate_servers as $server) {
-					$server->destroy();
-				}
-			}
-		}
-
-		function isCloudEditor(User $user) {
-			if($this->teamcreate_enabled) {
-				return Database::singleton()->run(
-					"SELECT `id` FROM `cloudeditors` WHERE `userid` = :uid AND `placeid` = :pid",
-					[
-						":uid" => $user->id,
-						":pid" => $this->id
-					]
-				)->rowCount() != 0;
-			}
-			return false;
-		}
-
-		function addCloudEditor(User $user) {
-			if(!$this->isCloudEditor($user) && !$user->isBanned()) {
-				return Database::singleton()->run(
-					"INSERT INTO `cloudeditors`(`userid`, `placeid`) VALUES (:uid, :pid)",
-					[
-						":uid" => $user->id,
-						":pid" => $this->id
-					]
-				);
-			}	
-		}
-
-		function removeCloudEditor(User $user) {
-			if($this->isCloudEditor($user) && $user->id != $this->creator->id) {
-				return Database::singleton()->run(
-					"DELETE FROM `cloudeditors` WHERE `userid` = :uid AND `placeid` = :pid",
-					[
-						":uid" => $user->id,
-						":pid" => $this->id
-					]
-				);
-			}	
-		}
-
-		function getCloudEditors() {
-			if($this->teamcreate_enabled) {
-				$rows = Database::singleton()->run(
-					"SELECT `userid` FROM `cloudeditors` WHERE `placeid` = :place",
-					[ ":place" => $this->id ]
-				)->fetchAll(\PDO::FETCH_OBJ);
-				
-				$editors = [];
-
-				foreach($rows as $row) {
-					$user = User::FromID($row->userid);
-
-					if(!$user)
-						continue;
-
-					if(!$user->isBanned())
-						$editors[] = $user;
-					else
-						$this->removeCloudEditor($user);
-				}
-
-				return $editors;
-			}
-			return [];
 		}
 
 		function updateVisitCount() {
@@ -216,25 +107,13 @@
 			);
 
 			$this->visit_count = $visits;
-		}
 
-		function visit(User $user) {
-			if(!$user->hasVisited($this)) {
-				// insert visit... move to User?
-				Database::singleton()->run(
-					"INSERT INTO `visits`(`place`, `player`) VALUES (:place, :player)",
-					[ ":place" => $this->id, ":player" => $user->id ]
-				);
+			if($this->visit_count > 100) {
+				$this->creator->giveProfileBadge(ANORRLBadge::HOMESTEAD);
+			}
 
-				$this->updateVisitCount();
-
-				if($this->visit_count > 100) {
-					$this->creator->giveProfileBadge(ANORRLBadge::HOMESTEAD);
-				}
-
-				if($this->visit_count > 1000) {
-					$this->creator->giveProfileBadge(ANORRLBadge::BRICKSMITH);
-				}
+			if($this->visit_count > 1000) {
+				$this->creator->giveProfileBadge(ANORRLBadge::BRICKSMITH);
 			}
 		}
 
@@ -262,8 +141,9 @@
 		function isEditable(User $user): bool {
 			return 
 				$this->isOwner($user) ||
-				!$this->copylocked ||
-				($this->teamcreate_enabled && $this->isCloudEditor($user));
+				// move this to like Universe::hasAccess or something
+				!$this->universe->copylocked ||
+				($this->universe->teamcreate && $this->isCloudEditor($user));
 		}
 
 		function anyActiveServers(bool $teamcreate = false): bool {

@@ -153,7 +153,7 @@
 				]
 			);
 
-			$this->place->visit($user);
+			$user->visit($this->place);
 		}
 
 		function removePlayer(User|int $user, string|null $reason = null) {

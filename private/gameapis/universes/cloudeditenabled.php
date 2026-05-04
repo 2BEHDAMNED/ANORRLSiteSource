@@ -14,7 +14,7 @@
 
 	if($place != null) {
 		echo json_encode([
-			"enabled" => $place->teamcreate_enabled
+			"enabled" => $place->teamcreate
 		]);
 	} else {
 		echo "{}";

@@ -16,8 +16,7 @@
 	$domain = CONFIG->domain;
 
 	if($asset != null) {
-
-		if($asset->getURLTitle() != $name) {
+		if($asset->getURLTitle() != $name || $asset->type == AssetType::PLACE) {
 			die(header("Location: /{$asset->getUrl()}"));
 		}
 

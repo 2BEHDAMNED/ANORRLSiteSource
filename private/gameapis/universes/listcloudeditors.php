@@ -11,7 +11,7 @@
 	if(isset($universeId)) {
 		$place = Place::FromID(intval($universeId));
 
-		if($place != null && $place->teamcreate_enabled) {
+		if($place != null && $place->teamcreate) {
 			$editorusers = $place->getCloudEditors();
 
 			$editors = [];
@@ -21,7 +21,7 @@
 					if(!$user->isBanned()) {
 						$editors[] = [
 							"userId" => $user->id,
-							"isAdmin" => $user->id == $place->creator->id
+							"isAdmin" => $place->isOwner($user)
 						];
 					}
 				}

@@ -328,7 +328,7 @@
 				$user = UserUtils::RetrieveUser();
 			}
 
-			if($user != null && !$user->isBanned() && ($asset->creator->id == $user->id || $user->isAdmin())) {
+			if($user != null && !$user->isBanned() && $asset->isOwner($user)) {
 				$name = $asset->name;
 				$description = $asset->description;
 				$public = $asset->public;

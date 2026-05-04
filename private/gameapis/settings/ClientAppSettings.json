@@ -1595,6 +1595,6 @@
 	"SFFlagUseLuaChat": "True",
 	"SFFlagUseNewBlockFunction": "True",
 	"SFFlagUseNewSetFMOD3D": "True",
-	"StartPageUrl": "/my/places",
+	"StartPageUrl": "/my/universes",
 	"VideoPreRollWaitTimeSeconds": "45"
 }
