@@ -14,7 +14,6 @@
 		public Place $starting_place;
 		public User $creator;
 		public bool $public;
-		public bool $gears_enabled;
 		public bool $original;
 		public bool $teamcreate;
 
@@ -64,6 +63,9 @@
 			$this->id = $data->id;
 			$this->starting_place = Place::FromID($data->starting_place);
 			$this->creator = User::FromID($data->creator);
+			$this->public = $data->public;
+			$this->original = $data->original;
+			$this->teamcreate = $data->teamcreate;
 		}
 
 		function getAllPlaces() {
