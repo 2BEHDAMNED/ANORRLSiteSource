@@ -66,10 +66,10 @@
 			}
 		}
 
-		public static function FromID(int|null $id): Place|null {
+		public static function FromID(int|null $id, Universe|null $universe = null): Place|null {
 			if(!is_int($id))
 				return null;
-			
+
 			$row = Database::singleton()->run(
 				"SELECT * FROM `places` WHERE `id` = :id",
 				[
@@ -77,17 +77,17 @@
 				]
 			)->fetch(\PDO::FETCH_OBJ);
 
-			return $row ? new self($row) : null;
+			return $row ? new self($row, $universe) : null;
 		}
 
-		private function __construct(object $rowdata) {
+		private function __construct(object $rowdata, Universe|null $universe = null) {
 			parent::__construct($rowdata->id);
 
 			$this->server_size = $rowdata->serversize;
 			$this->visit_count = $rowdata->visit_count;
 			$this->current_playing_count = $rowdata->currently_playing_count;
 
-			if(!$this->universe)
+			if(!$universe && !$this->universe)
 				$this->universe = Universe::Create($this);
 		}
 
