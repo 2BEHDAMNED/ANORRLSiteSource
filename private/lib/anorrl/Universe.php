@@ -61,11 +61,11 @@
 
 		private function __construct($data) {
 			$this->id = $data->id;
+			$this->starting_place = Place::FromID($data->starting_place);
 			$this->creator = User::FromID($data->creator);
 			$this->public = $data->public;
 			$this->original = $data->original;
 			$this->teamcreate = $data->teamcreate;
-			$this->starting_place = Place::FromID($data->starting_place, $this);
 		}
 
 		function getAllPlaces() {

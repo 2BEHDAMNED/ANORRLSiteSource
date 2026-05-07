@@ -31,7 +31,7 @@
 		public bool        $notcatalogueable;
 		public int         $current_version;
 
-		public Universe|null $universe = null;
+		public int         $universe = -1;
 
 		public \DateTime    $last_updatetime;
 		public \DateTime    $created_at;
@@ -76,7 +76,7 @@
 				$this->current_version = $rowdata->currentversion;
 
 				// if the universe is not null, its most likely a developer product or place.
-				$this->universe = Universe::FromID($rowdata->universe);
+				$this->universe = is_null($rowdata->universe) ? -1 : $rowdata->universe;
 	
 				$this->last_updatetime = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->lastedited);
 				$this->created_at      = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->created);
