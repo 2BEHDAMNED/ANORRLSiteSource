@@ -57,7 +57,7 @@
 
 		// kill associated arrays
 		protected function __construct(object|int $rowdata) {
-			if(!is_int($rowdata)) {
+			if(is_object($rowdata)) {
 				$this->id = $rowdata->id;
 				$this->creator = User::FromID($rowdata->creator);
 				$this->type = AssetType::index($rowdata->type);
@@ -82,16 +82,13 @@
 				$this->created_at      = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->created);
 			} else {
 				// for extended classes
-				$asset_data = Database::singleton()->run(
-                                	"SELECT * FROM `assets` WHERE `id` = :id LIMIT 1",
-                                	[ ":id" => $rowdata ]
-                       		)->fetchObject();
-
+				$asset_data = Asset::FromID($rowdata);
+				
 				$this->id = $asset_data->id;
-				$this->creator = User::FromID($asset_data->creator);
-				$this->type = AssetType::index($asset_data->type);
-				$this->name = str_replace("<", "&lt;", str_replace(">", "&gt;", $asset_data->name));
-				$this->description = str_replace("<", "&lt;", str_replace(">", "&gt;", $asset_data->description));
+				$this->creator = $asset_data->creator;
+				$this->type = $asset_data->type;
+				$this->name = $asset_data->name;
+				$this->description = $asset_data->description;
 				$this->public = $asset_data->public;
 
 				$this->favourites_count = $asset_data->favourites_count;
@@ -100,12 +97,14 @@
 				$this->onsale = $asset_data->onsale;
 				$this->sales_count = $asset_data->sales_count;
 				
-				$this->notcatalogueable = $asset_data->nevershow;
-				$this->relatedasset = null; //Asset::FromID($asset_data->relatedid);
-				$this->current_version = $asset_data->currentversion;
+				$this->notcatalogueable = $asset_data->notcatalogueable;
+				$this->relatedasset = $asset_data->relatedasset;
+				$this->current_version = $asset_data->current_version;
 
-				$this->last_updatetime = \DateTime::createFromFormat("Y-m-d H:i:s", $asset_data->lastedited);
-				$this->created_at      = \DateTime::createFromFormat("Y-m-d H:i:s", $asset_data->created);
+				$this->universe = $asset_data->universe;
+
+				$this->last_updatetime = $asset_data->last_updatetime;
+				$this->created_at      = $asset_data->created_at;	
 			}
 		}
 
