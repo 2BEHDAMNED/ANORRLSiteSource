@@ -43,45 +43,40 @@
 		 * @return Asset|null Null if asset was not found.
 		 */
 		public static function FromID(int $id): Asset|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `assets` WHERE `id` = ? LIMIT 1");
-			$stmt_getuser->bind_param('i', $id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$row = Database::singleton()->run(
+				"SELECT * FROM `assets` WHERE `id` = :id LIMIT 1",
+				[ ":id" => $id ]
+			)->fetchObject();
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
-			} else {
-				return null;
-			}
+			return $row ? new self($row) : null;
 		}
 
 
 		// kill associated arrays
-		protected function __construct(array|int $rowdata) {
-			if(is_array($rowdata)) {
-				$this->id = intval($rowdata['id']);
-				$this->creator = User::FromID($rowdata['creator']);
-				$this->type = AssetType::index(intval($rowdata['type']));
-				$this->name = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata['name']));
-				$this->description = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata['description']));
-				$this->public = boolval($rowdata['public']);
+		protected function __construct(object|int $rowdata) {
+			if(is_object($rowdata)) {
+				$this->id = $rowdata->id;
+				$this->creator = User::FromID($rowdata->creator);
+				$this->type = AssetType::index($rowdata->type);
+				$this->name = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata->name));
+				$this->description = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata->description));
+				$this->public = boolval($rowdata->public);
 
-				$this->favourites_count = intval( $rowdata['favourites_count']);
-				$this->comments_enabled = boolval($rowdata['comments_enabled']);
+				$this->favourites_count = $rowdata->favourites_count;
+				$this->comments_enabled = boolval($rowdata->comments_enabled);
 	
-				$this->onsale = boolval($rowdata['onsale']);
-				$this->sales_count = intval($rowdata['sales_count']);
+				$this->onsale = boolval($rowdata->onsale);
+				$this->sales_count = $rowdata->sales_count;
 
-				$this->notcatalogueable = boolval($rowdata['nevershow']);
-				$this->relatedasset = Asset::FromID(intval($rowdata['relatedid']));
-				$this->current_version = intval($rowdata['currentversion']);
+				$this->notcatalogueable = boolval($rowdata->nevershow);
+				$this->relatedasset = Asset::FromID($rowdata->relatedid);
+				$this->current_version = $rowdata->currentversion;
 
 				// if the universe is not null, its most likely a developer product or place.
-				$this->universe = Universe::FromID($rowdata['universe']);
+				$this->universe = Universe::FromID($rowdata->universe);
 	
-				$this->last_updatetime = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['lastedited']);
-				$this->created_at      = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['created']);	
+				$this->last_updatetime = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->lastedited);
+				$this->created_at      = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->created);
 			} else {
 				// for extended classes
 				$asset_data = Asset::FromID($rowdata);
