@@ -42,7 +42,10 @@
 		 * @param int $id 
 		 * @return Asset|null Null if asset was not found.
 		 */
-		public static function FromID(int $id): Asset|null {
+		public static function FromID(?int $id): Asset|null {
+			if(!is_int($id))
+				return null;
+			
 			$row = Database::singleton()->run(
 				"SELECT * FROM `assets` WHERE `id` = :id LIMIT 1",
 				[ ":id" => $id ]
