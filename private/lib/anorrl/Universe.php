@@ -48,7 +48,10 @@
 			return null;
 		}
 
-		public static function FromID(int $id): self|null {
+		public static function FromID(?int $id): self|null {
+			if(!is_int($id))
+				return null;
+
 			$row = Database::singleton()->run(
 				"SELECT * FROM `universes` WHERE `id` = :id",
 				[ ":id" => $id ]
