@@ -5,6 +5,7 @@
 	use anorrl\Asset;
 	use anorrl\Database;
 	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetTypeUtils;
 	use anorrl\utilities\UtilUtils;
@@ -36,18 +37,13 @@
 		 * @param int $id
 		 * @return User|null
 		 */
-		public static function FromID(int $id) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `users` WHERE `id` = ?");
-			$stmt_getuser->bind_param('i', $id);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+		public static function FromID(int $id): self|null {
+			$row = Database::singleton()->run(
+				"SELECT * FROM `users` WHERE `id` = :id",
+				[ ":id" => $id]
+			)->fetchObject();
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
-			} else {
-				return null;
-			}
+			return $row ? new self($row) : null;
 		}
 
 		/**
@@ -58,7 +54,7 @@
 		 */
 		public static function FromName(string $name) {
 			$row = Database::singleton()->run(
-				"SELECT * FROM `users` WHERE `name` LIKE :name",
+				"SELECT `id` FROM `users` WHERE `name` LIKE :name",
 				[":name" => $name]
 			)->fetch(\PDO::FETCH_OBJ);
 
@@ -73,7 +69,7 @@
 		 */
 		public static function FromNamePercise(string $name) {
 			$row = Database::singleton()->run(
-				"SELECT * FROM `users` WHERE `name` = :name",
+				"SELECT `id` FROM `users` WHERE `name` = :name",
 				[":name" => $name]
 			)->fetch(\PDO::FETCH_OBJ);
 
@@ -87,17 +83,12 @@
 		 * @return User|null
 		 */
 		public static function FromSecurityKey(string $security) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `users` WHERE `security` = ?");
-			$stmt_getuser->bind_param('s', $security);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
+			$row = Database::singleton()->run(
+				"SELECT `id` FROM `users` WHERE `security` = :security",
+				[":security" => $security]
+			)->fetch(\PDO::FETCH_OBJ);
 
-			if($result->num_rows == 1) {
-				return new self($result->fetch_assoc());
-			} else {
-				return null;
-			}
+			return $row ? self::FromID($row->id) : null;
 		}
 
 		/**
@@ -109,21 +100,21 @@
 			return self::FromID($id) != null;
 		}
 
-		private function __construct($rowdata) {
-			$this->id = intval($rowdata['id']);
-			$this->name = strval($rowdata['name']);
-			$this->blurb = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata['blurb']));
-			$this->last_update = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['lastprofileupdate']);
-			$this->setprofilepicture = boolval($rowdata['setprofilepicture']);
-			$this->currentoutfitmd5 = strval($rowdata['currentappearancemd5']);
-			$this->join_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['joindate']);
-			$this->password = strval($rowdata['password']);
-			$this->security_key = strval($rowdata['security']);
+		private function __construct(Object $rowdata) {
+			$this->id = $rowdata->id;
+			$this->name = $rowdata->name;
+			$this->blurb = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata->blurb));
+			$this->last_update = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->lastprofileupdate);
+			$this->setprofilepicture = boolval($rowdata->setprofilepicture);
+			$this->currentoutfitmd5 = $rowdata->currentappearancemd5;
+			$this->join_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->joindate);
+			$this->password = $rowdata->password;
+			$this->security_key = $rowdata->security;
 		}
 
 		function getFriends(): array {
 			$fetch = Database::singleton()->run(
-				"SELECT * FROM `friends` WHERE (`sender` LIKE :id OR `reciever` LIKE :id) AND `status` = 1;",
+				"SELECT `sender`, `reciever` FROM `friends` WHERE (`sender` LIKE :id OR `reciever` LIKE :id) AND `status` = 1;",
 				[ ":id" => $this->id ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
@@ -138,7 +129,7 @@
 		
 		function getFollowers(): array {
 			$fetch = Database::singleton()->run(
-				"SELECT * FROM `follows` WHERE `followed` = :id",
+				"SELECT `follower` FROM `follows` WHERE `followed` = :id",
 				[ ":id" => $this->id ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
@@ -153,7 +144,7 @@
 		
 		function getFollowing(): array {
 			$fetch = Database::singleton()->run(
-				"SELECT * FROM `follows` WHERE `follower` = :id",
+				"SELECT `followed` FROM `follows` WHERE `follower` = :id",
 				[ ":id" => $this->id ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
@@ -170,7 +161,7 @@
 			$db = Database::singleton();
 
 			$get_friend_reqs = $db->run(
-				"SELECT * FROM `friends` WHERE `reciever` = :id AND `status` = 0;",
+				"SELECT `sender` FROM `friends` WHERE `reciever` = :id AND `status` = 0;",
 				[":id" => $this->id]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
@@ -223,20 +214,16 @@
 			$teamcreatedplaces = [];
 			
 			if($teamcreate) {
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt_checkiseditor = $con->prepare('SELECT * FROM `cloudeditors` WHERE `userid` = ?;');
-				$stmt_checkiseditor->bind_param('i', $this->id);
-				$stmt_checkiseditor->execute();
+				$rows = Database::singleton()->run(
+					"SELECT `universe` FROM `cloudeditors` WHERE `userid` = :uid",
+					[ ":uid" => $this->id ]
+				)->fetchAll(\PDO::FETCH_OBJ);
 
-				$result_checkiseditor = $stmt_checkiseditor->get_result();
+				foreach($rows as $row) {
+					$place = Universe::FromID(intval($row['universe']));
 
-				if($result_checkiseditor->num_rows != 0) {
-					while($row = $result_checkiseditor->fetch_assoc()) {
-						$place = Place::FromID(intval($row['placeid']));
-
-						if($place != null && $place->creator->id != $this->id) {
-							$teamcreatedplaces[] = $place;
-						}
+					if($place != null && $place->creator->id != $this->id) {
+						$teamcreatedplaces[] = $place;
 					}
 				}
 			}
@@ -245,7 +232,7 @@
 			foreach($grabbedplaces as $asset) {
 				$place = Place::FromID($asset->id);
 				if($place instanceof Place) {
-					if(($teamcreate && $place->teamcreate && $place->isCloudEditor($this)) || (!$teamcreate && !$place->teamcreate)) {
+					if(($teamcreate && $place->teamcreate && $place->universe->isCloudEditor($this)) || (!$teamcreate && !$place->teamcreate)) {
 						$result[] = $place;
 					}
 				}
@@ -611,7 +598,7 @@
 				if($item->type->wearable()) {
 					if($item->type->wearone()) {
 						$is_wearing_type = $db->run(
-							"SELECT * FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assettype",
+							"SELECT `assetid` FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assettype",
 							[
 								":userid" => $this->id,
 								":assettype" => $item->type->ordinal()
@@ -646,7 +633,7 @@
 
 						if(!$limitless) {
 							$item_count = $db->run(
-								"SELECT * FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assettype",
+								"SELECT `assetid` FROM `inventory` WHERE `userid` = :userid AND `assettype` = :assettype",
 								[
 									":userid" => $this->id,
 									":assettype" => $item->type->ordinal()
@@ -1348,7 +1335,7 @@
 			// Check if row exists
 			
 			$num_rows = $db->run(
-				"SELECT * FROM `activity` WHERE `userid` = :id LIMIT 1",
+				"SELECT `userid` FROM `activity` WHERE `userid` = :id LIMIT 1",
 				[":id" => $this->id]
 			)->rowCount();
 			
@@ -1423,7 +1410,7 @@
 		function isInAGame(bool $teamcreate = false) {
 			return 
 				Database::singleton()->run(
-					"SELECT * FROM `active_players` WHERE `playerid` = :playerid AND `status` = 1 AND `teamcreate` = :teamcreate", 
+					"SELECT `id` FROM `active_players` WHERE `playerid` = :playerid AND `status` = 1 AND `teamcreate` = :teamcreate", 
 					[
 						":playerid" => $this->id,
 						":teamcreate" => $teamcreate
@@ -1514,7 +1501,7 @@
 		 */
 		function hasVisited(Place $place, int $hours = 1) {
 			return Database::singleton()->run(
-				"SELECT * FROM `visits` WHERE `place` = :place AND `player` = :player AND `time` >= CURDATE() - INTERVAL :hours HOUR;",
+				"SELECT `place` FROM `visits` WHERE `place` = :place AND `player` = :player AND `time` >= CURDATE() - INTERVAL :hours HOUR;",
 				[
 					":place" => $place->id,
 					":player" => $this->id,

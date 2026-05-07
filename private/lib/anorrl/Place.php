@@ -16,14 +16,13 @@
 		public int  $visit_count;
 		public int  $current_playing_count;
 		public bool $copylocked;
-		public bool $teamcreate;
 
 		public static function UpdatePlaceStats(int $placeID) {
 			$place = Place::FromID($placeID);
 
 			if($place != null) {
 				$fetch_servers = Database::singleton()->run(
-					"SELECT * FROM `active_servers` WHERE `placeid` = :placeid AND `teamcreate` = 0;",
+					"SELECT `id` FROM `active_servers` WHERE `placeid` = :placeid AND `teamcreate` = 0;",
 					[ ":placeid" => $place->id ]
 				)->fetchAll(\PDO::FETCH_OBJ);
 
@@ -38,7 +37,7 @@
 					$concurrentplayers += $fetch_players['COUNT(`id`)'];
 				}
 
-				$fetch_servers = Database::singleton()->run(
+				Database::singleton()->run(
 					"UPDATE `places` SET `currently_playing_count` = :playerscount WHERE `id` = :placeid",
 					[
 						":placeid" => $place->id,
@@ -84,7 +83,6 @@
 			$this->server_size = $rowdata->serversize;
 			$this->visit_count = $rowdata->visit_count;
 			$this->current_playing_count = $rowdata->currently_playing_count;
-			$this->teamcreate = $rowdata->teamcreate_enabled;
 
 			if(!$this->universe)
 				$this->universe = Universe::Create($this);
@@ -94,7 +92,7 @@
 			$db = Database::singleton();
 
 			$visits = $db->run(
-				'SELECT * FROM `visits` WHERE `place` = :id',
+				'SELECT `place` FROM `visits` WHERE `place` = :id',
 				[":id" => $this->id]
 			)->rowCount();
 
@@ -119,7 +117,7 @@
 
 		function getServers(bool $teamcreate = false): array {
 			$rows = Database::singleton()->run(
-				"SELECT * FROM `active_servers` WHERE `placeid` = :placeid AND `teamcreate` = :teamcreate",
+				"SELECT `id` FROM `active_servers` WHERE `placeid` = :placeid AND `teamcreate` = :teamcreate",
 				[
 					":placeid" => $this->id,
 					":teamcreate" => $teamcreate
@@ -129,7 +127,7 @@
 			$result = [];
 
 			foreach($rows as $row) {
-				$server = new GameServer($row);
+				$server = GameServer::Get($row->id, $teamcreate);
 
 				if($server->active())
 					$result[] = $server;
@@ -141,14 +139,13 @@
 		function isEditable(User $user): bool {
 			return 
 				$this->isOwner($user) ||
-				// move this to like Universe::hasAccess or something
-				!$this->universe->copylocked ||
-				($this->universe->teamcreate && $this->isCloudEditor($user));
+				!$this->copylocked ||
+				$this->universe->hasAccess($user);
 		}
 
 		function anyActiveServers(bool $teamcreate = false): bool {
 			return Database::singleton()->run(
-				"SELECT * FROM `active_servers` WHERE `placeid` = :placeid AND `playercount` != `maxcount` AND `teamcreate` = :teamcreate",
+				"SELECT `id` FROM `active_servers` WHERE `placeid` = :placeid AND `playercount` != `maxcount` AND `teamcreate` = :teamcreate",
 				[
 					":placeid" => $this->id,
 					":teamcreate" => $teamcreate
@@ -158,7 +155,7 @@
 
 		function getAnActiveServer(User $user, bool $teamcreate = false): GameServer|null {
 			$row = Database::singleton()->run(
-				"SELECT * FROM `active_servers` WHERE `placeid` = :placeid AND `playercount` < `maxcount` AND `teamcreate` = :teamcreate",
+				"SELECT `id` FROM `active_servers` WHERE `placeid` = :placeid AND `playercount` < `maxcount` AND `teamcreate` = :teamcreate",
 				[
 					":placeid" => $this->id,
 					":teamcreate" => $teamcreate
@@ -168,24 +165,20 @@
 			if(!$row)
 				return null;
 
-			$gameserver = new GameServer($row);
+			$gameserver = GameServer::Get($row->id, $teamcreate);
+
+			if(!$gameserver)
+				return null;
 
 			return $gameserver->active() && !$gameserver->isPlayerInServer($user) ? $gameserver : null;
 		}
-		
 
-		function getBadges(): array {
-			return [];
-		}
-
-		function update(bool $copylocked, int $server_size, bool $original, bool $gears) {
+		function update(bool $copylocked, int $server_size) {
 			Database::singleton()->run(
-				"UPDATE `places` SET `copylocked` = :copylocked, `serversize` = :serversize, `original` = :original, `gears_enabled` = :gears WHERE `id` = :placeid",
+				"UPDATE `places` SET `copylocked` = :copylocked, `serversize` = :serversize WHERE `id` = :placeid",
 				[
 					":copylocked" => $copylocked,
 					":serversize" => $server_size,
-					":original" => $original,
-					":gears" => $gears,
 					":placeid" => $this->id
 				]
 			);

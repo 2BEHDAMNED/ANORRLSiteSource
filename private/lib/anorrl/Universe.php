@@ -21,10 +21,12 @@
 		public static function Create(Place $place, bool $public = true, bool $original = true): self|null {
 			if(!$place->universe) {
 				Database::singleton()->run(
-					"INSERT INTO `universes`(`starting_place`, `creator`) VALUES (:placeid, :creator)",
+					"INSERT INTO `universes`(`starting_place`, `creator`, `public`, `original`) VALUES (:placeid, :creator, :public, :original)",
 					[
 						":placeid" => $place->id,
-						":creator" => $place->creator->id
+						":creator" => $place->creator->id,
+						":public" => $public,
+						":original" => $original
 					]
 				);
 
@@ -81,8 +83,8 @@
 
 		function getDeveloperProducts(AssetType $type) {
 			$rows = Database::singleton()->run(
-				"SELECT `id` FROM `assets` WHERE `universe` = :id AND `type` != :type AND `type` = :lookingtype",
-				[ ":id" => $this->id, ":type" => AssetType::PLACE->ordinal(), ":lookingtype" => $type->ordinal() ]
+				"SELECT `id` FROM `assets` WHERE `universe` = :id AND `type` != :placetype AND `type` = :type",
+				[ ":id" => $this->id, ":placetype" => AssetType::PLACE->ordinal(), ":type" => $type->ordinal() ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$places = [];
@@ -98,7 +100,7 @@
 		}
 
 		function enableTeamCreate() {
-			Database::singleton()->run("UPDATE `places` SET `teamcreate_enabled` = 1 WHERE `id` = :id", [ ":id" => $this->id ]);
+			Database::singleton()->run("UPDATE `universes` SET `teamcreate` = 1 WHERE `id` = :id", [ ":id" => $this->id ]);
 
 			if(!$this->isCloudEditor($this->creator)) {
 				$this->addCloudEditor($this->creator);
@@ -109,33 +111,34 @@
 
 			$db = Database::singleton();
 
-			$db->run("UPDATE `places` SET `teamcreate_enabled` = 0 WHERE `id` = :placeid", [":placeid" => $this->id]);
+			$db->run("UPDATE `universes` SET `teamcreate` = 0 WHERE `id` = :id", [":id" => $this->id]);
 
 			if($this->teamcreate) {
 				$db->run(
-					"DELETE FROM `cloudeditors` WHERE `userid` != :creator AND `placeid` = :placeid;",
+					"DELETE FROM `cloudeditors` WHERE `userid` != :creator AND `universe` = :universe;",
 					[
 						":creator" => $this->creator->id,
-						":placeid" => $this->id
+						":universe" => $this->id
 					]
 				);
 
+				foreach($this->getAllPlaces() as $place) {
+					$teamcreate_servers = $place->getServers(true);
 
-				/*$teamcreate_servers = $this->getServers(true);
-
-				foreach($teamcreate_servers as $server) {
-					$server->destroy();
-				}*/
+					foreach($teamcreate_servers as $server) {
+						$server->destroy();
+					}
+				}
 			}
 		}
 
 		function isCloudEditor(User $user) {
 			if($this->teamcreate) {
 				return Database::singleton()->run(
-					"SELECT `id` FROM `cloudeditors` WHERE `userid` = :uid AND `placeid` = :pid",
+					"SELECT `id` FROM `cloudeditors` WHERE `userid` = :uid AND `universe` = :id",
 					[
 						":uid" => $user->id,
-						":pid" => $this->id
+						":id" => $this->id
 					]
 				)->rowCount() != 0;
 			}
@@ -145,10 +148,10 @@
 		function addCloudEditor(User $user) {
 			if(!$this->isCloudEditor($user) && !$user->isBanned()) {
 				return Database::singleton()->run(
-					"INSERT INTO `cloudeditors`(`userid`, `placeid`) VALUES (:uid, :pid)",
+					"INSERT INTO `cloudeditors`(`userid`, `universe`) VALUES (:uid, :id)",
 					[
 						":uid" => $user->id,
-						":pid" => $this->id
+						":id" => $this->id
 					]
 				);
 			}	
@@ -157,10 +160,10 @@
 		function removeCloudEditor(User $user) {
 			if($this->isCloudEditor($user) && $user->id != $this->creator->id) {
 				return Database::singleton()->run(
-					"DELETE FROM `cloudeditors` WHERE `userid` = :uid AND `placeid` = :pid",
+					"DELETE FROM `cloudeditors` WHERE `userid` = :uid AND `universe` = :id",
 					[
 						":uid" => $user->id,
-						":pid" => $this->id
+						":id" => $this->id
 					]
 				);
 			}	
@@ -169,8 +172,8 @@
 		function getCloudEditors() {
 			if($this->teamcreate) {
 				$rows = Database::singleton()->run(
-					"SELECT `userid` FROM `cloudeditors` WHERE `placeid` = :place",
-					[ ":place" => $this->id ]
+					"SELECT `userid` FROM `cloudeditors` WHERE `universe` = :id",
+					[ ":id" => $this->id ]
 				)->fetchAll(\PDO::FETCH_OBJ);
 				
 				$editors = [];
@@ -189,6 +192,21 @@
 
 				return $editors;
 			}
+			return [];
+		}
+
+		function isOwner(User $user) {
+			return $user->id == $this->creator->id || $user->isAdmin();
+		}
+
+		function hasAccess(User|null $user = null) {
+			if(!$user)
+				return false;
+
+			return $this->isOwner($user) || $this->teamcreate && $this->isCloudEditor($user);
+		}
+
+		function getBadges(): array {
 			return [];
 		}
 	}

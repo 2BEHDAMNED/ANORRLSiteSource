@@ -20,11 +20,7 @@
 				[ ":id" => $versionid ]
 			)->fetch(\PDO::FETCH_OBJ);
 
-			if($row) {
-				return new self($row);
-			} else {
-				return null;
-			}
+			return $row ? new self($row) : null;
 		}
 
 		public static function GetLatestVersionOf(Asset|int $asset): AssetVersion|null {
@@ -43,18 +39,14 @@
 			}
 
 			$row = Database::singleton()->run(
-				"SELECT * FROM `asset_versions` WHERE `assetid` = :aid AND `subid` = :verid",
+				"SELECT `id` FROM `asset_versions` WHERE `assetid` = :aid AND `subid` = :verid",
 				[
 					":aid" => $id,
 					":verid" => $version
 				]
 			)->fetch(\PDO::FETCH_OBJ);
 
-			if($row) {
-				return new self($row);
-			} else {
-				return null;
-			}
+			return $row ? self::FromID($row->id) : null;
 		}
 
 

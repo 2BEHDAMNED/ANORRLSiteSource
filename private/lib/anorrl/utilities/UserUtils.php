@@ -221,7 +221,7 @@
 
 		public static function GetLatestUsers(int $count): array {
 			$fetch_users = Database::singleton()->run(
-				"SELECT * FROM `users` ORDER BY `joindate` DESC LIMIT :limit",
+				"SELECT `id` FROM `users` ORDER BY `joindate` DESC LIMIT :limit",
 				[ ":limit" => $count ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 

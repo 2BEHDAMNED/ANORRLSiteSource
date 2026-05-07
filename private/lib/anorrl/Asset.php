@@ -275,7 +275,7 @@
 			$db = Database::singleton();
 
 			$favcount = $db->run(
-				"SELECT * FROM `favourites` WHERE `assetid` = :id",
+				"SELECT `userid` FROM `favourites` WHERE `assetid` = :id",
 				[":id" => $this->id]
 			)->rowCount();
 
@@ -580,12 +580,16 @@
 				}
 
 				foreach($md5s as $key => $value) {
-					$stmt = $con->prepare("SELECT * FROM `asset_versions` WHERE `md5sig` = ? AND `assetid` != ? ORDER BY `id` DESC;");
-					$stmt->bind_param("si", $value, $key);
-					$stmt->execute();
 
-					$result = $stmt->get_result();
-					if($result->num_rows == 0) {
+					$hasOtherAssetsDepending = Database::singleton()->run(
+						"SELECT `id` FROM `asset_versions` WHERE `md5sig` = :value AND `assetid` != :key ORDER BY `id` DESC;",
+						[
+							":value" => $value,
+							":key" => $key
+						]
+					)->rowCount() != 0;
+
+					if(!$hasOtherAssetsDepending) {
 						$row = $result->fetch_assoc();
 
 						if(file_exists("$assetsdir/$value")){
