@@ -51,6 +51,11 @@
 	$page->addStylesheet("/css/new/my/places.css");
 	$page->loadBasicHeader();
 ?>
+<style>
+	.Place {
+		margin: 5px;
+	}
+</style>
 <script>
 	$(function() {
 		$(".Place").on("click", function() {
@@ -63,7 +68,12 @@
 
 			$(window).height() < n.height() ?
 				$("#Sidebar").height(n.height()) :
-				$("#Sidebar").height($(window).height()-114), n.height($(window).height()-114)
+				$("#Sidebar").height($(window).height()-114), n.height($(window).height()-114);
+
+			var j = $("#Places");
+			$(window).width() < 300 ?
+				j.width(300) :
+				j.width($(window).width() - 280);
 		}
 
 		$(window).resize(onResizeWindow);
@@ -113,107 +123,58 @@
 	</div>
 	<div id="Places">
 		<div id="MainProjectsView">
-			<table style="width: calc(100vw - 280px);">
-				<?php
-					$places_count = count($places);
-					$count = 0;
-					$pre_count = 0;
-					foreach($places as $place) {
-						if($count == 0) {
-							echo "<tr>";
-						}
+			<?php
+				foreach($places as $place) {
 
-						$place_timeago = UtilUtils::GetTimeAgo($place->last_updatetime);
+					$place_timeago = UtilUtils::GetTimeAgo($place->last_updatetime);
 
-						echo <<<EOT
-						<td>
-							<div class="Place" data-place-id="{$place->id}" title="{$place->name}">
-								<a href="#">
-									<img src="{$place->getThumbsUrl(229, 132)}">
-									<div id="Name">{$place->name}</div>
-									<div id="LastEdited">Last edited: {$place_timeago}</div>
-								</a>
-							</div>
-						</td>
-						EOT;
-
-						$pre_count++;
-
-						$count = $pre_count % 4;
-
-						if($count == 4) {
-							echo "</tr>";
-						}
-					}
-				?>
-			</table>
+					echo <<<EOT
+					<div class="Place" data-place-id="{$place->id}" title="{$place->name}">
+						<a href="#">
+							<img src="{$place->getThumbsUrl(229, 132)}">
+							<div id="Name">{$place->name}</div>
+							<div id="LastEdited">Last edited: {$place_timeago}</div>
+						</a>
+					</div>
+					EOT;
+				}
+			?>
 		</div>
 		<div id="CollaborativeProjectsView" style="display: none">
-			<table style="width: 100%">
-				<?php
-					$places_count = count($teamplaces);
-					$count = 0;
-					$pre_count = 0;
-					foreach($teamplaces as $place) {
-						if($count == 0) {
-							echo "<tr>";
-						}
+			<?php
+				foreach($teamplaces as $place) {
 
-						$place_timeago = UtilUtils::GetTimeAgo($place->last_updatetime);
+					$place_timeago = UtilUtils::GetTimeAgo($place->last_updatetime);
 
-						echo <<<EOT
-						<td>
-							<div class="Place" data-place-id="{$place->id}">
-								<a href="#">
-									<img src="{$place->getThumbsUrl(229, 132)}">
-									<div id="Name">{$place->name}</div>
-									<div id="LastEdited">Last edited: {$place_timeago}</div>
-								</a>
-							</div>
-						</td>
-						EOT;
-
-						$pre_count++;
-
-						$count = $pre_count % 4;
-
-						if($count == 4) {
-							echo "</tr>";
-						}
-					}
-				?>
-			</table>
+					echo <<<EOT
+					<div class="Place" data-place-id="{$place->id}">
+						<a href="#">
+							<img src="{$place->getThumbsUrl(229, 132)}">
+							<div id="Name">{$place->name}</div>
+							<div id="LastEdited">Last edited: {$place_timeago}</div>
+						</a>
+					</div>
+					EOT;
+				}
+			?>
 		</div>
 		<div id="RecentlyOpenedProjectsView" style="display: none">
-			<table style="width: 100%">
-				<?php
-					$extra_places_count = count($extra_places);
-					$count = 0;
-					$pre_count = 0;
-
-					foreach($extra_places as $place) {
-						if($count == 0) {
-							echo "<tr>";
-						}
-						$filename = $place["name"];
-						$filepath = $place["path"];
-						echo <<<EOT
-						<td>
-							<div class="Place" data-place-id="$filepath">
-								<a href="#">
-									<img src="/public/images/rejected.png">
-									<div id="Name">$filename</div>
-								</a>
-							</div>
-						</td>
-						EOT;
-						$pre_count++;
-						$count = $pre_count % 4;
-						if($count == 4)
-							echo "</tr>";
-					}
-				?>
-			</table>
+			<?php
+				foreach($extra_places as $place) {
+					$filename = $place["name"];
+					$filepath = $place["path"];
+					echo <<<EOT
+					<td>
+						<div class="Place" data-place-id="$filepath">
+							<a href="#">
+								<img src="/public/images/rejected.png">
+								<div id="Name">$filename</div>
+							</a>
+						</div>
+					</td>
+					EOT;
+				}
+			?>
 		</div>
 	</div>
 </div>

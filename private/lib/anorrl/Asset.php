@@ -156,8 +156,10 @@
 				$handle = fopen($filename, "r"); 
 				$contents = fread($handle, filesize($filename)); 
 				fclose($handle);
-				$contents = str_replace("www.roblox.com", "{anorrldomain}",$contents);
-				$contents = str_replace("api.roblox.com", "{anorrldomain}",$contents);
+				if(!str_starts_with($contents, "<anorrl!") || strlen(\CONFIG->domain) == strlen("www.roblox.com")) {
+					$contents = str_replace("www.roblox.com", "{anorrldomain}",$contents);
+					$contents = str_replace("api.roblox.com", "{anorrldomain}",$contents);
+				}
 
 				return str_replace("{anorrldomain}", \CONFIG->domain, $contents);
 			}
@@ -175,8 +177,8 @@
 
 		function getURLTitle() {
 			$result = strtolower(trim(preg_replace('/[^a-zA-Z0-9 ]/', "", $this->name)));
-			$result = UtilUtils::RecurseRemove($result, "  ", " ");
 			$result = str_replace(" ", "-", $result);
+			$result = UtilUtils::RecurseRemove($result, "--", "-");
 			if($result == "") {
 				$result = "unnamed";
 			}

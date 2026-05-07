@@ -30,7 +30,7 @@
 			$result = str_replace($find, $replace,$input);
 
 			if(str_contains($result, $find)) {
-				return self::RecurseRemove($input, $find, $replace);
+				return self::RecurseRemove($result, $find, $replace);
 			}
 
 			return $result;

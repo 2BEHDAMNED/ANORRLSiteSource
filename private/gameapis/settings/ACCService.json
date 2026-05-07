@@ -1,3 +1,4 @@
 {
-	"DFlagScriptExecutionContextApi": "True"
+	"DFFlagScriptExecutionContextApi": "True",
+	"DFFlagCleanUpInterpolationTimestamps": "False"
 }
