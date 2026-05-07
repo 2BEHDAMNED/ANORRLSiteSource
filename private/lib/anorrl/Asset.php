@@ -31,7 +31,7 @@
 		public bool        $notcatalogueable;
 		public int         $current_version;
 
-		public Universe|null $universe;
+		public Universe|null $universe = null;
 
 		public \DateTime    $last_updatetime;
 		public \DateTime    $created_at;
