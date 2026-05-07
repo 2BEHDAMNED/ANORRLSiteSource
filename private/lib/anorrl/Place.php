@@ -66,7 +66,10 @@
 			}
 		}
 
-		public static function FromID(int $id): Place|null {
+		public static function FromID(int|null $id): Place|null {
+			if(!is_int($id))
+				return null;
+			
 			$row = Database::singleton()->run(
 				"SELECT * FROM `places` WHERE `id` = :id",
 				[
