@@ -1,9 +1,41 @@
 <?php
+
+use anorrl\Universe;
+use anorrl\enums\AssetType;
 	header("Content-Type: application/json");
 	
+	if(!isset($_GET['universeId']))
+		die("{}");
+
+	$universe = Universe::FromID(intval($_GET['universeId']));
+
+	if(!$universe)
+		die("{}");
+
+	$aliases = [];
+
+	foreach($universe->getDeveloperProducts(AssetType::DECAL) as $asset) {
+		$aliases[] = [
+			"Name" => $asset->name,
+			"Type" => 1,
+			"TargetId" => $asset->id,
+			"Asset" => [
+				"Id" => $asset->id,
+				"TypeId" => $asset->type->ordinal(),
+				"Name" => $asset->name,
+				"Description" => $asset->name,
+				"CreatorType" => 1,
+				"CreatorTargetId" => $asset->creator->id,
+				"Created" => "2017-03-31T12:16:46.547",
+				"Updated" => "2017-08-29T08:50:09.317"
+			],
+			"Version" => null
+		];
+	}
+
 	echo json_encode([
 		"FinalPage" => true,
-		"Aliases" => [],
+		"Aliases" => $aliases,
 		"PageSize" => 50
 	]);
 
