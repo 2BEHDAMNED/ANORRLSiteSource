@@ -118,6 +118,7 @@
 	route('GET|POST', '/my/profile', '/private/views/my/profile.php');
 	route('GET|POST', '/my/character', '/private/views/my/character.php');
 	route('GET|POST', '/my/places', '/private/views/my/places.php');
+	route('GET|POST', '/my/universes', '/private/views/my/places.php');
 
 	route('GET|POST', '/ide/publish', '/private/views/my/places.php');
 

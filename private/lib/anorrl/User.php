@@ -220,9 +220,9 @@
 				)->fetchAll(\PDO::FETCH_OBJ);
 
 				foreach($rows as $row) {
-					$place = Universe::FromID(intval($row['universe']));
+					$universe = Universe::FromID(intval($row['universe']));
 
-					if($place != null && $place->creator->id != $this->id) {
+					if($universe && $universe->creator->id != $this->id) {
 						$teamcreatedplaces[] = $place;
 					}
 				}
@@ -231,8 +231,11 @@
 			
 			foreach($grabbedplaces as $asset) {
 				$place = Place::FromID($asset->id);
-				if($place instanceof Place) {
-					if(($teamcreate && $place->teamcreate && $place->universe->isCloudEditor($this)) || (!$teamcreate && !$place->teamcreate)) {
+				if($place) {
+					$universe = Universe::FromID($place->universe);
+					
+					
+					if(!$teamcreate && ($universe->creator->id == $this->id || $place->isEditable($this))) {
 						$result[] = $place;
 					}
 				}
