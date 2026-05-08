@@ -8,7 +8,7 @@ $universe = Universe::FromID($assetid);
 $place = $universe->starting_place;
 
 
-if($asset != null) {
+if($place != null) {
 
 	echo json_encode([
 		"CurrentUserHasEditPermissions" => true,
