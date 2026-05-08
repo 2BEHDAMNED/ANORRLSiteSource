@@ -1,10 +1,11 @@
 <?php
-use anorrl\Asset;
+use anorrl\Universe;
 header('Content-type: application/json');
 
 
 $assetid = intval($_GET['universeId']);
-$asset = Asset::FromID($assetid);
+$universe = Universe::FromID($assetid);
+$asset = $universe->starting_place;
 
 if($asset != null) {
 
