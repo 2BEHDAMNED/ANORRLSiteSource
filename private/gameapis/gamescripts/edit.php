@@ -31,6 +31,7 @@
 
 	die(new Script("edit")->sign([
 		"placeid" => $place->id,
+		"universeid" => $place->universe,
 		"uploadurl" => $uploadurl,
 		"creatorid" => $place->creator->id
 	]));

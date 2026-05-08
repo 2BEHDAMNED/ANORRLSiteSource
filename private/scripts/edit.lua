@@ -8,7 +8,7 @@ local message = Instance.new("Message")
 message.Parent = workspace
 message.archivable = false
 
-pcall(function() game:SetUniverseId({placeid}) end)
+pcall(function() game:SetUniverseId({universeid}) end)
 
 game:GetService("ContentProvider"):SetThreadPool(16)
 pcall(function() game:GetService("InsertService"):SetFreeModelUrl("http://{domain}/Game/Tools/InsertAsset.ashx?type=fm&q=%s&pg=%d&rs=%d") end) -- Used for free model search (insert tool)
@@ -45,5 +45,5 @@ visit:SetUploadUrl("{uploadurl}")
 message.Parent = nil
 
 game:GetService("ChangeHistoryService"):SetEnabled(true)
-pcall(function() game:SetUniverseId({placeid}) end)
+pcall(function() game:SetUniverseId({universeid}) end)
 pcall(function() game:SetPlaceID({placeid}) end)
