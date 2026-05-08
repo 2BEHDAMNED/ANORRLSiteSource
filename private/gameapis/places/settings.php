@@ -1,10 +1,12 @@
 <?php
 
 use anorrl\Place;
+use anorrl\Universe;
 
 header('Content-type: application/json');
 
 $place = Place::FromID(intval($placeId));
+$universe = Universe::FromID($place->universe);
 
 if($place != null) {
 	echo json_encode([
@@ -17,7 +19,7 @@ if($place != null) {
 			"CreatorType" => 0
 		],
 		"GameId" => $place->id,
-		"UniverseId" => $place->id,
+		"UniverseId" => $universe->id,
 		"PlaceId" => $place->id,
 		"openGameFromPlaceId" => $place->id,
 		"updateFromPlaceId" => $place->id,
