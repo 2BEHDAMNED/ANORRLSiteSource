@@ -18,7 +18,7 @@
 		public bool $teamcreate;
 
 		public static function Create(Place $place, bool $public = true, bool $original = true): self|null {
-			if(!$place->universe) {
+			if($place->universe == -1) {
 				Database::singleton()->run(
 					"INSERT INTO `universes`(`starting_place`, `creator`, `public`, `original`) VALUES (:placeid, :creator, :public, :original)",
 					[

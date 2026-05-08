@@ -2,6 +2,7 @@
 	header("Content-Type: application/json");
 
 	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\utilities\AssetUtils;
 	use anorrl\enums\AssetType;
 	use anorrl\enums\CatalogFilter;
@@ -55,7 +56,7 @@
 						"favouritescount" => $asset->favourites_count,
 						"activeplayercount" => $asset->current_playing_count,
 						"visitcount" => $asset->visit_count,
-						"original" => $asset->is_original,
+						"original" => Universe::FromID($asset->universe)->original,
 						"thumbnail" => $asset->getThumbsUrl(189, 106)
 					];
 				}

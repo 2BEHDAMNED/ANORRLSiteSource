@@ -87,8 +87,11 @@
 			$this->visit_count = $rowdata->visit_count;
 			$this->current_playing_count = $rowdata->currently_playing_count;
 
-			if(!$universe && !$this->universe)
-				$this->universe = Universe::Create($this);
+			if($this->universe == -1) {
+				$universe = Universe::Create($this);
+				if($universe)
+					$this->universe = $universe->id;
+			}
 		}
 
 		function updateVisitCount() {
