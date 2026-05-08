@@ -3,7 +3,7 @@
 
 	header("Content-Type: application/json");
 	if(isset($_GET['universeId'])) {
-		$universe = Universe::FromID(intval($universeId));
+		$universe = Universe::FromID(intval($_GET['universeId']));
 
 		if($universe != null) {
 			$places = [];
