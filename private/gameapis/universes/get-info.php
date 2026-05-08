@@ -5,28 +5,29 @@ header('Content-type: application/json');
 
 $assetid = intval($_GET['universeId']);
 $universe = Universe::FromID($assetid);
-$asset = $universe->starting_place;
+$place = $universe->starting_place;
+
 
 if($asset != null) {
 
 	echo json_encode([
 		"CurrentUserHasEditPermissions" => true,
 		"StudioAccessToApisAllowed" => true,
-		"TargetId" => $assetid,
+		"TargetId" => $universe->id,
 		"ProductType" => "User Product",
-		"AssetId" => $assetid,
-		"ProductId" => $assetid,
-		"Name" => $asset->name,
-		"Description" => $asset->description,
-		"AssetTypeId" => $asset->type->ordinal(),
-		"CreatorId" => $asset->creator->id,
-		"CreatorName" => $asset->creator->id,
-		"IconImageAssetId" => $assetid,
-		"GameId" => $asset->id,
-		"UniverseId" => $asset->id,
-		"PlaceId" => $asset->id,
-		"openGameFromPlaceId" => $asset->id,
-		"updateFromPlaceId" => $asset->id,
+		"AssetId" => $place->id,
+		"ProductId" => $place->id,
+		"Name" => $place->name,
+		"Description" => $place->description,
+		"AssetTypeId" => $place->type->ordinal(),
+		"CreatorId" => $place->creator->id,
+		"CreatorName" => $place->creator->id,
+		"IconImageAssetId" => $place->id,
+		"GameId" => $place->id,
+		"UniverseId" => $universe->id,
+		"PlaceId" => $place->id,
+		"openGameFromPlaceId" => $place->id,
+		"updateFromPlaceId" => $place->id,
 	]);
 
 } else {
