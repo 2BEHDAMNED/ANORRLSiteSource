@@ -1,5 +1,5 @@
 <?php 
-	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\User;
 	
 	header("Content-Type: application/json");
@@ -9,10 +9,10 @@
 	header("Pragma: no-cache");
 
 	if(isset($universeId)) {
-		$place = Place::FromID(intval($universeId));
+		$universe = Universe::FromID(intval($universeId));
 
-		if($place != null && $place->teamcreate) {
-			$editorusers = $place->getCloudEditors();
+		if($universe != null && $universe->teamcreate) {
+			$editorusers = $universe->getCloudEditors();
 
 			$editors = [];
 
@@ -21,7 +21,7 @@
 					if(!$user->isBanned()) {
 						$editors[] = [
 							"userId" => $user->id,
-							"isAdmin" => $place->isOwner($user)
+							"isAdmin" => $universe->isOwner($user)
 						];
 					}
 				}

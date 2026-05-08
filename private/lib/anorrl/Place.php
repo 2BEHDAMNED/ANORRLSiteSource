@@ -150,7 +150,7 @@
 			return 
 				$this->isOwner($user) ||
 				!$this->copylocked ||
-				$this->universe->hasAccess($user);
+				Universe::FromID($this->universe)->hasAccess($user);
 		}
 
 		function anyActiveServers(bool $teamcreate = false): bool {

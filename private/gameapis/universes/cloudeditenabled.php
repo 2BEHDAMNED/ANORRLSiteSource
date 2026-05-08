@@ -1,5 +1,5 @@
 <?php
-	use anorrl\Place;
+	use anorrl\Universe;
 
 	header("Content-Type: application/json");
 
@@ -8,13 +8,12 @@
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 
-	$place_id = intval($universeId);
+	$universe = Universe::FromID(intval($universeId));
 
-	$place = Place::FromID($place_id);
 
-	if($place != null) {
+	if($universe != null) {
 		echo json_encode([
-			"enabled" => $place->teamcreate
+			"enabled" => $universe->teamcreate
 		]);
 	} else {
 		echo "{}";

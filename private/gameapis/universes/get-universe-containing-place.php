@@ -14,7 +14,7 @@
 
 	if($place != null) {
 		echo json_encode([
-			"UniverseId" => $placeid,
+			"UniverseId" => $place->universe,
 		]);
 	}
 
