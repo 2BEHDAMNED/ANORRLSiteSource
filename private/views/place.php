@@ -211,7 +211,7 @@
 		<div id="Content">
 			<div id="PlaceImageContainer">
 				<img src="<?= $place->getThumbsUrl(623, 350) ?>&nocompress">
-				<?php if($place->is_original): ?>
+				<?php if($universe->original): ?>
 				<div id="OriginalLabel">Original</div>
 				<?php endif ?>
 			</div>
@@ -222,7 +222,7 @@
 				<div id="AssetInfoStuff">
 					<span>Created by <a href="/users/<?= $place->creator->id ?>/profile"><?= $place_creator_name ?></a></span>
 					<span><b>Favourited</b>: <?= $favourites_label ?></span>
-					<?php if($universe->gears_enabled): ?>
+					<?php if($place->gears_enabled): ?>
 					<span id="GearsEnabled">Gears enabled!</span>
 					<?php endif ?>
 				</div>
@@ -251,14 +251,14 @@
 	</div>
 
 	<?php
-	$teamcreate = $place->teamcreate && count($place->getCloudEditors());
+	$teamcreate = $universe->teamcreate && count($universe->getCloudEditors()) > 1; // assume creator if 1
 	if($user != null && $teamcreate): ?>
 	<div id="CommentsContainer">
 		<h3>Users worked on this!</h3>
 		<div id="CommentSection">
 				<div id="FriendsContainer">
 					<ul id="Friends" style="width: 848px;border: 0px;background: none;padding: 0px;text-align: center;height: 140px;">
-						<?php $users = $place->getCloudEditors(); foreach($users as $u): ?>
+						<?php $users = $universe->getCloudEditors(); foreach($users as $u): ?>
 							<li class="Friend">
 								<a id="ProfileLink" href="/users/<?= $u->id ?>/profile">
 									<img id="Profile" src="<?= $u->getThumbsUrl(100) ?>">
