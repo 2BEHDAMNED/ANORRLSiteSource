@@ -16,6 +16,7 @@
 		public bool $public;
 		public bool $original;
 		public bool $teamcreate;
+		
 
 		public static function Create(Place $place, bool $public = true, bool $original = true): self|null {
 			if($place->universe == -1) {

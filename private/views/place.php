@@ -8,6 +8,7 @@
 	use anorrl\Comment;
 	use anorrl\Page;
 	use anorrl\Place;
+	use anorrl\Universe;
 
 	$user = SESSION->user;
 
@@ -19,6 +20,8 @@
 		if($place->getURLTitle() != $name) {
 			die(header("Location: /{$place->getUrl()}"));
 		}
+
+		$universe = Universe::FromID($place->universe);
 
 		if($user != null) {
 			$is_creator = $place->isOwner($user);
@@ -219,7 +222,7 @@
 				<div id="AssetInfoStuff">
 					<span>Created by <a href="/users/<?= $place->creator->id ?>/profile"><?= $place_creator_name ?></a></span>
 					<span><b>Favourited</b>: <?= $favourites_label ?></span>
-					<?php if($place->gears_enabled): ?>
+					<?php if($universe->gears_enabled): ?>
 					<span id="GearsEnabled">Gears enabled!</span>
 					<?php endif ?>
 				</div>

@@ -16,6 +16,7 @@
 		public int  $visit_count;
 		public int  $current_playing_count;
 		public bool $copylocked;
+		public bool $gears_enabled;
 
 		public static function UpdatePlaceStats(int $placeID) {
 			$place = Place::FromID($placeID);
@@ -86,6 +87,9 @@
 			$this->server_size = $rowdata->serversize;
 			$this->visit_count = $rowdata->visit_count;
 			$this->current_playing_count = $rowdata->currently_playing_count;
+
+			$this->copylocked = $rowdata->copylocked;
+			$this->gears_enabled = $rowdata->gears_enabled;
 
 			if($this->universe == -1) {
 				$universe = Universe::Create($this);
