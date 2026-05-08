@@ -284,7 +284,7 @@
 	route('GET',      '/universes/get-aliases', '/private/gameapis/universes/get-aliases.php');
 	route('GET',      '/developerproducts/list', '/private/gameapis/universes/developerproducts.php');
 	route('GET',      '/badges/list-badges-for-place/json', '/private/gameapis/places/list-badges-for-place.php');
-
+	route('POST',     '/universes/create-alias', '/private/gameapis/universes/create-alias.php');
 	route('POST',     '/data/upload/json', '/private/gameapis/universes/upload.php');
 
 	route('GET',      '/Asset/BodyColors.ashx', '/private/gameapis/character/bodycolors.php');

@@ -34,13 +34,7 @@
 				if($id == 0)
 					return null;
 
-				Database::singleton()->run(
-					"UPDATE `assets` SET `universe`= :uid WHERE `id` = :id",
-					[
-						":uid" => $id,
-						":id" => $place->id
-					]
-				);
+				$place->setUniverse($id);
 
 				return self::FromID($id);
 			}

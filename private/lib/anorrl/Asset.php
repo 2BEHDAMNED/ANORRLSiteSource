@@ -621,5 +621,26 @@
 			return $user && ($user->id == $this->creator->id || ($user->isAdmin() && !$explicit));
 		}
 
+		function setUniverse(Universe|int|null $universe = null) {
+			if($universe == null) {
+				Database::singleton()->run(
+					"UPDATE `assets` SET `universe`= NULL WHERE `id` = :id",
+					[
+						":id" => $this->id
+					]
+				);
+				$this->universe = -1;
+			} else {
+				Database::singleton()->run(
+					"UPDATE `assets` SET `universe`= :uid WHERE `id` = :id",
+					[
+						":uid" => is_int($universe) ? $universe : $universe->id,
+						":id" => $this->id
+					]
+				);
+				$this->universe = is_int($universe) ? $universe : $universe->id;
+			}
+		}
+
 	}
 ?>
