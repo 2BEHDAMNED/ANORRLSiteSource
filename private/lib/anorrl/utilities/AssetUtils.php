@@ -88,7 +88,7 @@
 
 			$base_sql_query = "SELECT `id` FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter";
 			if($type == AssetType::PLACE) {
-				$base_sql_query = "SELECT places.id FROM `places`, `assets` WHERE assets.id = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
+				$base_sql_query = "SELECT places.id FROM `universes`, `places`, `assets` WHERE assets.id = places.id AND universes.starting_place = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
 			}
 			
 			$sql_filter = $filter->getSQL();
