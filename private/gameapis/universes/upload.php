@@ -13,12 +13,12 @@
 	//assetType=13&name=Images%2Fballhhhhhhhh&description=madeinstudio
 
 	if(
-		isset($_POST['assetType']) &&
-		isset($_POST['name']) &&
-		isset($_POST['description']) &&
+		isset($_GET['assetTypeId']) &&
+		isset($_GET['name']) &&
+		isset($_GET['description']) &&
 		ClientDetector::IsAClient()
 	) {
-		if(intval($_POST['assetType']) != 13 || !str_ends_with($_POST['name'], "Images%2F"))
+		if(intval($_GET['assetTypeId']) != 13 || !str_starts_with($_GET['name'], "Images"))
 			die(json_encode(["Success" => false, "Message" => "Any other asset type id has not been implemented yet sorry!"]));
 
 		$contents = file_get_contents("php://input");
@@ -30,10 +30,10 @@
 				"Message" => "That was not an image pal."
 			]));
 
-		$name = urldecode($_POST['name']);
+		$name = urldecode($_GET['name']);
 
 
-		$result = AssetUploader::UploadAsset($contents, AssetType::index(intval($_POST['assetType'])), $name, "madeinstudio", false, false, true);
+		$result = AssetUploader::UploadAsset($contents, AssetType::index(intval($_GET['assetTypeId'])), $name, "madeinstudio", false, false, true);
 
 		if(!$result['error']) {
 			die(json_encode([

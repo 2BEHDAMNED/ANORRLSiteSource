@@ -18,7 +18,7 @@ if($place != null) {
 			"CreatorTargetId" => $place->creator->id,
 			"CreatorType" => 0
 		],
-		"GameId" => $place->id,
+		"GameId" => $universe->id,
 		"UniverseId" => $universe->id,
 		"PlaceId" => $place->id,
 		"openGameFromPlaceId" => $place->id,
