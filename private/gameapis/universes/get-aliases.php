@@ -14,6 +14,7 @@ use anorrl\enums\AssetType;
 
 	$aliases = [];
 
+	// todo: actually implement aliases (table done on prod)
 	foreach($universe->getDeveloperProducts(AssetType::DECAL) as $asset) {
 		$aliases[] = [
 			"Name" => $asset->name,
