@@ -54,6 +54,15 @@
 			return $row ? new self($row) : null;
 		}
 
+		public static function FromName(string $name): Asset|null {
+			$row = Database::singleton()->run(
+				"SELECT `id` FROM `assets` WHERE `name` LIKE :name LIMIT 1",
+				[ ":name" => $name ]
+			)->fetchObject();
+
+			return $row ? self::FromID($row->id) : null;
+		}
+
 
 		// kill associated arrays
 		protected function __construct(object|int $rowdata) {

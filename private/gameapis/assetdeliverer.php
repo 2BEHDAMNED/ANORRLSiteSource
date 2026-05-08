@@ -4,7 +4,7 @@
 	use anorrl\utilities\MeshConverter;
 	use anorrl\utilities\ClientDetector;
 
-	if(!isset($_GET['id']) && !isset($_GET['ID']) && !isset($_GET['Id'])) {
+	if(!isset($_GET['id']) && !isset($_GET['ID']) && !isset($_GET['Id']) && !isset($_GET['assetName'])) {
 		die(http_response_code(500));
 	}
 
@@ -14,6 +14,14 @@
 		$id = intval($_GET["ID"]);
 	} else if(isset($_GET['Id'])) {
 		$id = intval($_GET["Id"]);
+	} else {
+		$id = null;
+	}
+
+	if(isset($_GET['assetName'])) {
+		$name = urldecode($_GET['assetName']);
+	} else {
+		$name = null;
 	}
 
 	function checkMimeType($contents) {
@@ -25,7 +33,12 @@
 	
 	$user = SESSION ? SESSION->user : null;
 
-	$asset = Asset::FromID($id);
+	if($id != null) {
+		$asset = Asset::FromID($id);
+	} else {
+		$asset = Asset::FromName($name);
+	}
+
 	if($asset != null) {
 		$version = isset($_GET['version']) ? intval($_GET['version']) : -1;
 		$contents = $asset->getFileContents($version);
