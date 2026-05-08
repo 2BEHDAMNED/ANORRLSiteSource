@@ -177,6 +177,10 @@
 
 		function getCloudEditors() {
 			if($this->teamcreate) {
+				if(!$this->isCloudEditor($this->creator)) {
+					$this->addCloudEditor($this->creator);
+				}
+
 				$rows = Database::singleton()->run(
 					"SELECT `userid` FROM `cloudeditors` WHERE `universe` = :id",
 					[ ":id" => $this->id ]
