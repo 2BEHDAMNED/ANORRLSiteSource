@@ -468,7 +468,7 @@
 		}
 
 		public static function UploadAsset(
-			array|null $file,
+			array|string|null $file,
 			AssetType $type,
 			string $name,
 			string $description = "",
@@ -509,6 +509,17 @@
 					}
 					
 					$data = file_get_contents($file['tmp_name']);
+				}
+				else if(is_string($file)) {
+					if(strlen($file) > 26214400) {
+						return ["error" => true, "reason" => "File was too large! Only 25MB maximum is allowed!"];
+					}
+
+					if(strlen($file) <= 0) {
+						return ["error" => true, "reason" => "File was empty! Hello???"];
+					}
+					
+					$data = $file;
 				}
 				
 				
