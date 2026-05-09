@@ -83,5 +83,18 @@
 			$this->asset = Asset::FromID($rowdata->asset);
 			$this->universe = Universe::FromID($rowdata->universe);
 		}
+
+		function renameTo(string $name) {
+			if(strcmp($name, $this->name) == 0)
+				return;
+
+			Database::singleton()->run(
+				"UPDATE `aliases` SET `name`= :name WHERE `id` = :id",
+				[
+					":id" => $this->id,
+					":name" => $name
+				]
+			);
+		}
 	}
 ?>

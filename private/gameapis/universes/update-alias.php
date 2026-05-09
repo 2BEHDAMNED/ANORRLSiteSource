@@ -20,25 +20,26 @@
 	if(!$jsonstuff)
 		die(http_response_code(500));
 
-	$assetid = $jsonstuff->AssetId;
+	$asset = Asset::FromID($jsonstuff->Asset->Id);
+	$alias = Alias::FromID($jsonstuff->TargetId);
 
-	$asset = Asset::FromID($assetid);
-
-	if(!$asset)
+	if(!$asset || !$alias)
 		die(http_response_code(500));
 
 	if(!$asset->isOwner(SESSION->user))
 		die(http_response_code(503));
 
-	$asset->setUniverse($universe);
+	if($alias->asset->id != $asset->id)
+		die(http_response_code(500));
 
-	$alias_name = str_contains($jsonstuff->Name, "%") ? urldecode($jsonstuff->Name) : $jsonstuff->Name;
-	
-	if($asset->getAssetIDSafe() == $asset->id)
-		$new_asset = $asset;
-	else
-		$new_asset = Asset::FromID($asset->getAssetIDSafe());
-	
+	$name = $jsonstuff->Name;
 
-	Alias::Create($universe, $new_asset, $alias_name);
+	/*if(str_contains($name, "%2F"))
+		$name = urldecode($name);*/ // commenting this out for now to see if it recieves as urlencoded or not
+
+	if(strcmp($name, $alias->name) == 0)
+		die(http_response_code(500));
+
+	$alias->renameTo($name)
+
 ?>
