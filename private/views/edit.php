@@ -9,6 +9,7 @@
 	use anorrl\AssetVersion;
 	use anorrl\Page;
 	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\utilities\UtilUtils;
 
 	$user = SESSION->user;
@@ -16,6 +17,7 @@
 	$id = intval($_GET['id']);
 
 	$asset = Asset::FromID($id);
+	$universe = Universe::FromID($asset->universe);
 
 	if($user == null) {
 		die(header("Location: /catalog"));
@@ -25,6 +27,7 @@
 
 		if($asset->type == AssetType::PLACE) {
 			$asset = Place::FromID($id);
+			$universe = Universe::FromID($asset->universe);
 		}
 		$is_creator = $asset->isOwner($user);
 
@@ -114,7 +117,6 @@
 		if($asset->type == AssetType::PLACE && isset($_POST['ANORRL$EditItem$Place$ServerSize'])) {
 
 			$copylocked = isset($_POST['ANORRL$EditItem$Place$Copylocked']) ? 1 : 0;
-			$original = isset($_POST['ANORRL$EditItem$Place$Original']) ? 1 : 0;
 			$gears = isset($_POST['ANORRL$EditItem$Place$Gears']) ? 1 : 0;
 			$server_size = intval($_POST['ANORRL$EditItem$Place$ServerSize']);
 			
@@ -128,7 +130,11 @@
 				$server_size = $allUsersCount;
 			}
 
-			$asset->update($copylocked, $server_size, $original, $gears); //Place::update
+			if($universe->starting_place->id == $asset->id) {
+				$original = isset($_POST['ANORRL$EditItem$Universe$Original']) ? 1 : 0;
+				$universe->update($public, $original);
+			}
+			$asset->update($copylocked, $server_size, $gears); //Place::update
 
 			if(isset($_FILES['ANORRL$EditItem$Place$ThumbnailFile'])) {
 				$file = $_FILES['ANORRL$EditItem$Place$ThumbnailFile'];
@@ -260,10 +266,12 @@
 						<td>Copylocked</td>
 						<td><input type="checkbox" name="ANORRL$EditItem$Place$Copylocked" <?php if($asset->copylocked): ?>checked<?php endif ?>></td>
 					</tr>
+					<?php if($universe->starting_place->id == $asset->id): ?>
 					<tr>
 						<td>Original</td>
-						<td><input type="checkbox" name="ANORRL$EditItem$Place$Original" <?php if($asset->is_original): ?>checked<?php endif ?>></td>
+						<td><input type="checkbox" name="ANORRL$EditItem$Universe$Original" <?php if($universe->original): ?>checked<?php endif ?>></td>
 					</tr>
+					<?php endif ?>
 					<tr>
 						<td>Gears</td>
 						<td><input type="checkbox" name="ANORRL$EditItem$Place$Gears" <?php if($asset->gears_enabled): ?>checked<?php endif ?>></td>

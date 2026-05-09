@@ -1,4 +1,6 @@
 <?php 
+	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\utilities\AssetUploader;
 	use anorrl\utilities\ClientDetector;
 	use anorrl\utilities\UserUtils;
@@ -50,11 +52,18 @@
 			die("Name must not be less than 4 characters!");
 		}
 	
-		$result = AssetUploader::CreatePlace($name, $description, $isPublic, $commentsEnabled, $server_size, $isCopylocked, $gears, $original, $user);
+		$result = AssetUploader::CreatePlace($name, $description, $isPublic, $commentsEnabled, $server_size, $isCopylocked, $gears, $user);
 		
 		if(!$result['error']) {
-			$place_verified_id = $result['id'];
-			$verifiedcrap = true;
+			$place = Place::FromID($result['id'], true);
+			if($place) {
+				Universe::Create($place, $isPublic, $original);
+				$place_verified_id = $result['id'];
+				$verifiedcrap = true;
+			} else {
+				$errorReason = "Failed to create place somehow";
+				$verifiedcrap = false;
+			}
 		} else {
 
 			$errorReason = $result['reason'];

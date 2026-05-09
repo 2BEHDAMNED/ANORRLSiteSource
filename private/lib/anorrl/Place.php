@@ -67,7 +67,7 @@
 			}
 		}
 
-		public static function FromID(int|null $id, Universe|null $universe = null): Place|null {
+		public static function FromID(int|null $id, bool $dont_create_universe = false): Place|null {
 			if(!is_int($id))
 				return null;
 
@@ -78,10 +78,10 @@
 				]
 			)->fetch(\PDO::FETCH_OBJ);
 
-			return $row ? new self($row, $universe) : null;
+			return $row ? new self($row, $dont_create_universe) : null;
 		}
 
-		private function __construct(object $rowdata, Universe|null $universe = null) {
+		private function __construct(object $rowdata, bool $dont_create_universe = false) {
 			parent::__construct($rowdata->id);
 
 			$this->server_size = $rowdata->serversize;
@@ -91,7 +91,7 @@
 			$this->copylocked = $rowdata->copylocked;
 			$this->gears_enabled = $rowdata->gears_enabled;
 
-			if($this->universe == -1) {
+			if($this->universe == -1 && !$dont_create_universe) {
 				$universe = Universe::Create($this);
 				if($universe)
 					$this->universe = $universe->id;
@@ -183,13 +183,18 @@
 			return $gameserver->active() && !$gameserver->isPlayerInServer($user) ? $gameserver : null;
 		}
 
-		function update(bool $copylocked, int $server_size) {
+		function update(bool $copylocked, int $server_size, bool $gears) {
+			if($this->universe == -1) {
+				return;
+			}
+
 			Database::singleton()->run(
-				"UPDATE `places` SET `copylocked` = :copylocked, `serversize` = :serversize WHERE `id` = :placeid",
+				"UPDATE `places` SET `copylocked` = :copylocked, `serversize` = :serversize, `gears_enabled` = :gears WHERE `id` = :placeid",
 				[
 					":copylocked" => $copylocked,
 					":serversize" => $server_size,
-					":placeid" => $this->id
+					":gears" => $gears,
+					":placeid" => $this->id,
 				]
 			);
 		}

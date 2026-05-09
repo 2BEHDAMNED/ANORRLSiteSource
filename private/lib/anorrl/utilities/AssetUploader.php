@@ -436,7 +436,6 @@
 			int $server_size = 12,
 			bool $copylocked = true,
 			bool $gears_enabled = false,
-			bool $original = false,
 			User|null $user = null
 		): array {
 			$result = self::UploadAsset(null, AssetType::PLACE, $name, $description, $public, false, $comments_enabled, $user);
@@ -446,13 +445,12 @@
 
 				try {
 					$db->run(
-						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (:id, :copylocked, :serversize, :gears, :original);",
+						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (:id, :copylocked, :serversize, :gears);",
 						[
 							":id" => $result['id'],
 							":copylocked" => $copylocked,
 							":serversize" => $server_size,
 							":gears" => $gears_enabled,
-							":original" => $original
 						]
 					);
 				} catch(\PDOException $e) {

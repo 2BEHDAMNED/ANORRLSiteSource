@@ -229,6 +229,17 @@
 			return $this->isOwner($user) || $this->teamcreate && $this->isCloudEditor($user);
 		}
 
+		function update(bool $public, bool $original) {
+			Database::singleton()->run(
+				"UPDATE `universes` SET `public` = :public, `original` = :original WHERE `id` = :universe",
+				[
+					":public" => $public,
+					":original" => $original,
+					":universe" => $this->id,
+				]
+			);
+		}
+
 		function getBadges(): array {
 			return [];
 		}
