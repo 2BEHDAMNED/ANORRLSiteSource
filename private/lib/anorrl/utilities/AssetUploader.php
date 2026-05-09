@@ -446,7 +446,7 @@
 
 				try {
 					$db->run(
-						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (:id, :copylocked, :serversize, :gears);",
+						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`) VALUES (:id, :copylocked, :serversize, :gears);",
 						[
 							":id" => $result['id'],
 							":copylocked" => $copylocked,
@@ -481,7 +481,7 @@
 
 				try {
 					$db->run(
-						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (:id, :copylocked, :serversize, :gears);",
+						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`) VALUES (:id, :copylocked, :serversize, :gears);",
 						[
 							":id" => $result['id'],
 							":copylocked" => $place->copylocked,
