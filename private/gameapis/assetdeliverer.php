@@ -1,10 +1,13 @@
-<?php	use anorrl\Asset;
+<?php
+	use anorrl\Alias;
+	use anorrl\Asset;
 	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\MeshConverter;
 	use anorrl\utilities\ClientDetector;
 
-	if(!isset($_GET['id']) && !isset($_GET['ID']) && !isset($_GET['Id']) && !isset($_GET['assetName'])) {
+	if(!isset($_GET['id']) && !isset($_GET['ID']) && !isset($_GET['Id']) && !isset($_GET['assetName']) && !isset($_GET['universeId'])) {
 		die(http_response_code(500));
 	}
 
@@ -18,10 +21,12 @@
 		$id = null;
 	}
 
-	if(isset($_GET['assetName'])) {
+	if(isset($_GET['assetName']) && isset($_GET['universeId'])) {
+		$universe = Universe::FromID(intval($_GET['universeId']));
 		$name = urldecode($_GET['assetName']);
 	} else {
 		$name = null;
+		$universe = null;
 	}
 
 	function checkMimeType($contents) {
@@ -36,7 +41,12 @@
 	if($id != null) {
 		$asset = Asset::FromID($id);
 	} else {
-		$asset = Asset::FromName($name);
+		if($universe && $name) {
+			$alias = Alias::FromName($universe, $name);
+
+			if($alias)
+				$asset = $alias->asset;
+		}
 	}
 
 	if($asset != null) {
@@ -89,7 +99,7 @@
 					}*/
 				}
 			}
-			// quick hack workaround, not gonna be in prod.
+			// quick hack workaround, not gonna be in release.
 			if(str_contains($contents, "<roblox")) {
 				$contents = str_replace("<roblox", "<anorrl", $contents);
 				$contents = str_replace("roblox>", "anorrl>", $contents);
