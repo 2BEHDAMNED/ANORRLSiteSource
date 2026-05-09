@@ -231,11 +231,9 @@
 	route('GET|POST', '/v1.1/Counters/Increment/', '/private/templates/responses/nothing.txt');
 	route('GET|POST', '/v1.1/counters/increment/', '/private/templates/responses/nothing.txt');
 	route('GET|POST', '/game/report-stats', '/private/templates/responses/nothing.txt');
-	route('GET|POST', '/Game/report-stats', '/private/templates/responses/nothing.txt');
 	route('GET|POST', '/game/validate-machine', '/private/templates/responses/success.json');
 	route('GET|POST', '/mac-address/validate-machine', '/private/templates/responses/success.json');
-	route('GET|POST', '/Game/validate-machine', '/private/templates/responses/success.json');
-
+	
 	route('GET',      '/Login/Negotiate.ashx', '/private/gameapis/authentication/negotiate.php');
 	route('GET',      '/Login/RequestAuth.ashx', '/private/gameapis/authentication/requestauth.php');
 	route('GET',      '/login/RequestAuth.ashx', '/private/gameapis/authentication/requestauth.php');
@@ -246,8 +244,6 @@
 	route('GET',      '/Game/logout.aspx', '/private/api/logout.php');
 
 	route('GET',      '/game/players/[i:id]', '/private/api/users/players.php');
-	route('GET',      '//game/players/[i:id]', '/private/api/users/players.php');
-	route('GET',	  '//game/players/[i:id]/', '/private/api/users/players.php');
 	route('GET',      '/game/players/[i:id]/', '/private/api/users/players.php');
 	
 	route('GET|POST', '/persistence/getV2.aspx', '/private/gameapis/persistence/getv2.php');
@@ -264,8 +260,8 @@
 	route('GET',      '/user/get-friendship-count', '/private/gameapis/social/get-friendship-count.php');
 	route('GET|POST', '/user/follow', '/private/gameapis/social/follow.php');
 	route('GET|POST', '/user/unfollow', '/private/gameapis/social/unfollow.php');
-	route('GET|POST',      '/user/request-friendship', '/private/gameapis/social/request-friendship.php');
-	route('GET|POST',      '/user/decline-friend-request', '/private/gameapis/social/decline-friend-request.php');
+	route('GET|POST', '/user/request-friendship', '/private/gameapis/social/request-friendship.php');
+	route('GET|POST', '/user/decline-friend-request', '/private/gameapis/social/decline-friend-request.php');
 	route('GET|POST', '/Game/AreFriends', '/private/gameapis/social/arefriends.php');
 
 	route('GET',      '/universes/get-universe-containing-place', '/private/gameapis/universes/get-universe-containing-place.php');
