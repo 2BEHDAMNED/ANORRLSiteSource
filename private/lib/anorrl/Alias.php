@@ -104,6 +104,8 @@
 					":id" => $this->id
 				]
 			);
+
+			$this->asset->setUniverse(); // null!
 		}
 	}
 ?>
