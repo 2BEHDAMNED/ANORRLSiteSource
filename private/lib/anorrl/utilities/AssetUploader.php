@@ -4,6 +4,7 @@
 	use anorrl\Asset;
 	use anorrl\Database;
 	use anorrl\User;
+	use anorrl\Universe;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetTypeUtils;
 	use anorrl\utilities\ImageUtils;
@@ -451,6 +452,41 @@
 							":copylocked" => $copylocked,
 							":serversize" => $server_size,
 							":gears" => $gears_enabled,
+						]
+					);
+				} catch(\PDOException $e) {
+					error_log($e->getMessage());
+
+					$db->run("DELETE FROM `assets` WHERE `id` = :aid", [ ":aid" => $result['id'] ]);
+
+					return INTERNALSQLERROR;
+				}
+			}
+
+			return $result;
+		}
+
+		public static function CreateSubPlace(
+			Universe $universe,
+			User|null $user = null
+		): array {
+			$place = $universe->starting_place;
+
+			$name = $place->name . " Sub Place";
+
+			$result = self::UploadAsset(file_get_contents($_SERVER['DOCUMENT_ROOT']."/private/templates/assets/baseplate.arl"), AssetType::PLACE, $name, "", false, false, false, $user);
+
+			if(!$result['error']) {
+				$db = Database::singleton();
+
+				try {
+					$db->run(
+						"INSERT INTO `places`(`id`, `copylocked`, `serversize`, `gears_enabled`, `original`) VALUES (:id, :copylocked, :serversize, :gears);",
+						[
+							":id" => $result['id'],
+							":copylocked" => $place->copylocked,
+							":serversize" => 12,
+							":gears" => false,
 						]
 					);
 				} catch(\PDOException $e) {

@@ -14,7 +14,7 @@ header("Pragma: no-cache");
 $domain = CONFIG->domain;
 
 if(isset($_GET['clothing'])): ?>
-<anorrl xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://<?= $domain ?>/roblox.xsd" version="4">
+<anorrl xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://<?= $domain ?>/anorrl.xsd" version="4">
 	<External>null</External>
 	<External>nil</External>
 	<Item class="BodyColors" referent="RBX96B37B6C58984541BA7545B230B6E10D">

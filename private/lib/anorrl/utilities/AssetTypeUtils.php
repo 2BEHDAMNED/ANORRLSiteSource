@@ -91,7 +91,7 @@
 		}
 
 		private static function GetTemplate(string $filename): string {
-			$file = file_get_contents($_SERVER['DOCUMENT_ROOT']."/private/templates/assets/$filename.rbxm");
+			$file = file_get_contents($_SERVER['DOCUMENT_ROOT']."/private/templates/assets/$filename.arlm");
 			return self::Replace("domain", \CONFIG->domain, $file);
 		}
 
@@ -125,8 +125,8 @@
 		}
 
 		public static function GenerateCharacterMeshRBXM(int $id, AssetType $type): string {
-			$meshrbxm = self::Replace("assetid", $id, self::GetTemplate("charactermesh"));
-			return self::Replace("bodypart", $type->tocharactermesh()->ordinal(), $meshrbxm);
+			$meshfile = self::Replace("assetid", $id, self::GetTemplate("charactermesh"));
+			return self::Replace("bodypart", $type->tocharactermesh()->ordinal(), $meshfile);
 		}
 	}
 ?>

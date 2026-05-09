@@ -22,7 +22,7 @@
 		$xml = new DOMDocument();
 		$xml->loadXML($XML_Data);
 
-		if(!@$xml->schemaValidate($_SERVER['DOCUMENT_ROOT']."/roblox.xsd")){
+		if(!@$xml->schemaValidate($_SERVER['DOCUMENT_ROOT']."/anorrl.xsd")){
 			//throw new Exception("Invalid LEGACY ROBLOX XML Format file");
 			return false;
 		}else{
