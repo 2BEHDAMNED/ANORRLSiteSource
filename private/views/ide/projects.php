@@ -136,7 +136,8 @@
 		</ul>
 		<?php else: ?>
 		<div id="DidYouKnow">
-			<p style="font-size: 16px"><b><?= $universe->starting_place->name ?></b></p>
+			<p style="margin-bottom: 0px">Viewing:</p>
+			<p style="font-size: 14px"><b><?= $universe->starting_place->name ?></b></p>
 		</div>
 		<?php endif ?>
 		<div id="DidYouKnow">
