@@ -83,9 +83,17 @@
 		function onResizeWindow() {
 			var n = $("#Places");
 
-			$(window).height() < n.height() ?
-				$("#Sidebar").height(n.height()+30) :
-				$("#Sidebar").height(n.height() + ($(window).height()-(114)-n.height()));
+			if($(window).height() < n.height()) {
+				$("#Sidebar").height(n.height()+30);
+			}
+			else {
+				if(n.height()+30+114 > $(window).height()) {
+					$("#Sidebar").height($(window).height()-40);
+				}
+				else {
+					$("#Sidebar").height($(window).height()-114);
+				}
+			}
 
 			var j = $("#Places");
 			$(window).width() < 300 ?
