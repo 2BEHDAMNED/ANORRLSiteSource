@@ -211,16 +211,16 @@
 					}
 					else {
 						echo <<<EOT
-								<div class="Place" {$universeplace} title="{$place->name}">
-									<a href="#">
-										<div style="position: relative;">
-											<img src="{$place->getThumbsUrl(229, 132)}">
+						<div class="Place" {$universeplace} title="{$place->name}">
+							<a href="#">
+								<div style="position: relative;">
+									<img src="{$place->getThumbsUrl(229, 132)}">
 						EOT;
 
 						if($universe->teamcreate) {
 							if(count($universe->getAllPlaces()) == 1) {
 								echo <<<EOT
-											<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 12px;"
+											<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 12px;">
 								EOT;
 							}
 							else {
