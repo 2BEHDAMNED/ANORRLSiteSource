@@ -222,7 +222,7 @@
 	route('GET',      '/Setting/QuietGet/AndroidAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientAppSettings/', '/private/gameapis/settings/ClientAppSettings.json');
 	route('GET',      '/Setting/QuietGet/ClientSharedSettings/', '/private/gameapis/settings/ClientSharedSettings.json');
-	route('GET',      '/Setting/QuietGet/ACCService'.CONFIG->asset->key.'/', '/private/gameapis/settings/ACCService.json');
+	route('GET',      '/Setting/QuietGet/ACCService'.CONFIG->arbiter->key.'/', '/private/gameapis/settings/ACCService.json');
 	route('GET',      '/Setting/QuietGet/WindowsBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
 	route('GET',      '/Setting/QuietGet/WindowsStudioBootstrapperSettings/', '/private/gameapis/settings/Bootstrapper.json');
 
