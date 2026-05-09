@@ -134,6 +134,10 @@
 			<li><a href="" data-view="RecentlyOpened">Recently Opened Files</a></li>
 			<?php endif ?>
 		</ul>
+		<?php else: ?>
+		<div id="DidYouKnow">
+			<p style="font-size: 16px"><b><?= $universe->starting_place->name ?></b></p>
+		</div>
 		<?php endif ?>
 		<div id="DidYouKnow">
 			<p style="font-size: 16px"><b>Did you know?</b></p>
