@@ -81,7 +81,7 @@
 			if($user == null) 
 				return [];
 			
-			$query_filter = "AND `public` = 1 AND `nevershow` = 0";
+			$query_filter = "AND `assets`.`public` = 1 AND `nevershow` = 0";
 			if($user->isAdmin()) {
 				$query_filter = "AND `nevershow` = 0";
 			}

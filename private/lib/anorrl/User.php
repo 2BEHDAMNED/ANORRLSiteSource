@@ -220,7 +220,7 @@
 				)->fetchAll(\PDO::FETCH_OBJ);
 
 				foreach($rows as $row) {
-					$universe = Universe::FromID(intval($row['universe']));
+					$universe = Universe::FromID($row->universe);
 
 					if($universe && $universe->creator->id != $this->id) {
 						$teamcreatedplaces[] = $place;

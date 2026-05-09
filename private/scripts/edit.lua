@@ -45,5 +45,5 @@ visit:SetUploadUrl("{uploadurl}")
 message.Parent = nil
 
 game:GetService("ChangeHistoryService"):SetEnabled(true)
-pcall(function() game:SetUniverseId({universeid}) end)
-pcall(function() game:SetPlaceID({placeid}) end)
+--pcall(function() game:SetUniverseId({universeid}) end)
+--pcall(function() game:SetPlaceID({placeid}) end)
