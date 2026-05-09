@@ -223,7 +223,10 @@
 					$universe = Universe::FromID($row->universe);
 
 					if($universe && $universe->creator->id != $this->id) {
-						$teamcreatedplaces[] = $place;
+						foreach($universe->getAllPlaces() as $place) {
+							$teamcreatedplaces[] = $place;
+						}
+						
 					}
 				}
 			}
