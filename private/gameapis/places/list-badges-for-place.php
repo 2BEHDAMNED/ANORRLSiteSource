@@ -13,15 +13,17 @@
 
 	if(!$place->isEditable(SESSION->user))
 		die(http_response_code(503));
-	
+
+	// thanks cubp
 	die(json_encode([
-		"PlaceId" => $place->id,
-		"totalItems" => 1,
-		"IsViewerPlaceOwner" => SESSION->user->id == $place->creator->id,
-		"data" => [
+		"GameBadges" => [
 			[
-				"BadgeId" => 1,
-				"Url" => ""
+				"BadgeAssetId" => 1,
+				"PlaceId" => $place->id,
+				"Name" => "Badge Name",
+				"Thumbnail" => [
+					"Url" => "",
+				]
 			]
 		]
 	]));
