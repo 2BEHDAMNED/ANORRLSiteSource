@@ -4,6 +4,7 @@
 	use anorrl\Asset;
 	use anorrl\Database;
 	use anorrl\Place;
+	use anorrl\Universe;
 	use anorrl\enums\AssetType;
 	use anorrl\enums\CatalogFilter;
 	use anorrl\utilities\UserUtils;
@@ -88,7 +89,7 @@
 
 			$base_sql_query = "SELECT `id` FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter";
 			if($type == AssetType::PLACE) {
-				$base_sql_query = "SELECT places.id FROM `universes`, `places`, `assets` WHERE assets.id = places.id AND universes.starting_place = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
+				$base_sql_query = "SELECT places.id FROM `universes`, `places`, `assets` WHERE assets.id = places.id AND universes.starting_place = assets.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
 			}
 			
 			$sql_filter = $filter->getSQL();
@@ -116,6 +117,9 @@
 				while($row = $result->fetch_assoc()) {
 					if($type == AssetType::PLACE) {
 						$asset = Place::FromID($row['id']);
+						$universe = Universe::FromID($asset->universe);
+						if($universe && $universe->starting_place->id != $asset->id)
+							$asset = null;
 					} else {
 						$asset = Asset::FromID($row['id']);
 					}
