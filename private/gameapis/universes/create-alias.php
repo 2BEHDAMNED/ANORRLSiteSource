@@ -28,5 +28,11 @@
 
 	$alias_name = str_contains($jsonstuff->Name, "%") ? urldecode($jsonstuff->Name) : $jsonstuff->Name;
 	
-	Alias::Create($universe, $asset, $alias_name);
+	if($asset->getAssetIDSafe() == $asset->id)
+		$new_asset = $asset;
+	else
+		$new_asset = Asset::FromID($asset->getAssetIDSafe());
+	
+
+	Alias::Create($universe, $new_asset, $alias_name);
 ?>
