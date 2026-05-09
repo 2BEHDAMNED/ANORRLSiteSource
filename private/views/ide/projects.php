@@ -1,5 +1,6 @@
 <?php
 	use anorrl\Page;
+	use anorrl\Universe;
 	use anorrl\utilities\FileSplasher;
 	use anorrl\utilities\ClientDetector;
 	use anorrl\utilities\UtilUtils;
@@ -10,42 +11,52 @@
 	if(!$isclient)
 		die("Hey something isn't right here... You sure you're using the right studio?");
 
-	$extra_places = [];
-	if(isset($_GET['filepath'])) {
-		$raw_crap = explode("&", str_replace("/my/places?", "", $_SERVER['REQUEST_URI']));
+	$universe = null;
 
-		$filenames = [];
-		$filepaths = [];
+	if(!isset($_GET['universeId'])) {
+		$extra_places = [];
+		if(isset($_GET['filepath'])) {
+			$raw_crap = explode("&", str_replace("/ide/projects?", "", $_SERVER['REQUEST_URI']));
 
-		foreach($raw_crap as $bit) {
-			if(strlen(trim($bit)) != 0) {
-				if(str_starts_with($bit, "filename="))
-					$filenames[] = urldecode(str_replace("filename=", "", $bit));
-				elseif(str_starts_with($bit, "filepath="))
-					$filepaths[] = urldecode(str_replace("filepath=", "", $bit));
+			$filenames = [];
+			$filepaths = [];
+
+			foreach($raw_crap as $bit) {
+				if(strlen(trim($bit)) != 0) {
+					if(str_starts_with($bit, "filename="))
+						$filenames[] = urldecode(str_replace("filename=", "", $bit));
+					elseif(str_starts_with($bit, "filepath="))
+						$filepaths[] = urldecode(str_replace("filepath=", "", $bit));
+				}
+			}
+
+			if(count($filenames) == count($filepaths)) {
+				for($i = 0; $i < count($filenames); $i++) {
+					$extra_places[] = [
+						"name" => $filenames[$i],
+						"path" => $filepaths[$i]
+					];
+				}
 			}
 		}
+		//print_r($extra_places);
 
-		if(count($filenames) == count($filepaths)) {
-			for($i = 0; $i < count($filenames); $i++) {
-				$extra_places[] = [
-					"name" => $filenames[$i],
-					"path" => $filepaths[$i]
-				];
-			}
-		}
+		$places = $user->getPlaces(false);
+		$teamplaces = $user->getPlaces(true);
+	} else {
+		$universe = Universe::FromID(intval($_GET['universeId']));
+
+		if(!$universe)
+			die(set_header("Location", "/ide/projects"));
 	}
-	//print_r($extra_places);
-	
 
-	$places = $user->getPlaces(false);
-	$teamplaces = $user->getPlaces(true);
+
 
 	$domain = CONFIG->domain;
 
 	$splash = new FileSplasher("didyouknow")->getRandomSplash();
 
-	$page = new Page("ANORRL Studio");
+	$page = new Page($universe ? $universe->starting_place->name : "ANORRL Studio");
 	$page->clearAll();
 	$page->addScript("/js/core/jquery.js");
 	$page->addStylesheet("/css/new/my/places.css");
@@ -59,8 +70,14 @@
 <script>
 	$(function() {
 		$(".Place").on("click", function() {
+			
 			var placeid = $(this).attr("data-place-id");
-			window.external.StartGame("http://<?= $domain ?>/","http://<?= $domain ?>/","http://<?= $domain ?>/game/edit.slua?placeId=" + placeid);
+			if(!Number(placeid)) {
+				window.location.href = "/ide/projects?universeId="+$(this).attr("data-universe-id");
+			} else {
+				window.external.StartGame("http://<?= $domain ?>/","http://<?= $domain ?>/","http://<?= $domain ?>/game/edit.slua?placeId=" + placeid);
+			}
+			
 		});
 
 		function onResizeWindow() {
@@ -109,6 +126,7 @@
 <div id="PlacesContainer">
 	<div id="Sidebar">
 		<div id="SidewaySeparator"></div>
+		<?php if(!isset($_GET['universeId'])): ?>
 		<ul>
 			<li><a href="" data-view="Main" selected>Your Projects</a></li>
 			<li><a href="" data-view="Collaborative">Collaborated Projects</a></li>
@@ -116,20 +134,33 @@
 			<li><a href="" data-view="RecentlyOpened">Recently Opened Files</a></li>
 			<?php endif ?>
 		</ul>
+		<?php endif ?>
 		<div id="DidYouKnow">
 			<p style="font-size: 16px"><b>Did you know?</b></p>
 			<p><?= $splash ?></p>
 		</div>
 	</div>
 	<div id="Places">
+		<?php if(!isset($_GET['universeId'])): ?>
 		<div id="MainProjectsView">
 			<?php
 				foreach($places as $place) {
 
 					$place_timeago = UtilUtils::GetTimeAgo($place->last_updatetime);
+					$universe = Universe::FromID($place->universe);
+
+					$universeplace = <<<EOT
+					data-place-id="{$place->id}"
+					EOT;
+
+					if(count($universe->getAllPlaces()) > 1) {
+						$universeplace = <<<EOT
+						data-universe-id="{$universe->id}"
+						EOT;
+					}
 
 					echo <<<EOT
-					<div class="Place" data-place-id="{$place->id}" title="{$place->name}">
+					<div class="Place" {$universeplace} title="{$place->name}">
 						<a href="#">
 							<img src="{$place->getThumbsUrl(229, 132)}">
 							<div id="Name">{$place->name}</div>
@@ -176,6 +207,7 @@
 				}
 			?>
 		</div>
+		<?php endif ?>
 	</div>
 </div>
 

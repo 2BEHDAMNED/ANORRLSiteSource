@@ -117,14 +117,13 @@
 	route('GET|POST', '/my/home', '/private/views/my/home.php');
 	route('GET|POST', '/my/profile', '/private/views/my/profile.php');
 	route('GET|POST', '/my/character', '/private/views/my/character.php');
-	route('GET|POST', '/my/places', '/private/views/my/places.php');
-	route('GET|POST', '/ide/projects', '/private/views/my/places.php');
-
-	route('GET|POST', '/ide/publish', '/private/views/my/places.php');
 
 	route('GET|POST', '/my/stuff', '/private/views/my/stuff.php');
 	route('GET|POST', '/my/friends', '/private/views/my/friends.php');
 	route('GET|POST', '/my/', '/private/views/my/index.php');
+
+	route('GET|POST', '/ide/projects', '/private/views/ide/projects.php');
+	route('GET|POST', '/ide/publish', '/private/views/ide/projects.php');
 
 	route('GET', '/badges', '/private/views/badges.php');
 

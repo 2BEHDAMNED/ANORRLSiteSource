@@ -32,7 +32,7 @@
 	"FLogFullRenderObjects": "0",
 	"PublishedProjectsPageHeight": "535",
 	"PublishedProjectsPageUrl": "/ide/publish",
-	"StartPageUrl": "/my/places",
+	"StartPageUrl": "/ide/projects",
 	"FFlagOpenNewWindowsInDefaultBrowser": "True",
 	"FFlagOnScreenProfiler": "True",
 	"FFlagInitializeNewPlace": "True",
