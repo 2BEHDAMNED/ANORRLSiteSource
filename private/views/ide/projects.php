@@ -61,7 +61,7 @@
 	$page = new Page($universe ? $universe->starting_place->name : "ANORRL Studio");
 	$page->clearAll();
 	$page->addScript("/js/core/jquery.js");
-	$page->addStylesheet("/css/new/my/places.css");
+	$page->addStylesheet("/css/new/my/places.css?v=1");
 	$page->loadBasicHeader();
 ?>
 <style>

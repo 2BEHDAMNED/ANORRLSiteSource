@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html> 
 	<head>
-		<link rel="stylesheet" href="/public/css/new/main.css?v=1">
+		<link rel="stylesheet" href="/public/css/new/main.css?v=2">
 		<link rel="stylesheet" href="/public/css/new/forms.css">
 		<link rel="stylesheet" href="/public/css/new/stuff.css?v=2">
 		<title>Games - ANORRL</title>

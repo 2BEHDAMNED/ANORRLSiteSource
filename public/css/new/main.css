@@ -19,7 +19,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: url("/public/images/bkg.png") top center repeat-x #000444;
+	background: url("/public/images/bkg.png?v=1") top center repeat-x #32043f;
 	font-family: Arial,Helvetica,sans-serif;
 	color: black;
 	font-size: 12px;
