@@ -208,43 +208,37 @@
 		 * @return void
 		 */
 		function getPlaces(bool $teamcreate = false): array {
-			$grabbedplaces = $this->getOwnedAssets(AssetType::PLACE, "", true);
-			$result = [];
-
+			$grabbedplaces = [];
 			$teamcreatedplaces = [];
-			
+
 			if($teamcreate) {
 				$rows = Database::singleton()->run(
-					"SELECT `universe` FROM `cloudeditors` WHERE `userid` = :uid",
-					[ ":uid" => $this->id ]
+					"SELECT `universe` FROM `cloudeditors` WHERE `userid` = :user;",
+					[ ":user" => $this->id ]
 				)->fetchAll(\PDO::FETCH_OBJ);
 
 				foreach($rows as $row) {
 					$universe = Universe::FromID($row->universe);
+					if(!$universe)
+						continue;
 
-					if($universe && $universe->creator->id != $this->id) {
-						foreach($universe->getAllPlaces() as $place) {
-							$teamcreatedplaces[] = $place;
-						}
-						
+					if(!$universe->starting_place->isOwner($this, true)) {
+						$teamcreatedplaces[] = $universe->starting_place;
 					}
 				}
 			}
 
-			
-			foreach($grabbedplaces as $asset) {
-				$place = Place::FromID($asset->id);
-				if($place) {
-					$universe = Universe::FromID($place->universe);
-					
-					
-					if(!$teamcreate && ($universe->creator->id == $this->id || $place->isEditable($this))) {
-						$result[] = $place;
-					}
-				}
+			foreach($this->getOwnedAssets(AssetType::PLACE, '', true) as $place) {
+				$universe = Universe::FromID($place->universe);
+
+				if(!$universe)
+					continue;
+
+				if($universe->starting_place->id == $place->id)
+					$grabbedplaces[] = $place;
 			}
 			
-			return array_merge($result, $teamcreatedplaces);
+			return $teamcreate ? $teamcreatedplaces : $grabbedplaces;
 		}
 
 		function giveProfileBadge(ANORRLBadge $badge): void {
