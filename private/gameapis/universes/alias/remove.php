@@ -14,10 +14,10 @@
 	if(!$universe->isOwner(SESSION->user))
 		die(http_response_code(503));
 
-	if(!str_contains($_GET['name'], "%2F"))
+	if(!str_contains($_GET['name'], "/"))
 		die(http_response_code(500));
 
-	$name = urldecode($_GET['name']);
+	$name = $_GET['name']; //urldecode($_GET['name']);
 
 	$alias = Alias::FromName($universe, $name);
 
