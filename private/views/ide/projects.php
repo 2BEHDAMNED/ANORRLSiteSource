@@ -246,7 +246,7 @@
 								<a href="#">
 									<div style="position: relative;">
 										<img src="{$place->getThumbsUrl(229, 132)}">
-										<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 12px;">
+										<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 5px;top: 5px;">
 									</div>
 									<div id="Name">{$place->name}</div>
 									<div id="LastEdited">Last edited: {$place_timeago}</div>
