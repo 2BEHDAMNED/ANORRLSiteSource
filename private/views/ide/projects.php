@@ -196,66 +196,57 @@
 						EOT;
 					}
 
-					if($universe->teamcreate) {
-						if(count($universe->getAllPlaces()) == 1) {
-							echo <<<EOT
-							<div class="Place" {$universeplace} title="{$place->name}">
-								<a href="#">
-									<div style="position: relative;">
-										<img src="{$place->getThumbsUrl(229, 132)}">
-										<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 12px;">
-									</div>
-									<div id="Name">{$place->name}</div>
-									<div id="LastEdited">Last edited: {$place_timeago}</div>
-								</a>
-							</div>
-							EOT;
-						}
-						else {
-							echo <<<EOT
-							<div class="Place" {$universeplace} title="{$place->name}">
-								<a href="#">
-									<div style="position: relative;">
-										<img src="{$place->getThumbsUrl(229, 132)}">
-										<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 12px;">
-										<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 46px;">
-									</div>
-									<div id="Name">{$place->name}</div>
-									<div id="LastEdited">Last edited: {$place_timeago}</div>
-								</a>
-							</div>
-							EOT;
-						}
-						
+					// todo: make this nicer because this is UGLY!
+
+					if(count($universe->getAllPlaces()) == 1 && !$universe->teamcreate) {
+						echo <<<EOT
+						<div class="Place" {$universeplace} title="{$place->name}">
+							<a href="#">
+								<img src="{$place->getThumbsUrl(229, 132)}">
+								<div id="Name">{$place->name}</div>
+								<div id="LastEdited">Last edited: {$place_timeago}</div>
+							</a>
+						</div>
+						EOT;
 					}
 					else {
-						if(count($universe->getAllPlaces()) == 1) {
-							echo <<<EOT
-							<div class="Place" {$universeplace} title="{$place->name}">
-								<a href="#">
-									<img src="{$place->getThumbsUrl(229, 132)}">
-									<div id="Name">{$place->name}</div>
-									<div id="LastEdited">Last edited: {$place_timeago}</div>
-								</a>
-							</div>
-							EOT;
+						echo <<<EOT
+								<div class="Place" {$universeplace} title="{$place->name}">
+									<a href="#">
+										<div style="position: relative;">
+											<img src="{$place->getThumbsUrl(229, 132)}">
+						EOT;
+
+						if($universe->teamcreate) {
+							if(count($universe->getAllPlaces()) == 1) {
+								echo <<<EOT
+											<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 12px;"
+								EOT;
+							}
+							else {
+								echo <<<EOT
+											<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 12px;">
+											<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 46px;">
+								EOT;
+							}
+							
 						}
 						else {
-							echo <<<EOT
-							<div class="Place" {$universeplace} title="{$place->name}">
-								<a href="#">
-									<div style="position: relative;">
-										<img src="{$place->getThumbsUrl(229, 132)}">
-										<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 7px;top: 5px;">
-									</div>
-									<div id="Name">{$place->name}</div>
-									<div id="LastEdited">Last edited: {$place_timeago}</div>
-								</a>
-							</div>
-							EOT;
+							if(count($universe->getAllPlaces()) > 1) {
+								echo <<<EOT
+											<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 7px;top: 5px;">
+								EOT;
+							}
 						}
+
+						echo <<<EOT
+								</div>
+								<div id="Name">{$place->name}</div>
+								<div id="LastEdited">Last edited: {$place_timeago}</div>
+							</a>
+						</div>
+						EOT;
 					}
-					
 				}
 			?>
 		</div>
