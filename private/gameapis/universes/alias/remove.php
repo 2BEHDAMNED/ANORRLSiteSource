@@ -11,7 +11,7 @@
 	if(!$universe)
 		die(http_response_code(503));
 
-	if(!$universe->isOwner(SESSION->user))
+	if(!$universe->hasAccess(SESSION->user))
 		die(http_response_code(503));
 
 	if(!str_contains($_GET['name'], "/"))
