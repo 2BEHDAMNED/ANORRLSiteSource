@@ -14,5 +14,8 @@
 	if(!$universe->isOwner(SESSION->user) || !$place->isOwner(SESSION->user) || $place->universe != $universe->id)
 		die(http_response_code(403));
 
+	if($place->id == $universe->starting_place->id)
+		die(http_response_code(503));
+
 	$place->delete();
 ?>
