@@ -257,7 +257,7 @@
 			Database::singleton()->run(
 				"UPDATE `universes` SET `starting_place` = :place WHERE `id` = :universe",
 				[
-					":public" => $place->id,
+					":place" => $place->id,
 					":universe" => $this->id,
 				]
 			);
