@@ -207,6 +207,9 @@
 <div id="ItemContainer">
 	<h4>ANORRL <?= $place->type->label(); ?></h4>
 	<h2><a class="FavouriteButton" href="#" data-assetid="<?= $place->id ?>" <?= $is_favourited ? 'favourited="true"' : "" ?>></a><?= $place->name ?></h2>
+	<?php if($universe->starting_place->id != $place->id): ?>
+	<h3>This place is a sub place of: <a href="<?= $universe->starting_place->getURL() ?>"><?= $universe->starting_place->name ?></a></h3>
+	<?php endif ?>
 	<div id="PlaceDetails">
 		<div id="Content">
 			<div id="PlaceImageContainer">
