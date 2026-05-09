@@ -18,6 +18,7 @@
 	$session_id = "";
 	$roblox_place = false;
 	$place_id = 0;
+	$universe_id = 0;
 	$place_creator_id = 0;
 	$place_chat_type = "ClassicAndBubble"; // $place->getChatType()->name();
 	$unknown = true;
@@ -46,6 +47,7 @@
 			$user_ticket = $sessionDetails->id;
 			$roblox_place = true;
 			$place_id = $place->id;
+			$universe_id = $place->universe;
 			$place_creator_id = $place->creator->id;
 			$unknown = false;
 			$game_id = $serverDetails->jobid;
@@ -80,7 +82,7 @@
 		"GenerateTeleportJoin" => false,
 		"IsUnknownOrUnder13" => $unknown,
 		"SessionId" => $session_id,
-		"UniverseId" => $place_id,
+		"UniverseId" => $universe_id,
 		"characterAppearanceId" => $user_id
 	];
 

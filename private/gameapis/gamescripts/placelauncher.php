@@ -224,7 +224,7 @@
 						"CreatorId" => $place->creator->id,
 						"AccountAge" => $user->getAccountAge(),
 						"SessionId" => base64_encode($user->security_key),
-						"UniverseId" => $place->id,
+						"UniverseId" => $place->universe,
 					]
 				]);
 
