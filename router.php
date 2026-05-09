@@ -277,8 +277,9 @@
 	route('GET',      '/developerproducts/list', '/private/gameapis/universes/developerproducts.php');
 	route('GET',      '/badges/list-badges-for-place/json', '/private/gameapis/places/list-badges-for-place.php');
 
-	route('GET',      '/ide/places/defaultsettings', '/private/gameapis/universes/defaultsettings.php');
-	route('POST',     '/ide/places/create',          '/private/gameapis/universes/newplace.php');
+	route('GET',      '/ide/places/defaultsettings', '/private/gameapis/places/defaultsettings.php');
+	route('POST',     '/ide/places/create',          '/private/gameapis/places/new.php');
+	route('POST',     '/ide/places/[i:placeId]/updatesettings', '/private/gameapis/places/edit.php');
 	route('POST',     '/universes/removeplace',      '/private/gameapis/universes/removeplace.php');
 
 	// aliases
