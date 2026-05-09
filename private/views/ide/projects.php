@@ -9,7 +9,7 @@
 
 	$isclient = ClientDetector::IsAClient();
 	if(!$isclient)
-		die("Hey something isn't right here... You sure you're using the right studio?");
+		die("Hey something isn't right here... You sure you're using the studio?");
 
 	$universe = null;
 
