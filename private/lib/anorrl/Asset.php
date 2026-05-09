@@ -465,40 +465,49 @@
 		function delete() {
 			if(\SESSION) {
 				if($this->isOwner(\SESSION->user)) {
-					// update name to [Content Deleted]
-					// update description to [Content Deleted]
-					// update noncatalogable to true
-					// update status to private
+					$db = Database::singleton();
 
-					/*$stmt = $con->prepare('DELETE FROM `inventory` WHERE `assetid` = ?');
-					$stmt -> bind_param("i", $id);
-					$stmt->execute();
-
-					
-
-					$stmt = $con->prepare('DELETE FROM `transactions` WHERE `asset` = ?');
-					$stmt -> bind_param("i", $id);
-					$stmt->execute();
-
-					$stmt = $con->prepare('DELETE FROM `visits` WHERE `place` = ?');
-					$stmt -> bind_param("i", $id);
-					$stmt->execute();
-
-					$stmt = $con->prepare('DELETE FROM `favourites` WHERE `assetid` = ?');
-					$stmt -> bind_param("i", $id);
-					$stmt->execute();
+					$db->run("DELETE FROM `inventory` WHERE `assetid` = :id", [":id" => $this->id]);
+					$db->run("DELETE FROM `transactions` WHERE `asset` = :id", [":id" => $this->id]);
+					$db->run("DELETE FROM `favourites` WHERE `assetid` = :id", [":id" => $this->id]);
 					
 					$this->checkAndDeleteFiles();
 
-					$stmt = $con->prepare('DELETE FROM `assets` WHERE `id` = ?');
-					$stmt -> bind_param("i", $id);
-					$stmt->execute();
+					if($this->type == AssetType::PLACE) {
+						$universe = Universe::FromID($this->universe);
 
-					if($asset->type == AssetType::PLACE) {
-						$stmt = $con->prepare('DELETE FROM `places` WHERE `id` = ?');
-						$stmt -> bind_param("i", $id);
-						$stmt->execute();
-					}*/
+						if($universe) {
+							if($this->type == AssetType::PLACE) {
+								if($universe->starting_place->id == $this->id) {
+									$db->run("DELETE FROM `universes` WHERE `id` = :id", [":id" => $universe->id]);
+									
+									foreach($universe->getAllPlaces() as $place) {
+										if($place->id == $this->id)
+											continue;
+
+										$place->delete();
+									}
+
+									foreach($universe->getAliases() as $alias) {
+										$alias->delete();
+									}
+
+									foreach($universe->getCloudEditors() as $editor) {
+										$universe->removeCloudEditor($editor, true);
+									}
+
+									foreach($universe->getDeveloperProducts() as $asset) {
+										$asset->setUniverse();
+									}
+								}
+							}
+						}
+
+						$db->run("DELETE FROM `visits` WHERE `place` = :id", [":id" => $this->id]);
+						$db->run("DELETE FROM `places` WHERE `id` = :id", [":id" => $this->id]);
+					}
+
+					$db->run("DELETE FROM `assets` WHERE `id` = :id", [":id" => $this->id]);
 				}
 			}
 		}

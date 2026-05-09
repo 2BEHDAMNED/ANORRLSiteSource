@@ -23,10 +23,9 @@
 		die(json_encode($result));
 	}
 
-	//$asset->delete();
+	$asset->delete();
 
 	die(json_encode([
-		"error" => true,
-		"reason" => "This function has not been implemented yet."
+		"error" => false
 	]));
 ?>

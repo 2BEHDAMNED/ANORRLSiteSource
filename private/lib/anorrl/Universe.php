@@ -82,11 +82,18 @@
 			return $places;
 		}
 
-		function getDeveloperProducts(AssetType $type) {
-			$rows = Database::singleton()->run(
-				"SELECT `id` FROM `assets` WHERE `universe` = :id AND `type` != :placetype AND `type` = :type",
-				[ ":id" => $this->id, ":placetype" => AssetType::PLACE->ordinal(), ":type" => $type->ordinal() ]
-			)->fetchAll(\PDO::FETCH_OBJ);
+		function getDeveloperProducts(AssetType|null $type = null) {
+			if($type != null) {
+				$rows = Database::singleton()->run(
+					"SELECT `id` FROM `assets` WHERE `universe` = :id AND `type` != :placetype AND `type` = :type",
+					[ ":id" => $this->id, ":placetype" => AssetType::PLACE->ordinal(), ":type" => $type->ordinal() ]
+				)->fetchAll(\PDO::FETCH_OBJ);
+			} else {
+				$rows = Database::singleton()->run(
+					"SELECT `id` FROM `assets` WHERE `universe` = :id AND `type` != :placetype",
+					[ ":id" => $this->id, ":placetype" => AssetType::PLACE->ordinal() ]
+				)->fetchAll(\PDO::FETCH_OBJ);
+			}
 
 			$products = [];
 
@@ -176,8 +183,8 @@
 			}	
 		}
 
-		function removeCloudEditor(User $user) {
-			if($this->isCloudEditor($user) && $user->id != $this->creator->id) {
+		function removeCloudEditor(User $user, bool $force = false) {
+			if($this->isCloudEditor($user) && $user->id != $this->creator->id || $force) {
 				return Database::singleton()->run(
 					"DELETE FROM `cloudeditors` WHERE `userid` = :uid AND `universe` = :id",
 					[

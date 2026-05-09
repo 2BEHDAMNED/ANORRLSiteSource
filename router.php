@@ -275,6 +275,7 @@
 
 	route('GET',      '/ide/places/defaultsettings', '/private/gameapis/universes/defaultsettings.php');
 	route('POST',     '/ide/places/create',          '/private/gameapis/universes/newplace.php');
+	route('POST',     '/universes/removeplace',      '/private/gameapis/universes/removeplace.php');
 
 	// aliases
 	route('GET',      '/universes/get-aliases',  '/private/gameapis/universes/alias/get.php');
