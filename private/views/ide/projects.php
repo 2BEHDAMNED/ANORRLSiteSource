@@ -81,12 +81,12 @@
 		});
 
 		function onResizeWindow() {
-			var n = $("#Places:visible");
+			var n = $("#Places");
 
 			$(window).height() < n.height() ?
 				$("#Sidebar").height(n.height()+30) :
-				$("#Sidebar").height($(window).height()-114);
-			
+				$("#Sidebar").height(n.height() + ($(window).height()-(114)-n.height()));
+
 			var j = $("#Places");
 			$(window).width() < 300 ?
 				j.width(300) :
@@ -96,6 +96,8 @@
 		$(window).resize(onResizeWindow);
 
 		onResizeWindow(); // set the heights and stuff when it loads
+		
+		window.setInterval(function() { onResizeWindow(); }, 250); // whatever bruh
 
 		$("#Sidebar a").each(function() {
 			if($(this).attr("href") != "")
