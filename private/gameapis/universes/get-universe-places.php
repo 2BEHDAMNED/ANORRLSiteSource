@@ -16,6 +16,7 @@
 			}
 
 			die(json_encode([
+				"AssetId" => $universe->starting_place->id,
 				"FinalPage" => true,
 				"RootPlace" => $universe->starting_place->id,
 				"Places" => $places,

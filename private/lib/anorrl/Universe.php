@@ -1,6 +1,7 @@
 <?php
 	namespace anorrl;
 
+	use anorrl\Alias;
 	use anorrl\Place;
 	use anorrl\User;
 	use anorrl\utilities\Arbiter;
@@ -87,16 +88,34 @@
 				[ ":id" => $this->id, ":placetype" => AssetType::PLACE->ordinal(), ":type" => $type->ordinal() ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
-			$places = [];
+			$products = [];
 
 			foreach($rows as $row) {
-				$place = Asset::FromID($row->id);
+				$product = Asset::FromID($row->id);
 
-				if($place)
-					$places[] = $place;
+				if($product)
+					$products[] = $product;
 			}
 
-			return $places;
+			return $products;
+		}
+
+		function getAliases() {
+			$rows = Database::singleton()->run(
+				"SELECT `id` FROM `aliases` WHERE `universe` = :id",
+				[ ":id" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
+
+			$aliases = [];
+
+			foreach($rows as $row) {
+				$alias = Alias::FromID($row->id);
+
+				if($alias)
+					$aliases[] = $alias;
+			}
+
+			return $aliases;
 		}
 
 		function enableTeamCreate() {

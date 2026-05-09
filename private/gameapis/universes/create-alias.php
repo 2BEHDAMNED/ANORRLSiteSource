@@ -1,7 +1,7 @@
 <?php
-	
+
+	use anorrl\Alias;
 	use anorrl\Universe;
-	use anorrl\Database;
 	use anorrl\Asset;
 
 	if(!SESSION || !isset($_GET['universeId']))
@@ -25,4 +25,8 @@
 		die(http_response_code(500));
 
 	$asset->setUniverse($universe);
+
+	$alias_name = str_contains($jsonstuff->Name, "%") ? urldecode($jsonstuff->Name) : $jsonstuff->Name;
+	
+	Alias::Create($universe, $asset, $alias_name);
 ?>
