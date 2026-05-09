@@ -81,12 +81,12 @@
 		});
 
 		function onResizeWindow() {
-			var n = $("#PlacesContainer:visible");
+			var n = $("#Places:visible");
 
 			$(window).height() < n.height() ?
 				$("#Sidebar").height(n.height()) :
-				$("#Sidebar").height($(window).height()-114), n.height($(window).height()-114);
-
+				$("#Sidebar").height($(window).height()-114);
+			
 			var j = $("#Places");
 			$(window).width() < 300 ?
 				j.width(300) :
