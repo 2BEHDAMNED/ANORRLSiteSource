@@ -117,9 +117,6 @@
 				while($row = $result->fetch_assoc()) {
 					if($type == AssetType::PLACE) {
 						$asset = Place::FromID($row['id']);
-						$universe = Universe::FromID($asset->universe);
-						if($universe && $universe->starting_place->id != $asset->id)
-							$asset = null;
 					} else {
 						$asset = Asset::FromID($row['id']);
 					}
