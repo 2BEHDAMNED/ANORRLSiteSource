@@ -96,5 +96,14 @@
 				]
 			);
 		}
+
+		function delete() {
+			Database::singleton()->run(
+				"DELETE FROM `aliases` WHERE `id` = :id",
+				[
+					":id" => $this->id
+				]
+			);
+		}
 	}
 ?>
