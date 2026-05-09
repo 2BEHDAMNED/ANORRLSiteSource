@@ -58,7 +58,7 @@
 			if($asset->type == AssetType::PLACE) {
 				$place = Place::FromID($asset->id);
 				
-				if($place->copylocked) {
+				if($place && $place->copylocked) {
 					$error = false;
 
 					if($user == null || (!ClientDetector::HasAccess() && $user != null && !$place->isOwner($user))) {
