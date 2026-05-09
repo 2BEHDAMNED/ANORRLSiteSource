@@ -85,6 +85,14 @@
 		<link rel="stylesheet" href="/public/css/new/publish.css">
 		<script src="/public/js/core/jquery.js"></script>
 		<script src="/public/js/main.js?t=1776250887"></script>
+		<style>
+			h2 {
+				margin-top: 0px;
+			}
+			#BodyContainer {
+				border-top: 4px solid black;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="Container">
