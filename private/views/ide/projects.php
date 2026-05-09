@@ -90,7 +90,7 @@
 
 			$(j).height() < n.height() ?
 				$("#Sidebar").height(n.height()) :
-				$("#Sidebar").height($(j).height()-114), n.height($(j).height()-114);
+				$("#Sidebar").height($(window).height()), n.height($(window).height());
 		}
 
 		$(window).resize(onResizeWindow);
