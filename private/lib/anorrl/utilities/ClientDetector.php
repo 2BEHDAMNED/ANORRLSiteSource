@@ -12,7 +12,7 @@
 
 		public static function HasAccess(): bool {
 			$REQaccessKey = $_SERVER["HTTP_ACCESSKEY"] ?? null;
-			return !($REQaccessKey !== \CONFIG->asset->key);
+			return !($REQaccessKey !== \CONFIG->arbiter->key);
 		}
 
 	}
