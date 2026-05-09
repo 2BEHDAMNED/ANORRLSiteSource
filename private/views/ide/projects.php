@@ -49,7 +49,7 @@
 		if(!$universe)
 			die(set_header("Location", "/ide/projects"));
 
-		if(!$universe->hasAccess($user))
+		if(!$universe->hasAccess($user) || count($universe->getAllPlaces()) <= 1)
 			die(set_header("Location", "/ide/projects"));
 
 		$places = $universe->getAllPlaces();
