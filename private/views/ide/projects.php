@@ -83,14 +83,14 @@
 		function onResizeWindow() {
 			var n = $("#PlacesContainer:visible");
 
-			$(window).height() < n.height() ?
-				$("#Sidebar").height(n.height()) :
-				$("#Sidebar").height($(window).height()-114), n.height($(window).height()-114);
-
 			var j = $("#Places");
 			$(window).width() < 300 ?
 				j.width(300) :
 				j.width($(window).width() - 280);
+
+			$(j).height() < n.height() ?
+				$("#Sidebar").height(n.height()) :
+				$("#Sidebar").height($(j).height()-114), n.height($(j).height()-114);
 		}
 
 		$(window).resize(onResizeWindow);
