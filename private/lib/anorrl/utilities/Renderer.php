@@ -1,6 +1,7 @@
 <?php 
 	namespace anorrl\utilities;
 
+	use anorrl\Place;
 	use anorrl\User;
 	use anorrl\utilities\Arbiter;
 
@@ -52,7 +53,11 @@
 		}
 
 		public static function RenderPlace(int $id = 0) {
-			return self::DoRender("place", ["PlaceId" => $id]);
+			$place = Place::FromID($id);
+			if(!$place)
+				return null;
+
+			return self::DoRender("place", ["UniverseId" => $place->universe, "PlaceId" => $place->id]);
 		}
 
 		public static function RenderModel(int $id = 0, bool $is3D = false) {

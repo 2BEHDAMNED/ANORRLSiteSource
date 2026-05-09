@@ -57,6 +57,7 @@
 			$gsr = Arbiter::singleton()->requestGS(
 				"start",
 				[
+					"UniverseId" => $place->universe,
 					"PlaceId" => $place->id,
 					"MaxPlayers" => $teamcreate ? 100 : $place->server_size,
 					"TeamCreate" => $teamcreate
