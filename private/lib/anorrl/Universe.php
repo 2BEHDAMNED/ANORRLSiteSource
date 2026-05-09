@@ -246,5 +246,23 @@
 				]
 			);
 		}
+
+		function setStartingPlace(Place $place): bool {
+			if(count($this->getAllPlaces()) == 1 && $place->id != $this->starting_place->id)
+				return false;
+
+			if($place->universe != $this->id)
+				return false;
+
+			Database::singleton()->run(
+				"UPDATE `universes` SET `starting_place` = :place WHERE `id` = :universe",
+				[
+					":public" => $place->id,
+					":universe" => $this->id,
+				]
+			);
+
+			return true;
+		}
 	}
 ?>

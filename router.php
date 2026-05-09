@@ -274,13 +274,16 @@
 	route('GET',      '/universes/validate-place-join', '/private/gameapis/universes/validate-place-join.php');
 	route('GET',      '/universes/get-universe-places', '/private/gameapis/universes/get-universe-places.php');
 	route('GET',      '/universes/[i:universeId]/game-start-info', '/private/gameapis/universes/game-start-info.php');
+	route('POST',     '/universes/removeplace',      '/private/gameapis/universes/removeplace.php');
+	route('POST',     '/universes/setrootplace',      '/private/gameapis/universes/setrootplace.php');
+
 	route('GET',      '/developerproducts/list', '/private/gameapis/universes/developerproducts.php');
 	route('GET',      '/badges/list-badges-for-place/json', '/private/gameapis/places/list-badges-for-place.php');
 
 	route('GET',      '/ide/places/defaultsettings', '/private/gameapis/places/defaultsettings.php');
 	route('POST',     '/ide/places/create',          '/private/gameapis/places/new.php');
 	route('POST',     '/ide/places/[i:placeId]/updatesettings', '/private/gameapis/places/edit.php');
-	route('POST',     '/universes/removeplace',      '/private/gameapis/universes/removeplace.php');
+	
 
 	// aliases
 	route('GET',      '/universes/get-aliases',  '/private/gameapis/universes/alias/get.php');
