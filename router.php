@@ -273,7 +273,8 @@
 	route('GET',      '/developerproducts/list', '/private/gameapis/universes/developerproducts.php');
 	route('GET',      '/badges/list-badges-for-place/json', '/private/gameapis/places/list-badges-for-place.php');
 
-	route('GET',      '/ide/places/defaultsettings', '/private/gameapis/universes/newplace.php');
+	route('GET',      '/ide/places/defaultsettings', '/private/gameapis/universes/defaultsettings.php');
+	route('POST',     '/ide/places/create',          '/private/gameapis/universes/newplace.php');
 
 	// aliases
 	route('GET',      '/universes/get-aliases',  '/private/gameapis/universes/alias/get.php');
