@@ -490,6 +490,14 @@
 						]
 					);
 
+					$db->run(
+						"UPDATE `assets` SET `universe`= :uid WHERE `id` = :id",
+						[
+							":uid" => $universe->id,
+							":id" => $result['id']
+						]
+					);
+
 					
 				} catch(\PDOException $e) {
 					error_log($e->getMessage());
