@@ -266,6 +266,10 @@
 	route('GET|POST', '/user/decline-friend-request', '/private/gameapis/social/decline-friend-request.php');
 	route('GET|POST', '/Game/AreFriends', '/private/gameapis/social/arefriends.php');
 
+	route('POST',     '/Game/Badge/AwardBadge.ashx', '/private/gameapis/badges/award.php');
+	route('GET|POST', '/Game/Badge/HasBadge.ashx', '/private/gameapis/badges/has.php');
+	route('GET|POST', '/Game/Badge/IsBadgeDisabled.ashx', '/private/gameapis/badges/isdisabled.php');
+
 	route('GET',      '/universes/get-universe-containing-place', '/private/gameapis/universes/get-universe-containing-place.php');
 	route('GET',      '/places/[i:placeId]/settings', '/private/gameapis/places/settings.php');
 	route('GET',      '/universes/get-info', '/private/gameapis/universes/get-info.php');
