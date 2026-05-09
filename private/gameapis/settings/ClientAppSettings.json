@@ -1406,7 +1406,7 @@
 	"FFlagUseNewAppBridgeOSX": "True",
 	"FFlagUseNewAppBridgeStudio": "True",
 	"FFlagUseNewAppBridgeWindows": "True",
-	"FFlagUseNewBadgesCreatePage": "True",
+	"FFlagUseNewBadgesCreatePage": "False",
 	"FFlagUseNewCameraZoomPath": "True",
 	"FFlagUseNewContentProvider": "False",
 	"FFlagUseNewGoogleAnalyticsInitMac": "False",

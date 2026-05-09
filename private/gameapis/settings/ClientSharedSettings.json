@@ -1122,7 +1122,7 @@
 	"FFlagJNIEnvScopeOptimization": "True",
 	"DFFlagSanitizeLoadingGUICorrected": "True",
 	"FFlagSendLegacyMachineConfigInfo": "False",
-	"FFlagUseNewBadgesCreatePage": "True",
+	"FFlagUseNewBadgesCreatePage": "False",
 	"FFlagRetryWhenCloudEditEnabledEndpointFails": "True",
 	"DFFlagTeamCreateDoNotReplicateShowDevGuiProp": "True",
 	"FFlagStudioAddBackoffToNotificationsReconnects": "True",
