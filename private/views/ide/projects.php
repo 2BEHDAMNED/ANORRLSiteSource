@@ -84,7 +84,7 @@
 			var n = $("#Places:visible");
 
 			$(window).height() < n.height() ?
-				$("#Sidebar").height(n.height()) :
+				$("#Sidebar").height(n.height()+30) :
 				$("#Sidebar").height($(window).height()-114);
 			
 			var j = $("#Places");
