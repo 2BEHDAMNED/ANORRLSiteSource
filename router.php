@@ -85,6 +85,8 @@
 	route('GET|POST', '/vandals', '/private/views/vandals.php');
 	route('GET|POST', '/edit', '/private/views/edit.php');
 
+	route('GET', '/build/upload', '/private/api/buildupload.php');
+
 	route('GET|POST', '/create/[i:placeId]/badge', '/private/views/create_badge.php');
 	route('GET|POST', '/create/[*:type]', '/private/views/create.php');
 	route('GET|POST', '/create/', '/private/views/create.php');
