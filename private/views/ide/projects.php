@@ -186,15 +186,32 @@
 						EOT;
 					}
 
-					echo <<<EOT
-					<div class="Place" {$universeplace} title="{$place->name}">
-						<a href="#">
-							<img src="{$place->getThumbsUrl(229, 132)}">
-							<div id="Name">{$place->name}</div>
-							<div id="LastEdited">Last edited: {$place_timeago}</div>
-						</a>
-					</div>
-					EOT;
+					if($universe->teamcreate) {
+						echo <<<EOT
+						<div class="Place" {$universeplace} title="{$place->name}">
+							<a href="#">
+								<div style="position: relative;">
+									<img src="{$place->getThumbsUrl(229, 132)}">
+									<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 12px;">
+								</div>
+								<div id="Name">{$place->name}</div>
+								<div id="LastEdited">Last edited: {$place_timeago}</div>
+							</a>
+						</div>
+						EOT;
+					}
+					else {
+						echo <<<EOT
+						<div class="Place" {$universeplace} title="{$place->name}">
+							<a href="#">
+								<img src="{$place->getThumbsUrl(229, 132)}">
+								<div id="Name">{$place->name}</div>
+								<div id="LastEdited">Last edited: {$place_timeago}</div>
+							</a>
+						</div>
+						EOT;
+					}
+					
 				}
 			?>
 		</div>
