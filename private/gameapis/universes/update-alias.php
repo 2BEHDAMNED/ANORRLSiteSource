@@ -34,8 +34,8 @@
 
 	$name = $jsonstuff->Name;
 
-	/*if(str_contains($name, "%2F"))
-		$name = urldecode($name);*/ // commenting this out for now to see if it recieves as urlencoded or not
+	if(!str_contains($name, "/"))
+		die(http_response_code(500));
 
 	if(strcmp($name, $alias->name) == 0)
 		die(http_response_code(500));
