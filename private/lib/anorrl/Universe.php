@@ -246,9 +246,5 @@
 				]
 			);
 		}
-
-		function getBadges(): array {
-			return [];
-		}
 	}
 ?>

@@ -14,17 +14,22 @@
 	if(!$place->isEditable(SESSION->user))
 		die(http_response_code(503));
 
+
+	$badges = [];
+
+	foreach($place->getBadges() as $badge) {
+		$badges[] = [
+			"BadgeAssetId" => $badge->id,
+			"PlaceId" => $place->id,
+			"Name" => $badge->name,
+			"Thumbnail" => [
+				"Url" => $badge->getThumbsUrl()
+			]
+		];
+	}
+
 	// thanks cubp
 	die(json_encode([
-		"GameBadges" => [
-			[
-				"BadgeAssetId" => 1,
-				"PlaceId" => $place->id,
-				"Name" => "Badge Name",
-				"Thumbnail" => [
-					"Url" => "",
-				]
-			]
-		]
+		"GameBadges" => $badges
 	]));
 ?>

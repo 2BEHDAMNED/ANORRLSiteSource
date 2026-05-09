@@ -198,6 +198,27 @@
 				]
 			);
 		}
+
+		function getBadges(): array {
+			$rows = Database::singleton()->run(
+				"SELECT `id` FROM `assets` WHERE `relatedid` = :place AND `type` = :badgetype",
+				[
+					":place" => $this->id,
+					":badgetype" => AssetType::BADGE->ordinal()
+				]
+			)->fetchAll(\PDO::FETCH_OBJ);
+
+			$badges = [];
+
+			foreach($rows as $row) {
+				$badge = Asset::FromID($row->id);
+
+				if($badge)
+					$badges[] = $badge;
+			}
+
+			return $badges;
+		}
 	}
 
 ?>
