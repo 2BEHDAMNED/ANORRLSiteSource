@@ -49,6 +49,9 @@
 		if(!$universe)
 			die(set_header("Location", "/ide/projects"));
 
+		if(!$universe->hasAccess($user))
+			die(set_header("Location", "/ide/projects"));
+
 		$places = $universe->getAllPlaces();
 	}
 
