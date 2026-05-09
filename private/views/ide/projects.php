@@ -48,6 +48,8 @@
 
 		if(!$universe)
 			die(set_header("Location", "/ide/projects"));
+
+		$places = $universe->getAllPlaces();
 	}
 
 
@@ -70,14 +72,12 @@
 <script>
 	$(function() {
 		$(".Place").on("click", function() {
-			
 			var placeid = $(this).attr("data-place-id");
 			if(!Number(placeid)) {
 				window.location.href = "/ide/projects?universeId="+$(this).attr("data-universe-id");
 			} else {
 				window.external.StartGame("http://<?= $domain ?>/","http://<?= $domain ?>/","http://<?= $domain ?>/game/edit.slua?placeId=" + placeid);
 			}
-			
 		});
 
 		function onResizeWindow() {
@@ -97,8 +97,10 @@
 
 		onResizeWindow(); // set the heights and stuff when it loads
 
-		
 		$("#Sidebar a").each(function() {
+			if($(this).attr("href") != "")
+				return;
+
 			$(this).attr("href", "#");
 
 			$(this).on("click", function() {
@@ -135,9 +137,10 @@
 			<?php endif ?>
 		</ul>
 		<?php else: ?>
-		<div id="DidYouKnow" style="margin: 10px auto">
-			<p style="margin-bottom: 0px">Viewing:</p>
-			<p style="font-size: 14px"><b><?= $universe->starting_place->name ?></b></p>
+		<div id="DidYouKnow" style="margin: 10px 0px; margin-left: 8px;">
+			<p style="margin-bottom: 0px; font-style: italic; font-size: 12px; color: #DDD;">Viewing:</p>
+			<p style="font-size: 14px; margin-top: 3px"><b><?= $universe->starting_place->name ?></b></p>
+			<p><b><a href="/ide/projects">&gt;&gt;&gt; Go back &lt;&lt;&lt;</a></b></p>
 		</div>
 		<?php endif ?>
 		<div id="DidYouKnow">
@@ -146,7 +149,26 @@
 		</div>
 	</div>
 	<div id="Places">
-		<?php if(!isset($_GET['universeId'])): ?>
+		<?php if(isset($_GET['universeId'])): ?>
+		<div id="MainProjectsView">
+			<?php
+				foreach($places as $place) {
+					$place_timeago = UtilUtils::GetTimeAgo($place->last_updatetime);
+					$place_name = $universe->starting_place->id == $place->id ? ">> Starting Place <<" : $place->name;
+
+					echo <<<EOT
+					<div class="Place" data-place-id="{$place->id}" title="{$place_name}">
+						<a href="#">
+							<img src="{$place->getThumbsUrl(229, 132)}">
+							<div id="Name">{$place_name}</div>
+							<div id="LastEdited">Last edited: {$place_timeago}</div>
+						</a>
+					</div>
+					EOT;
+				}
+			?>
+		</div>
+		<?php else: ?>
 		<div id="MainProjectsView">
 			<?php
 				foreach($places as $place) {
