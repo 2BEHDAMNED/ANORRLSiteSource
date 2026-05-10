@@ -1524,6 +1524,7 @@
 				);
 
 				$place->updateVisitCount();
+				Place::UpdatePlaceStats($place->id);
 			}
 		}
 	}
