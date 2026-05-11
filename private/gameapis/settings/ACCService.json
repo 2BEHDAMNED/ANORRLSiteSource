@@ -1,4 +1,5 @@
 {
 	"DFFlagScriptExecutionContextApi": "True",
-	"DFFlagCleanUpInterpolationTimestamps": "False"
+	"DFFlagCleanUpInterpolationTimestamps": "False",
+	"DFFlagMinMaxDistanceEnabled": "True"
 }

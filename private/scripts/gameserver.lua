@@ -3,7 +3,7 @@
 -- yeah no where else.
 
 -- Start Game Script Arguments
-local placeId, port, sleeptime, timeout, injectScriptAssetID, libraryRegistrationScriptAssetID = ...
+local placeId, port, sleeptime, timeout, url, universeId, injectScriptAssetID, libraryRegistrationScriptAssetID = ...
 
 -----------------------------------"CUSTOM" SHARED CODE----------------------------------
 
@@ -20,6 +20,7 @@ pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID
 scriptContext.ScriptsDisabled = true
 
 game:SetPlaceID(placeId, false)
+if universeId then game:SetUniverseId(universeId) end
 game:GetService("ChangeHistoryService"):SetEnabled(false)
 
 -- establish this peer as the Server

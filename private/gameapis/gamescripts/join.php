@@ -18,7 +18,7 @@
 	$session_id = "";
 	$roblox_place = false;
 	$place_id = 0;
-	$universe_id = 0;
+	$universe_id = $_GET['universeId'] ?? 0;
 	$place_creator_id = 0;
 	$place_chat_type = "ClassicAndBubble"; // $place->getChatType()->name();
 	$unknown = true;
