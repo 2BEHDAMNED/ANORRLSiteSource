@@ -220,14 +220,10 @@
 		}
 
 		function getVersionID(): int {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `asset_versions` WHERE `assetid` = ? ORDER BY `id`");
-			$stmt->bind_param("i", $this->id);
-			$stmt->execute();
-
-			$result = $stmt->get_result();
-			$row = $result->fetch_assoc();
-			return $row['id'];
+			return Database::singleton()->run(
+				"SELECT `id` FROM `asset_versions` WHERE `assetid` = :id ORDER BY `id`",
+				[ ":id" => $this->id ]
+			)->fetchObject()->id;
 		}
 
 		function getMD5HashCurrent(): string {
@@ -235,23 +231,22 @@
 		}
 
 		function getMD5Hash(int $version): string {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `asset_versions` WHERE `id` = ?");
-			$stmt->bind_param("i", $version);
-			$stmt->execute();
-
-			$result = $stmt->get_result();
-			$row = $result->fetch_assoc();
-			return $row['md5sig'];
+			return Database::singleton()->run(
+				"SELECT `md5sig` FROM `asset_versions` WHERE `id` = :id",
+				[ ":id" => $version ]
+			)->fetchObject()->md5sig;
 		}
 
 		function setVersion(AssetVersion|null $version) {
 			if($version != null && $version->asset->id == $this->id) {
 				if($version->sub_id != $this->current_version) {
-					include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-					$stmt = $con->prepare("UPDATE `assets` SET `currentversion` = ? WHERE `id` = ?");
-					$stmt->bind_param("ii", $version->sub_id, $this->id);
-					$stmt->execute();
+					Database::singleton()->run(
+						"UPDATE `assets` SET `currentversion` = :subid WHERE `id` = :id",
+						[
+							":subid" => $version->sub_id,
+							":id" => $this->id
+						]
+					);
 
 					return ["error" => false];
 				}
@@ -317,32 +312,32 @@
 		}
 
 		function hasUserFavourited(User|int $user) {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
 			$userid = $user;
 			if($user instanceof User) {
 				$userid = $user->id;
 			}
 
-			$stmt = $con->prepare("SELECT * FROM `favourites` WHERE `assetid` = ? AND `userid` = ?;");
-			$stmt->bind_param("ii", $this->id, $userid);
-			$stmt->execute();
-
-			return $stmt->get_result()->num_rows != 0;
+			return Database::singleton()->run(
+				"SELECT `assetid` FROM `favourites` WHERE `assetid` = ? AND `userid` = ?;",
+				[
+					":asset" => $this->id,
+					":user" => $userid
+				]
+			)->fetchObject() != null;
 		}
 
 		function getSales(): array {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `transactions` WHERE `userid` != `assetcreator` AND `asset` = ?;");
-			$stmt->bind_param("i", $this->id);
-			$stmt->execute();
-
-			$sales = $stmt->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT `userid` FROM `transactions` WHERE `userid` != `assetcreator` AND `asset` = :id",
+				[
+					":id" => $this->id
+				]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$result = [];
 			
-			while($row = $sales->fetch_assoc()) {
-				$user = User::FromID(intval($row['userid']));
+			foreach($rows as $row) {
+				$user = User::FromID($row->userid);
 
 				if($user != null && !$user->isBanned()) {
 					$result[] = $user;
@@ -353,16 +348,22 @@
 		}
 
 		function updateSalesCount() {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `transactions` WHERE `userid` != `assetcreator` AND `asset` = ?;");
-			$stmt->bind_param("i", $this->id);
-			$stmt->execute();
+			$db = Database::singleton();
 
-			$salescount = $stmt->get_result()->num_rows;
-
-			$stmt = $con->prepare("UPDATE `assets` SET `sales_count` = ? WHERE `id` = ?");
-			$stmt->bind_param("ii", $salescount, $this->id);
-			$stmt->execute();
+			$salescount = $db->run(
+				"SELECT `userid` FROM `transactions` WHERE `userid` != `assetcreator` AND `asset` = :id",
+				[
+					":id" => $this->id
+				]
+			)->rowCount();
+			
+			$db->run(
+				"UPDATE `assets` SET `sales_count` = :salescount WHERE `id` = :asset",
+				[
+					":salescount" => $salescount,
+					":asset" => $this->id
+				]
+			);
 		}
 
 		function getRelatedAssets() {
@@ -571,57 +572,54 @@
 		}
 
 		private function checkAndDeleteFiles() {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			if($asset != null) {
-				$stmt = $con->prepare("SELECT * FROM `assets` WHERE `id` = ? OR `relatedid` = ?;");
-				$stmt->bind_param("ii", $this->id, $this->id);
-				$stmt->execute();
+			$directory = $_SERVER['DOCUMENT_ROOT'];
+			$assetsdir = "$directory/../assets/";
+			$db = Database::singleton();
 
-				$result = $stmt->get_result();
+			$rows = $db->run(
+				"SELECT `id` FROM `assets` WHERE `id` = :asset OR `relatedid` = :asset",
+				[ ":asset" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
-				$ids = [];
-				while($row = $result->fetch_assoc()) {
-					$ids[] = $row['id'];
+			$ids = [];
+			foreach($rows as $row) {
+				$ids[] = $row->id;
+			}
+
+			$md5s = [];
+
+			foreach($ids as $key => $value) {
+				$row = $db->run(
+					"SELECT `md5sig` FROM `asset_versions` WHERE `assetid` = :asset ORDER BY `id` DESC;",
+					[ ":asset" => $this->id ]
+				)->fetchObject();
+
+				if($row) {
+					$md5s["$value"] = $row->md5sig;
 				}
+			}
 
-				$md5s = [];
+			foreach($md5s as $key => $value) {
 
-				foreach($ids as $key => $value) {
-					$stmt = $con->prepare("SELECT * FROM `asset_versions` WHERE `assetid` = ? ORDER BY `id` DESC;");
-					$stmt->bind_param("i", $value);
-					$stmt->execute();
+				$hasOtherAssetsDepending = $db->run(
+					"SELECT `id` FROM `asset_versions` WHERE `md5sig` = :value AND `assetid` != :key ORDER BY `id` DESC;",
+					[
+						":value" => $value,
+						":key" => $key
+					]
+				)->rowCount() != 0;
 
-					$result = $stmt->get_result();
-					if($result->num_rows != 0) {
-						$row = $result->fetch_assoc();
-
-						$md5s["$value"] = $row['md5sig'];
+				if(!$hasOtherAssetsDepending) {
+					if(file_exists("$assetsdir/$value")){
+						unlink("$assetsdir/$value");
 					}
-				}
 
-				foreach($md5s as $key => $value) {
-
-					$hasOtherAssetsDepending = Database::singleton()->run(
-						"SELECT `id` FROM `asset_versions` WHERE `md5sig` = :value AND `assetid` != :key ORDER BY `id` DESC;",
-						[
-							":value" => $value,
-							":key" => $key
-						]
-					)->rowCount() != 0;
-
-					if(!$hasOtherAssetsDepending) {
-						$row = $result->fetch_assoc();
-
-						if(file_exists("$assetsdir/$value")){
-							unlink("$assetsdir/$value");
-						}
-
-						if(file_exists("$assetsdir/thumbs/$value")){
-							unlink("$assetsdir/thumbs/$value");
-						}
+					if(file_exists("$assetsdir/thumbs/$value")){
+						unlink("$assetsdir/thumbs/$value");
 					}
 				}
 			}
+		
 		}
 
 		function getThumbsUrl(int $size_x = -1, int $size_y = -1): string {

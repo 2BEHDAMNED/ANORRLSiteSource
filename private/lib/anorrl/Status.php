@@ -1,6 +1,7 @@
 <?php
 	namespace anorrl;
 
+	use anorrl\Database;
 	use anorrl\User;
 	use anorrl\utilities\UtilUtils;
 
@@ -23,21 +24,19 @@
 			return $randomString;
 		}
 
-		public static function GenerateID() {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+		private static function GenerateID() {
 			$id = self::GetRandomString(); //id
-			$stmt = $con->prepare('SELECT * FROM `statuses` WHERE `id` = ?');
-			$stmt->bind_param('s', $id);
-			$stmt->execute();
-			$stmt->store_result();
 			
-			$instances = $stmt->num_rows;
-			
-			if($instances != 0) {
-				self::GenerateID();
-			} else {
-				return $id;
-			}
+			return self::FromID($id) ? self::GenerateID() : $id;
+		}
+
+		public static function FromID(string $id): self|null {
+			$row = Database::singleton()->run(
+				"SELECT * FROM `statuses` WHERE `id` = :id",
+				[ ":id" => $id]
+			)->fetchObject();
+
+			return $row ? new self($row) : null;
 		}
 
 		public static function Send(int $userid, string $contents) {
@@ -72,49 +71,49 @@
 					return ["error"=> true, "reason" => "Status was too long! (64 characters maximum)"];
 				}
 
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt = $con->prepare('INSERT INTO `statuses`(`id`, `poster`, `content`) VALUES (?, ?, ?)');
-				$stmt -> bind_param('sis',  $status_id, $user->id, $status_content);
-				$stmt -> execute();
-
+				Database::singleton()->run(
+					"INSERT INTO `statuses`(`id`, `poster`, `content`) VALUES (:id, :poster, :content)",
+					[
+						":id" => $status_id,
+						":poster" => $user->id,
+						":content" => $status_content
+					]
+				);
+				
 				return ["error" => false];
 			} else {
 				return ["error"=> true, "reason" => "User is not logged in."];
 			}
 		}
 
-		public static function GetLatestFeedsPaged(int $pagenum, int $count): array {
+		public static function GetLatestFeedsPaged(int $page, int $count): array {
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getallusers = $con->prepare("SELECT * FROM `statuses` ORDER BY `posted` DESC LIMIT ?, ?");
-			$page = (($pagenum-1)*$count);
-			$stmt_getallusers->bind_param('ii', $page, $count);
-			$stmt_getallusers->execute();
-			$result = $stmt_getallusers->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT `id` FROM `statuses` ORDER BY `posted` DESC LIMIT :page, :count",
+				[
+					":page" => (($page-1)*$count),
+					":count" => $count
+				]
+			)->fetchAll(\PDO::FETCH_OBJ);
+
 			$result_array = [];
 
-			if($result->num_rows != 0) {
-				while($row = $result->fetch_assoc()) {
-					$result_array[] = new Status($row);
-				}
-				return $result_array;
+			foreach($rows as $row) {
+				$result_array[] = self::FromID($row->id);
 			}
-			return [];
+
+			return $result_array;
 		}
 
 		public static function GetLatestFeedsCount(): int {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getallusers = $con->prepare("SELECT * FROM `statuses`");
-			$stmt_getallusers->execute();
-			$result = $stmt_getallusers->get_result();
-			return $result->num_rows;
+			return Database::singleton()->run("SELECT `id` FROM `statuses`")->rowCount();
 		}
 
-		function __construct($rowdata) {
-			$this->id = ($rowdata['id']);
-			$this->poster = User::FromID(intval($rowdata['poster']));
-			$this->content = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata['content']));
-			$this->time_posted = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata['posted']);
+		function __construct(Object $rowdata) {
+			$this->id = $rowdata->id;
+			$this->poster = User::FromID($rowdata->poster);
+			$this->content = str_replace("<", "&lt;", str_replace(">", "&gt;", $rowdata->content));
+			$this->time_posted = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->posted);
 		}
 
 	}

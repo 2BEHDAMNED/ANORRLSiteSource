@@ -76,8 +76,6 @@
 				$filter = CatalogFilter::RecentlyUploaded;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-
 			$user = UserUtils::RetrieveUser();
 			if($user == null) 
 				return [];
@@ -87,47 +85,48 @@
 				$query_filter = "AND `nevershow` = 0";
 			}
 
-			$base_sql_query = "SELECT `id` FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter";
+			$base_sql_query = "SELECT `id` FROM `assets` WHERE `name` LIKE :query AND `type` = :type $query_filter";
 			if($type == AssetType::PLACE) {
-				$base_sql_query = "SELECT places.id FROM `universes`, `places`, `assets` WHERE assets.id = places.id AND universes.starting_place = assets.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
+				$base_sql_query = "SELECT places.id FROM `universes`, `places`, `assets` WHERE assets.id = places.id AND universes.starting_place = assets.id AND `name` LIKE :query AND `type` = :type $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
 			}
 			
 			$sql_filter = $filter->getSQL();
-			
-			$stmt_query = "%$query%";
-			$stmt_type = $type->ordinal();
+
+			$db = Database::singleton();
 
 			if($page == -1 || $count == -1) {
-				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter");
-				$stmt_getuser->bind_param('si', $stmt_query, $stmt_type);
-				$stmt_getuser->execute();
+				$rows = $db->run(
+					"$base_sql_query $sql_filter",
+					[
+						":query" => "%$query%",
+						":type" => $type->ordinal()
+					]
+				)->fetchAll(\PDO::FETCH_OBJ);
 			} else {
-				$stmt_page = (($page-1)*$count);
-				
-				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter LIMIT ?, ?");
-				$stmt_getuser->bind_param('siii', $stmt_query, $stmt_type, $stmt_page, $count);
-				$stmt_getuser->execute();
+				$rows = $db->run(
+					"$base_sql_query $sql_filter LIMIT :page, :count",
+					[
+						":query" => "%$query%",
+						":type" => $type->ordinal(),
+						":page" => (($page-1)*$count),
+						":count" => $count
+					]
+				)->fetchAll(\PDO::FETCH_OBJ);
 			}
-
-			$result = $stmt_getuser->get_result();
 
 			$result_array = [];
 
-			if($result->num_rows != 0) {
-				while($row = $result->fetch_assoc()) {
-					if($type == AssetType::PLACE) {
-						$asset = Place::FromID($row['id']);
-					} else {
-						$asset = Asset::FromID($row['id']);
-					}
-
-					if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
-						$result_array[] = $asset;
-					}
+			foreach($rows as $row) {
+				if($type == AssetType::PLACE) {
+					$asset = Place::FromID($row->id);
+				} else {
+					$asset = Asset::FromID($row->id);
 				}
-				return $result_array;
-			}
 
+				if($user->isAdmin() || !$asset->notcatalogueable && $asset->public) {
+					$result_array[] = $asset;
+				}
+			}
 			return $result_array;
 		}
 
@@ -138,8 +137,6 @@
 				$filter = CatalogFilter::RecentlyUploaded;
 			}
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			
 			$user = UserUtils::RetrieveUser();
 			if($user == null) 
 				return 0;
@@ -149,34 +146,37 @@
 				$query_filter = "AND `nevershow` = 0";
 			}
 
-			$base_sql_query = "SELECT COUNT(`id`) FROM `assets` WHERE `name` LIKE ? AND `type` = ? $query_filter";
+			$base_sql_query = "SELECT COUNT(`id`) FROM `assets` WHERE `name` LIKE :query AND `type` = :type $query_filter";
 			if($type == AssetType::PLACE) {
-				$base_sql_query = "SELECT COUNT(`places`.`id`) FROM `places`, `assets` WHERE assets.id = places.id AND `name` LIKE ? AND `type` = ? $query_filter ".($_SESSION['ANORRL$Games$OriginalOnly'] ? " AND `original` = 1 " : "");
+				$base_sql_query = "SELECT COUNT(`places`.`id`) FROM `places`, `assets` WHERE assets.id = places.id AND `name` LIKE :query AND `type` = :type $query_filter ";
 			}
 			
 			$sql_filter = $filter->getSQL();
-			
-			$stmt_query = "%$query%";
-			$stmt_type = $type->ordinal();
+
+			$db = Database::singleton();
 
 			if($page == -1 || $count == -1) {
-				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter");
-				$stmt_getuser->bind_param('si', $stmt_query, $stmt_type);
-				$stmt_getuser->execute();
+				$row = $db->run(
+					"$base_sql_query $sql_filter",
+					[
+						":query" => "%$query%",
+						":type" => $type->ordinal()
+					]
+				)->fetch(\PDO::FETCH_ASSOC);
 			} else {
-				$stmt_page = (($page-1)*$count);
-				
-				$stmt_getuser = $con->prepare("$base_sql_query $sql_filter LIMIT ?, ?");
-				$stmt_getuser->bind_param('siii', $stmt_query, $stmt_type, $stmt_page, $count);
-				$stmt_getuser->execute();
+				$row = $db->run(
+					"$base_sql_query $sql_filter LIMIT :page, :count",
+					[
+						":query" => "%$query%",
+						":type" => $type->ordinal(),
+						":page" => (($page-1)*$count),
+						":count" => $count
+					]
+				)->fetch(\PDO::FETCH_ASSOC);
 			}
 
-			$result = $stmt_getuser->get_result();
-
-			$row = $result->fetch_assoc();
-
-			if($row == null) {
-				return -1;	
+			if(!$row) {
+				return -1;
 			}
 			
 			if($type == AssetType::PLACE) {

@@ -242,24 +242,22 @@
 		}
 
 		function giveProfileBadge(ANORRLBadge $badge): void {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-
 			if(!$this->hasProfileBadgeOf($badge)) {
-				$stmt = $con->prepare("INSERT INTO `profilebadges`(`badgeid`, `userid`) VALUES (?, ?)");
-				$ordinal = $badge->ordinal();
-				$stmt->bind_param('ii`', $ordinal, $this->id);
-				$stmt->execute();
+				Database::singleton()->run(
+					"INSERT INTO `profilebadges`(`badgeid`, `userid`) VALUES (:badge, :user)",
+					[
+						":badge" => $badge->ordinal(),
+						":user" => $this->id
+					]
+				);
 			}
 		}
 
 		function hasProfileBadgeOf(ANORRLBadge $badge): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `badgeid` = ? AND `userid` = ?");
-			$ordinal = $badge->ordinal();
-			$stmt->bind_param('ii', $ordinal, $this->id);
-			$stmt->execute();
-
-			return $stmt->get_result()->num_rows != 0;
+			return Database::singleton()->run(
+				"SELECT `badgeid` FROM `profilebadges` WHERE `userid` = :id AND `badgeid` = :badge",
+				[ ":id" => $this->id, ":badge" => $badge->ordinal() ]
+			)->rowCount() != 0;
 		}
 
 		/**
@@ -267,17 +265,16 @@
 		 * @return void
 		 */
 		function getProfileBadges(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `profilebadges` WHERE `userid` = ? ORDER BY `recieved_at` DESC, `badgeid` DESC");
-			$stmt->bind_param('i',$this->id);
-			$stmt->execute();
 
-			$result = $stmt->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT `badgeid` FROM `profilebadges` WHERE `userid` = :id ORDER BY `recieved_at` DESC, `badgeid` DESC",
+				[ ":id" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$badges = [];
 
-			while($row = $result->fetch_assoc()) {
-				$badges[] = ANORRLBadge::index($row['badgeid']);
+			foreach($rows as $row) {
+				$badges[] = ANORRLBadge::index($row->badgeid);
 			}
 
 			return $badges;
@@ -292,17 +289,12 @@
 		}
 
 		function getLatestStatus(): Status|null {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt = $con->prepare("SELECT * FROM `statuses` WHERE `poster` = ? ORDER BY `posted` DESC");
-			$stmt->bind_param('i', $this->id);
-			$stmt->execute();
-			$result = $stmt->get_result();
+			$row = Database::singleton()->run(
+				"SELECT `id` FROM `statuses` WHERE `poster` = :uid ORDER BY `posted` DESC",
+				[ ":uid" => $this->id ]
+			)->fetchObject();
 
-			if($result->num_rows == 0) {
-				return null;
-			} else {
-				return new Status($result->fetch_assoc());
-			}
+			return $row ? Status::FromID($row->id) : null;
 		}
 
 		/**
@@ -319,9 +311,7 @@
 		 * @return void
 		 */
 		function getOwnedAssets(AssetType $type, string $query = "", bool $creator_only = false, bool $show_all = true, array $excludedids = [], int $page = -1, int $count = -1): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
 		
-			$sql_assettype = $type->ordinal();
 			$sql_query = trim($query);
 			if(strlen($sql_query) > 0) {
 				$sql_query = "%$sql_query%";
@@ -349,14 +339,14 @@
 			}
 
 			if($creator_only) {
-				$sql_extra .= " AND `creator` = ?";
+				$sql_extra .= " AND `creator` = :user";
 			}
 
 			if(!$show_all) {
 				$sql_extra .= " AND `public` = 1";
 			}
 
-			$sql_types = "`type` = ?";
+			$sql_types = "`type` = :type";
 			if($type == AssetType::BODYPARTS) {
 				$type_head = AssetType::HEAD->ordinal();
 				$type_torso = AssetType::TORSO->ordinal();
@@ -368,63 +358,60 @@
 				$sql_types = "(`type` = $type_head OR `type` = $type_torso OR `type` = $type_leftarm OR `type` = $type_rightarm OR `type` = $type_leftleg OR `type` = $type_rightleg)";
 			}
 			
-			$sql = "SELECT assets.* FROM `transactions`, `assets` WHERE `transactions`.`asset` = `assets`.`id` AND `userid` = ? AND $sql_types AND `name` LIKE ? $sql_extra ORDER BY `lastedited` DESC";
+			$sql = "SELECT assets.* FROM `transactions`, `assets` WHERE `transactions`.`asset` = `assets`.`id` AND `userid` = :user AND $sql_types AND `name` LIKE :query $sql_extra ORDER BY `lastedited` DESC";
+
+			$db = Database::singleton();
 
 			if($type == AssetType::BODYPARTS) {
 				if($page <= -1 || $count <= 0) {
-					$stmt_getassets = $con->prepare("$sql");
-					
-					if($creator_only) {
-						$stmt_getassets->bind_param('isi', $this->id, $sql_query, $this->id);
-					} else {
-						$stmt_getassets->bind_param('is', $this->id, $sql_query);
-					}
+					$rows = $db->run(
+						$sql,
+						[
+							":user" => $this->id,
+							":query" => $sql_query
+						]
+					)->fetchAll(\PDO::FETCH_OBJ);
 				} else {
-					$sql_page = (($page-1)*$count);
-					$stmt_getassets = $con->prepare("$sql LIMIT ?, ?");
-					
-					if($creator_only) {
-						$stmt_getassets->bind_param('isiii', $this->id, $sql_query, $this->id, $sql_page, $count);
-					} else {
-						$stmt_getassets->bind_param('isii', $this->id, $sql_query, $sql_page, $count);
-					}
+					$rows = $db->run(
+						"$sql LIMIT :page, :count",
+						[
+							":user" => $this->id,
+							":query" => $sql_query,
+							":page" => (($page-1)*$count),
+							":count" => $count
+						]
+					)->fetchAll(\PDO::FETCH_OBJ);
 				}
 			} else {
 				if($page <= -1 || $count <= 0) {
-					$stmt_getassets = $con->prepare("$sql");
-					
-					if($creator_only) {
-						$stmt_getassets->bind_param('iisi', $this->id, $sql_assettype, $sql_query, $this->id);
-					} else {
-						$stmt_getassets->bind_param('iis', $this->id, $sql_assettype, $sql_query);
-					}
+					$rows = $db->run(
+						$sql,
+						[
+							":user" => $this->id,
+							":type" => $type->ordinal(),
+							":query" => $sql_query
+						]
+					)->fetchAll(\PDO::FETCH_OBJ);
 				} else {
-					$sql_page = (($page-1)*$count);
-					$stmt_getassets = $con->prepare("$sql LIMIT ?, ?");
-					
-					if($creator_only) {
-						$stmt_getassets->bind_param('iisiii', $this->id, $sql_assettype, $sql_query, $this->id, $sql_page, $count);
-					} else {
-						$stmt_getassets->bind_param('iisii', $this->id, $sql_assettype, $sql_query, $sql_page, $count);
-					}
+					$rows = $db->run(
+						"$sql LIMIT :page, :count",
+						[
+							":user" => $this->id,
+							":type" => $type->ordinal(),
+							":query" => $sql_query,
+							":page" => (($page-1)*$count),
+							":count" => $count
+						]
+					)->fetchAll(\PDO::FETCH_OBJ);
 				}
 			}
-			
-
-			$stmt_getassets->execute();
-
-			$result = $stmt_getassets->get_result();
 
 			$result_array = [];
 
-			if($result->num_rows != 0) {
-				while($row = $result->fetch_assoc()) {
-					$result_array[] = Asset::FromID($row['id']);
-				}
-				return $result_array;
+			foreach($rows as $row) {
+				$result_array[] = Asset::FromID($row->id);
 			}
-
-			return [];
+			return $result_array;
 		}
 
 		/**
@@ -795,43 +782,27 @@
 		}
 
 		function updateOutfitHash() {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
 			$md5 = $this->getCharacterAppearanceHash();
 
-			$stmt = $con->prepare("UPDATE `users` SET `currentappearancemd5` = ? WHERE `id` = ?");
-			$stmt->bind_param("si", $md5, $this->id);
-			$stmt->execute();
+			Database::singleton()->run(
+				"UPDATE `users` SET `currentappearancemd5` = :md5 WHERE `id` = :uid",
+				[
+					":md5" => $md5,
+					":uid" => $this->id
+				]
+			);
 		}
 
 		function getWearingArray(bool $ordered = false) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+			$rows = Database::singleton()->run(
+				"SELECT `assetid` FROM `inventory` WHERE `userid` = :id".($ordered ? "ORDER BY `assetid`" : ""),
+				[ ":id" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
-			if($ordered) {
-				$stmt_checkinventory = $con->prepare("SELECT * FROM `inventory` WHERE `userid` = ? ORDER BY `assetid`");
-				$stmt_checkinventory->bind_param('i', $this->id);
-				$stmt_checkinventory->execute();
-				$checkinventory_result = $stmt_checkinventory->get_result();
-				$ids = [];
-			
-				if($checkinventory_result->num_rows != 0) {
-					while($row = $checkinventory_result->fetch_assoc()) {
-						$ids[] = $row['assetid'];
-					}
-				}
-
-				return $ids;
-			}
-
-			$stmt_checkinventory = $con->prepare("SELECT * FROM `inventory` WHERE `userid` = ?");
-			$stmt_checkinventory->bind_param('i', $this->id);
-			$stmt_checkinventory->execute();
-			$checkinventory_result = $stmt_checkinventory->get_result();
 			$ids = [];
 		
-			if($checkinventory_result->num_rows != 0) {
-				while($row = $checkinventory_result->fetch_assoc()) {
-					$ids[] = $row['assetid'];
-				}
+			foreach($rows as $row) {
+				$ids[] = $row->assetid;
 			}	
 
 			return $ids;
@@ -1079,112 +1050,71 @@
 		}
 
 		function isOnline(): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+			$db = Database::singleton();
+
+			$result = $db->run(
+				"SELECT `userid` FROM `activity` WHERE `userid` = :id AND `action_time` > DATE_SUB(NOW(),INTERVAL 5 MINUTE)",
+				[ ":id" => $this->id ]
+			)->rowCount() != 0;
 			
-			$stmt_user_status_check = $con->prepare('SELECT * FROM `activity` WHERE `userid` = ? AND `action_time` > DATE_SUB(NOW(),INTERVAL 5 MINUTE)');
-			$stmt_user_status_check->bind_param('i', $this->id);
-			$stmt_user_status_check->execute();
-			$activity_result = $stmt_user_status_check->get_result();
-			
-			$result = $activity_result->num_rows != 0;
-			
-			$userGameDetails = $this->getUserGameDetails();
-			
-			if($userGameDetails != null && $this->getServerDetails($userGameDetails['serverid']) != null) {
+			if($this->isInAnyGame()) {
 				$result = true;
 			}
-				
-			$stmt_result = $result ? 1 : 0;
-	
-			$stmt_user_status_check = $con->prepare('UPDATE `users` SET `online` = ? WHERE `id` = ?');
-			$stmt_user_status_check->bind_param('ii', $stmt_result, $this->id);
-			$stmt_user_status_check->execute();
+
+			$db->run(
+				"UPDATE `users` SET `online` = :online WHERE `id` = :id",
+				[ 
+					":id" => $this->id,
+					":online" => $result
+				]
+			);
+
 			return $result;
 		}
 
-		private function getUserGameDetails(): array|null {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-			$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_players` WHERE `playerid` = ? AND `status` = 1;");
-			$stmt_getsessiondetails->bind_param("i", $this->id);
-			$stmt_getsessiondetails->execute();
-
-			$result_getsessiondetails = $stmt_getsessiondetails->get_result();
-
-			if($result_getsessiondetails->num_rows == 1) {
-				return $result_getsessiondetails->fetch_assoc();
-			}
-
-			return null;
-		}
-
-		private function getServerDetails(string $serverID): array|null {
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-			$stmt_getsessiondetails = $con->prepare("SELECT * FROM `active_servers` WHERE `id` = ?");
-			$stmt_getsessiondetails->bind_param("s", $serverID);
-			$stmt_getsessiondetails->execute();
-
-			$result_getsessiondetails = $stmt_getsessiondetails->get_result();
-
-			if($result_getsessiondetails->num_rows != 0) {
-				return $result_getsessiondetails->fetch_assoc();
-			}
-
-			return null;
-		}
-
 		function getOnlineActivity(): string {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+
+			$db = Database::singleton();
 			
-			$userGameDetails = $this->getUserGameDetails();
+			$server_details = $this->getAnyActiveGame();
 
-			if($userGameDetails != null) {
-				$server_details = $this->getServerDetails($userGameDetails['serverid']);
+			if($server_details != null) {
+				$place = $server_details->place;
 
-				if($server_details != null) {
-					$place = Place::FromID(intval($server_details['placeid']));
+				if($place != null) {
+					$place_name = $place->name;
 
-					if($place != null) {
-						$place_name = $place->name;
-						$place_id = $place->id;
-
-						if($place->public) {
-							if($server_details['teamcreate'] == 1) {
-								return <<<EOT
-								[ In Team Create: <a href="{$place->getUrl()}">$place_name</a> ]
-								EOT;
-							} else {
-								return <<<EOT
-								[ In Game: <a href="{$place->getUrl()}">$place_name</a> ]
-								EOT;
-							}
+					if($place->public) {
+						if($server_details->teamcreate) {
+							return <<<EOT
+							[ In Team Create: <a href="{$place->getUrl()}">$place_name</a> ]
+							EOT;
+						} else {
+							return <<<EOT
+							[ In Game: <a href="{$place->getUrl()}">$place_name</a> ]
+							EOT;
 						}
 					}
-				} else {
-					$stmt_getsessiondetails = $con->prepare("DELETE FROM `active_players` WHERE `playerid` = ? AND `status` = 1;");
-					$stmt_getsessiondetails->bind_param("i", $this->id);
-					$stmt_getsessiondetails->execute();
 				}
+			} else {
+				$db->run(
+					"DELETE FROM `active_players` WHERE `playerid` = :id AND `status` = 1;",
+					[ ":id" => $this->id ]
+				);
 			}
 
-			$stmt_user_status_check = $con->prepare('SELECT * FROM `activity` WHERE `userid` = ? AND `action_time` > DATE_SUB(NOW(),INTERVAL 5 MINUTE)');
-			$stmt_user_status_check->bind_param('i', $this->id);
-			$stmt_user_status_check->execute();
-			$activity_result = $stmt_user_status_check->get_result();
-			
-			if($activity_result->num_rows != 0) {
-				return $activity_result->fetch_assoc()['action'];
-			} else {
-				$stmt_user_status_check = $con->prepare('SELECT * FROM `activity` WHERE `userid` = ?');
-				$stmt_user_status_check->bind_param('i', $this->id);
-				$stmt_user_status_check->execute();
-				$activity_result = $stmt_user_status_check->get_result();
+			$online_activity = $db->run(
+				"SELECT `action` FROM `activity` WHERE `userid` = :id AND `action_time` > DATE_SUB(NOW(),INTERVAL 5 MINUTE)",
+				[ ":id" => $this->id ]
+			)->fetchObject();
 
-				if($activity_result->num_rows != 0) {
-					$row = $activity_result->fetch_assoc();
-					//
-					return "Was last seen: ".$row['action'].", ".UtilUtils::getTimeAgo(\DateTime::createFromFormat("Y-m-d H:i:s", $row['action_time']));
+			if($online_activity) {
+				return $online_activity->action;
+			} else {
+				$row = $db->run("SELECT `action`, `action_time` FROM `activity` WHERE `userid` = :id", [":id" => $this->id])->fetchObject();
+
+				if($row) {
+					return "Was last seen: {$row->action}, ".UtilUtils::getTimeAgo(\DateTime::createFromFormat("Y-m-d H:i:s", $row->action_time));
 				} else {
 					return "Was never online I guess :[";
 				}
@@ -1407,6 +1337,49 @@
 			return $server->active() ? $server : null;
 		}
 
+		function getAnyActiveGame() {
+			if(!$this->isInAnyGame())
+				return null;
+
+			$rows = Database::singleton()->run(
+				"SELECT `id`,`serverid` FROM `active_players` WHERE `playerid` = :playerid", 
+				[ ":playerid" => $this->id ]
+			)->fetchAll(\PDO::FETCH_OBJ);
+
+			$server = null;
+
+			foreach($rows as $row) {
+				$grab_server = GameServer::Get($row->serverid);
+
+				if(!$grab_server) {
+					$session = GameSession::Get($row->id);
+
+					if($session)
+						$session->kick("");
+
+					continue;
+				}
+
+				if($grab_server->active()) {
+					if(!$server) {
+						if($row->status == 1)
+							$server = $grab_server;
+						else
+							$grab_server->removePlayer($this);
+					} else {
+						$server->removePlayer($this);
+						$server = null;
+						$grab_server->removePlayer($this);
+					}
+				}
+				else {
+					$grab_server->destroy();
+				}
+			}
+
+			return $server->active() ? $server : null;
+		}
+
 		function isInAGame(bool $teamcreate = false) {
 			return 
 				Database::singleton()->run(
@@ -1415,6 +1388,14 @@
 						":playerid" => $this->id,
 						":teamcreate" => $teamcreate
 					]
+				)->rowCount() != 0;
+		}
+
+		function isInAnyGame() {
+			return 
+				Database::singleton()->run(
+					"SELECT `id` FROM `active_players` WHERE `playerid` = :playerid AND `status` = 1", 
+					[ ":playerid" => $this->id ]
 				)->rowCount() != 0;
 		}
 
