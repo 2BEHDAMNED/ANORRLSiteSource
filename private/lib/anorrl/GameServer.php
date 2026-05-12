@@ -154,6 +154,8 @@
 			);
 
 			$user->visit($this->place);
+
+			Place::UpdatePlaceStats($this->place->id);
 		}
 
 		function removePlayer(User|int $user, string|null $reason = null) {
@@ -169,6 +171,8 @@
 
 			if($session)
 				$session->kick($reason ?? '');
+
+			Place::UpdatePlaceStats($this->place->id);
 		}
 
 		function renewLease(int $time = 60) {
