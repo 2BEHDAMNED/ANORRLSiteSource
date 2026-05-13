@@ -69,8 +69,7 @@
 		background-size: 49px auto;
 		border: 4px solid black;
 		height: 21px;
-		background-blend-mode: difference;
-		background-image: linear-gradient(#ffb300,#ffb300),url("/public/images/header/navbar.jpg");
+		background-image: url("/public/images/header/navbar_black.jpg");
 		overflow: hidden;
 	}
 </style>
