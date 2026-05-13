@@ -121,7 +121,13 @@
 			
 			if(!$user)
 				return ["error" => true, "reason" => "User not authorised to perform this action!"];
+			
+			if($this->type == AssetType::BADGE) {
+				TransactionUtils::CommitTransaction($user, $this);
 
+				return ["error" => false];
+			}
+			
 			if($user->owns($this))
 				if(!$this->onsale)
 					return ["error" => true, "reason" => "Item is off-sale and beside you already own this?!"];
