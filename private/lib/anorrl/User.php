@@ -30,6 +30,7 @@
 		public bool $setprofilepicture;
 		public string $currentoutfitmd5;
 		public \DateTime $join_date;
+		public \DateTime $last_username_change_date;
 		
 		/**
 		 * Attempts to grab userdata from given id.<br>
