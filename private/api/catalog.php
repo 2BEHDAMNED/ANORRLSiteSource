@@ -47,6 +47,10 @@
 		}
 	}
 
+	if($total_pages == 0) {
+		$total_pages++; //idfk dude
+	}
+
 	
 
 	if($total_pages < $page && $page != 1) {
