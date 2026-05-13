@@ -190,14 +190,15 @@ use anorrl\User;
 				if($_GET['c'] != "outfits") {
 					$wearing_array = $user->getWearingArray();
 
-					$pre_total_pages = $user->getOwnedAssetsCount(AssetType::index($type), "", false, true, $wearing_array)/8;
-
-					if(((int) $pre_total_pages)-$pre_total_pages < 0.5) {
+					$pre_total_pages_v2 = $user->getOwnedAssetsCount(AssetType::index($type), "", false, true, $wearing_array)/8;
+					$pre_total_pages = $pre_total_pages_v2;
+					$uhmbullshitcalc = ((float)((int) $pre_total_pages))-$pre_total_pages;
+					if($uhmbullshitcalc < 0.5 && $uhmbullshitcalc != 0) {
 						$pre_total_pages += 0.5;
 					}
 
 
-					$total_pages = floor($pre_total_pages);
+					$total_pages = round($pre_total_pages);
 
 					if($total_pages < 1) {
 						$total_pages++;
@@ -226,7 +227,11 @@ use anorrl\User;
 							}
 						}
 					}
-					die(json_encode(["assets" => $assets_raw, "page" => $page, "total_pages" => $total_pages]));
+					die(json_encode([
+						"assets" => $assets_raw, "page" => $page,
+						"total_pages" => $total_pages,
+						"bullshit" => $pre_total_pages
+					]));
 				} else {
 					die(json_encode(["assets" => [], "page" => 1, "total_pages" => 1, "comment"=> "Hi, outfits haven't been added yet (congrats on finding this lol)"]));
 				}
