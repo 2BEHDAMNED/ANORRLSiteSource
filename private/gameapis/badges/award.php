@@ -17,7 +17,7 @@
 		if($user && $badge && $place) {
 			if($badge->relatedasset->id == $place->id) {
 				if($badge->awardTo($user)) {
-					die("{$user->name} won {$badge->creator->name}'s '$badge->name' award!");
+					die("You won {$badge->creator->name}'s '$badge->name' award!");
 				}
 			}
 		}
