@@ -242,7 +242,7 @@ use anorrl\User;
 
 				$pre_total_pages = $user->getOwnedAssetsCount($category, $query, false, true, $wearing_array)/8;
 
-				if($pre_total_pages < 0.5) {
+				if(((int) $pre_total_pages)-$pre_total_pages < 0.5) {
 					$pre_total_pages += 0.5;
 				}
 
