@@ -41,11 +41,13 @@
 
 	if($raw_count > 0 && $total_pages == 0) {
 		$total_pages++;
+	} else {
+		if(AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query, $total_pages, 12) == 0) {
+			$total_pages--;
+		}
 	}
 
-	if(AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query, $total_pages, 12) == 0) {
-		$total_pages--;
-	}
+	
 
 	if($total_pages < $page && $page != 1) {
 		die(header("Location: /api/catalog?c=$type&q=$query&p=1"));
