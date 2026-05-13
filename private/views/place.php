@@ -422,6 +422,68 @@
 		<div id="InfoBox" content="Badges" style="display:none">
 			<b>Badges <?php if($place->isOwner($user, true)): ?> <a href="/create/<?= $id ?>/badge">[[ Create ]]</a><?php endif ?></b>
 			<hr>
+			<style>
+				#Badges {
+					width: 100%;
+					border: 2px solid black;
+					background: #1a1a1a;
+				}
+
+				#Badges table {
+					margin-top: 30px;
+					width: 100%;
+				}
+
+				#Badges td {
+					vertical-align: top;
+				}
+
+				#Badges img {
+					border: 2px solid black;
+					background #111;
+				}
+
+				#Badges .BadgeDesc {
+					border: 2px solid black;
+					padding: 10px;
+					height: 78px;
+					overflow: auto;
+					background: #111;
+				}
+			</style>
+			<table id="Badges">
+				<?php foreach($place->getBadges() as $badge): ?>
+				<tr>
+					<td width="128">
+						<img src="<?= $badge->getThumbsUrl(128) ?>">
+					</td>
+					<td>
+						<div class="BadgeName"><h3><?= $badge->name ?></h3></div>
+						<div class="BadgeDesc"><?= strlen(trim($badge->description)) == 0 ? "<b>Seems like no description was set...</b>" : $badge->description ?></div>
+					</td>
+					<td width="200">
+						<table style="border: 2px solid black; padding: 21px; width: 200px; background: #111;">
+							<tr>
+								<td>Rarity</td>
+								<td>0%</td>
+							</tr>
+							<tr>
+								<td>Won Yesterday</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<td>Won Ever</td>
+								<td>0</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<!-- <div>W</div>
+						<div>Won Ever</div>
+						<div>0</div>
+						<div>0</div>-->
+				<?php endforeach ?>
+			</table>
 		</div>
 		<div id="InfoBox" content="Servers" style="display:none">
 			<div class="Window" style="margin: 0 auto; width: 100%">

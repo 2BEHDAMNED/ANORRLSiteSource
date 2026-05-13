@@ -223,7 +223,7 @@
 			$badges = [];
 
 			foreach($rows as $row) {
-				$badge = Asset::FromID($row->id);
+				$badge = Badge::FromID($row->id);
 
 				if($badge)
 					$badges[] = $badge;
