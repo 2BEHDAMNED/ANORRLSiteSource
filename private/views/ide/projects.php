@@ -223,13 +223,13 @@
 						if($universe->teamcreate) {
 							if(count($universe->getAllPlaces()) == 1) {
 								echo <<<EOT
-											<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 12px;">
+											<img src="/public/images/icons/cloud.png" style="border: none;height: 32px;position: absolute;right: 12px;">
 								EOT;
 							}
 							else {
 								echo <<<EOT
-											<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 12px;">
-											<img src="/public/images/onlinePlaceIcon.png" style="border: none;height: 32px;position: absolute;right: 46px;">
+											<img src="/public/images/icons/world.png" style="border: none;height: 32px;position: absolute;right: 12px;">
+											<img src="/public/images/icons/cloud.png" style="border: none;height: 32px;position: absolute;right: 46px;">
 								EOT;
 							}
 							
@@ -237,7 +237,7 @@
 						else {
 							if(count($universe->getAllPlaces()) > 1) {
 								echo <<<EOT
-											<img src="/public/images/world.png" style="border: none;height: 32px;position: absolute;right: 7px;top: 5px;">
+											<img src="/public/images/icons/world.png" style="border: none;height: 32px;position: absolute;right: 7px;top: 5px;">
 								EOT;
 							}
 						}

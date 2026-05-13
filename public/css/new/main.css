@@ -102,6 +102,9 @@ a:hover {
 	);
 
 	overflow: visible;
+
+	background-image: url("/public/images/header/signs/profile.png");
+  background-size: 100% 100%;
 }
 
 #Header #ProfileSign[logged=false] #background {

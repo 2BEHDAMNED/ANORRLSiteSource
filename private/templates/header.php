@@ -181,18 +181,29 @@
 					$pendingreqscount = $header_check_user->GetPendingFriendRequestsCount();	
 				?>
 				<div id="ProfileSign" logged="true">
-					<img id="background" src="/public/images/header/signs/profile.png"> <!-- DO NOT FUCKING REMOVE -->
 					<div id="UsernameRow">
-						YOU ARE: <br>
 						<a href="/users/<?= $header_check_user->id ?>/profile"><?= $header_check_user->name ?></a>
 					</div>
-					<hr>
-					<div id="CreditsRow">
-						<span title="Your pending requests"><a href="/my/friends"><img src="/public/images/icons/messages<?= $pendingreqscount == 0 ? "" : "_notify" ?>.png"> <?= $pendingreqscount ?></a></span> <span class="Separator">|</span>
-						<span title="Your friends"><a href="/my/friends"><img src="/public/images/icons/friends.png"> <?= $header_check_user->getFriendsCount() ?></a></span>
-						<hr>
-						<span title="Message" style="width:auto"><?= $randomsignsplash ?><a href="/public/images/anorrl-smile.png" target="_blank" style="display: block;"><img src="/public/images/anorrl-smile.png" style="width: 42px;margin: 2px 0px;"></a></span>
-					</div>
+					<table style="width: 100%">
+						<tr>
+							<td style="vertical-align: top;">
+								<a href="/users/<?= $header_check_user->id ?>/profile"><img src="<?= $header_check_user->getThumbsUrl(64) ?>"></a>
+							</td>
+							<td style="vertical-align: top;">
+								<div id="CreditsRow">
+									<span title="Your pending requests"><a href="/my/friends"><img src="/public/images/icons/messages<?= $pendingreqscount == 0 ? "" : "_notify" ?>.png"> <?= $pendingreqscount ?></a></span><span class="Separator">|</span><span title="Your friends"><a href="/my/friends"><img src="/public/images/icons/friends.png"> <?= $header_check_user->getFriendsCount() ?></a></span>
+									<hr>
+									<span title="Message" style="width:auto"><?= $randomsignsplash ?></span>
+									<div style="position:absolute; right: -20px; bottom: -25px;">
+										<a href="/public/images/anorrl-smile.png" target="_blank"><img src="/public/images/anorrl-smile.png" style="width: 42px;image-rendering: optimizequality;"></a>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					
+				
+					
 				</div>
 				<a id="LogoutSign" href="javascript:ANORRL.Logout()">LOGOUT</a>
 				<?php else: ?>

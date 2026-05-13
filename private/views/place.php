@@ -144,14 +144,15 @@
 		}
 
 		rendering = true;
-		window.alert("Committing render! (Press ok to continue)");
-		$("#RenderButton").html("Rendering...");
-		$.post( "/api/asset/render", { id: <?= $place->id ?> }).done(function( data ) {
-			if(data['error']) {
-				window.alert(data['reason']);
-			}
-			window.location.reload();
-		});
+		if(window.confirm("Are you sure you want to render this asset?")) {
+			$("#RenderButton").html("Rendering...");
+			$.post( "/api/asset/render", { id: <?= $place->id ?> }).done(function( data ) {
+				if(data['error']) {
+					window.alert(data['reason']);
+				}
+				window.location.reload();
+			});
+		}
 	}
 	
 	function Delete() {
@@ -169,6 +170,7 @@
 		if(window.confirm("Are you sure you want to shutdown ALL servers??")) {
 			$.post( "/api/gameservers/shutdown", { placeID: <?= $place->id ?> }).done(function( data ) {
 				ANORRL.PlaceLauncher.GrabGameservers(<?= $place->id ?>);
+				toggleToolbar();
 				if(data['error']) {
 					window.alert(data['reason']);
 				}
@@ -221,6 +223,112 @@
 		</div>
 		<div id="Information">
 			<div id="UserCard">
+				<style>
+					#UserCard {
+						position: relative;
+					}
+					#OptionsClicker {
+						padding: 2px 4px;
+						border: 2px solid black;
+						background: black;
+						text-decoration: none;
+						color: #ffa634;
+						cursor:pointer;
+					}
+
+					#OptionsToolbar[enabled] #OptionsClicker {
+						background: #2a2a2a;
+					}
+
+					#OptionsClicker:hover {
+						background: #111111;
+					}
+
+					#OptionsClicker:hover {
+						text-decoration: underline;
+						color: #ffc63f;
+					}
+
+					#OptionsToolbar {
+						position: absolute;
+						top: 5px;
+						right: 5px;
+						font-weight: bold;
+					}
+
+					#OptionsMenu {
+						position: absolute;
+						left: 30px;
+						top: 0px;
+						background: #1a1a1a;
+						border: 2px solid black;
+						padding: 5px;
+						display: none;
+					}
+					
+					#OptionsToolbar[enabled] #OptionsMenu {
+						display: block;
+					}
+
+					#OptionsMenu .Row img {
+						position: absolute;
+						pointer-events: none;
+					}
+
+					#OptionsMenu .Row a {
+						text-align: left;
+						padding-left: 25px;
+						width: 155px;
+						display:block;
+					}
+
+					#OptionsMenu .Row {
+						width: 155px;
+						text-align: left;
+						padding: 2px;
+						position: relative;
+					}
+
+					#OptionsMenu .Row:hover {
+						background: #3a3a3a;
+					}
+				</style>
+				<script>
+					function toggleToolbar() {
+						if($("#OptionsToolbar").attr("enabled") == undefined) {
+							$("#OptionsToolbar").attr("enabled", "");
+						} else {
+							$("#OptionsToolbar").removeAttr("enabled");
+						}
+					}
+				</script>
+				<div id="OptionsToolbar">
+					<button id="OptionsClicker" onclick="toggleToolbar()">
+						<img src="/public/images/icons/cog.png">
+					</button>
+					<div id="OptionsMenu">
+						<?php if($is_creator): ?>
+						<div class="Row">
+							<img src="/public/images/icons/wrench_orange.png">
+							<a href="/edit?id=<?= $place->id ?>">Configure</a>
+						</div>
+						<?php if($place->isUsable()): ?>
+						<div class="Row">
+							<img src="/public/images/icons/camera.png">
+							<a href="javascript:Render()" id="RenderButton">Render this asset</a>
+						</div>
+						<div class="Row">
+							<img src="/public/images/icons/world.png">
+							<a href="javascript:Shutdown()">Shutdown all servers</a>
+						</div>
+						<?php endif ?>
+						<div class="Row">
+							<img src="/public/images/icons/delete.png">
+							<a href="javascript:Delete()">Delete this asset</a>
+						</div>
+						<?php endif ?>
+					</div>
+				</div>
 				<a href="/users/<?= $place->creator->id ?>/profile"><img src="<?= $place->creator->getThumbsUrlService("player", 110)?>" style="width: 110px;display:block;margin:0 auto;"></a>
 				<div id="AssetInfoStuff">
 					<span>Created by <a href="/users/<?= $place->creator->id ?>/profile"><?= $place_creator_name ?></a></span>
@@ -230,24 +338,20 @@
 					<?php endif ?>
 				</div>
 				<hr>
-				<?php if($place->isUsable()): ?>
-					<button class="PlaceButton" onclick="ANORRL.PlaceLauncher.LetsJoinAndPlay(<?= $id ?>)" Play></button>
-					<?php if($is_creator || !$place->copylocked): ?>
-					<button class="PlaceButton" onclick="ANORRL.PlaceLauncher.EditPlace(<?= $id ?>)" Edit></button>
-					<?php endif ?>
-				<?php else: ?>
-				<div id="NotOnSale">This place is broken and needs to be republished.</div>
-				<?php endif?>
-				<hr>
-				<div id="ManageOptions">
-					<?php if($is_creator): ?>
-					<a href="/edit?id=<?= $place->id ?>">Configure</a>
+				<style>
+					#GameButtons {
+						margin-top: 35px;
+					}
+				</style>
+				<div id="GameButtons" >
 					<?php if($place->isUsable()): ?>
-					<a href="javascript:Render()" id="RenderButton">Render this asset</a>
-					<a href="javascript:Shutdown()">Shutdown all servers</a>
-					<?php endif ?>
-					<a href="javascript:Delete()">Delete this asset</a>
-					<?php endif ?>
+						<button class="PlaceButton" onclick="ANORRL.PlaceLauncher.LetsJoinAndPlay(<?= $id ?>)" Play></button>
+						<?php if($is_creator || !$place->copylocked): ?>
+						<button class="PlaceButton" onclick="ANORRL.PlaceLauncher.EditPlace(<?= $id ?>)" Edit></button>
+						<?php endif ?>
+					<?php else: ?>
+					<div id="NotOnSale">This place is broken and needs to be republished.</div>
+					<?php endif?>
 				</div>
 			</div>
 		</div>
@@ -259,18 +363,18 @@
 	<div id="CommentsContainer">
 		<h3>Users worked on this!</h3>
 		<div id="CommentSection">
-				<div id="FriendsContainer">
-					<ul id="Friends" style="width: 848px;border: 0px;background: none;padding: 0px;text-align: center;height: 140px;">
-						<?php $users = $universe->getCloudEditors(); foreach($users as $u): ?>
-							<li class="Friend">
-								<a id="ProfileLink" href="/users/<?= $u->id ?>/profile">
-									<img id="Profile" src="<?= $u->getThumbsUrl(100) ?>">
-									<div id="Name"><?= $u->name ?></div>
-								</a>
-							</li>							
-						<?php endforeach ?>
-					</ul>
-				</div>
+			<div id="FriendsContainer">
+				<ul id="Friends" style="width: 848px;border: 0px;background: none;padding: 0px;text-align: center;height: 140px;">
+					<?php $users = $universe->getCloudEditors(); foreach($users as $u): ?>
+						<li class="Friend">
+							<a id="ProfileLink" href="/users/<?= $u->id ?>/profile">
+								<img id="Profile" src="<?= $u->getThumbsUrl(100) ?>">
+								<div id="Name"><?= $u->name ?></div>
+							</a>
+						</li>							
+					<?php endforeach ?>
+				</ul>
+			</div>
 		</div>
 	</div>
 	<?php endif ?>

@@ -178,6 +178,7 @@
 
 		function isUsable(): bool {
 			$contents = $this->getFileContents();
+			return true;
 			if(AssetVersion::GetLatestVersionOf($this) == null || !$contents) {
 				return false;
 			}
