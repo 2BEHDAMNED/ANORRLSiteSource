@@ -426,9 +426,7 @@
 		 * @return void
 		 */
 		function getOwnedAssetsCount(AssetType $type, string $query = "", bool $creator_only = false, bool $show_all = true, array $excludedids = []): int {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-		
-			$sql_assettype = $type->ordinal();
+			
 			$sql_query = trim($query);
 			if(strlen($sql_query) > 0) {
 				$sql_query = "%$sql_query%";
@@ -451,14 +449,14 @@
 			}
 
 			if($creator_only) {
-				$sql_extra .= " AND `creator` = ?";
+				$sql_extra .= " AND `creator` = `userid`";
 			}
 
 			if(!$show_all) {
 				$sql_extra .= " AND `public` = 1";
 			}
 
-			$sql_types = "`type` = ?";
+			$sql_types = "`type` = :type";
 			if($type == AssetType::BODYPARTS) {
 				$type_head = AssetType::HEAD->ordinal();
 				$type_torso = AssetType::TORSO->ordinal();
@@ -471,51 +469,36 @@
 			}
 			
 			
-			$sql = "SELECT COUNT(`transactions`.`id`) FROM `transactions`, `assets` WHERE `transactions`.`asset` = `assets`.`id` AND `userid` = ? AND $sql_types AND `name` LIKE ? $sql_extra ORDER BY `date` DESC";
+			$sql = "SELECT COUNT(`transactions`.`id`) FROM `transactions`, `assets` WHERE `transactions`.`asset` = `assets`.`id` AND `userid` = :user AND $sql_types AND `name` LIKE :query $sql_extra ORDER BY `date` DESC";
 
-			$stmt_getassets = $con->prepare("$sql");
-			
-			if($type == AssetType::BODYPARTS) {
-				if($creator_only) {
-					$stmt_getassets->bind_param('isi', $this->id, $sql_query, $this->id);
-				} else {
-					$stmt_getassets->bind_param('is', $this->id, $sql_query);
-				}
-			} else {
-				if($creator_only) {
-					$stmt_getassets->bind_param('iisi', $this->id, $sql_assettype, $sql_query, $this->id);
-				} else {
-					$stmt_getassets->bind_param('iis', $this->id, $sql_assettype, $sql_query);
-				}
+			$params = [
+				":user" => $this->id,
+				":query" => $sql_query,
+			];
+
+			if($type != AssetType::BODYPARTS) {
+				$params[":type"] = $type->ordinal();
 			}
-			
 
-			$stmt_getassets->execute();
+			$row = Database::singleton()->run($sql, $params)->fetch(\PDO::FETCH_ASSOC);
 
-			$result = $stmt_getassets->get_result();
-			$row = $result->fetch_assoc();
-
-			return $row['COUNT(`transactions`.`id`)'];
+			return $row ? $row['COUNT(`transactions`.`id`)'] : -1;
 		}
 
 		function getAllOwnedAssets(): array {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_getuser = $con->prepare("SELECT * FROM `transactions` WHERE `userid` = ? ORDER BY `date` DESC");
-			$stmt_getuser->bind_param('i', $this->id);
-			$stmt_getuser->execute();
-
-			$result = $stmt_getuser->get_result();
+			$rows = Database::singleton()->run(
+				"SELECT `asset` FROM `transactions` WHERE `userid` = :user ORDER BY `date` DESC",
+				[
+					":user" => $this->id
+				]
+			)->fetchAll(\PDO::FETCH_OBJ);
 
 			$result_array = [];
 
-			if($result->num_rows != 0) {
-				while($row = $result->fetch_assoc()) {
-					$result_array[] = Asset::FromID($row['asset']);
-				}
-				return $result_array;
+			foreach($rows as $row) {
+				$result_array[] = Asset::FromID($row->asset);
 			}
-
-			return [];
+			return $result_array;
 		}
 
 		function getLatestAssetUploaded(): Asset|null {
@@ -534,34 +517,26 @@
 			}
 			
 			if(!$this->owns($asset) || Asset::FromID($assetid) == null) {
+				$this->forceTakeOff($assetid, false);
 				return false;
 			}
-			
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt_checkinventory = $con->prepare("SELECT * FROM `inventory` WHERE `userid` = ? AND `assetid` = ?;");
-			$stmt_checkinventory->bind_param('ii', $this->id, $assetid);
-			$stmt_checkinventory->execute();
 
-			$numberrows = $stmt_checkinventory->get_result()->num_rows;
-			if($numberrows > 1) {
-				$stmt_deleteitem = $con->prepare("DELETE FROM `inventory` WHERE `userid` = ? AND `assetid` = ?;");
-				$stmt_deleteitem->bind_param('ii', $this->id, $assetid);
-				$stmt_deleteitem->execute();
+			$db = Database::singleton();
 
-				$stmt_additem = $con->prepare("INSERT INTO `inventory`(`userid`, `assetid`, `assettype`) VALUES (?, ?, ?)");
-				$assettype = 0;
+			$rows = $db->run(
+				"SELECT `assetid` FROM `inventory` WHERE `userid` = :user AND `assetid` = :asset",
+				[
+					":user" => $this->id,
+					":asset" => $assetid
+				]
+			)->rowCount();
 
-				if($asset instanceof Asset) {
-					$assettype = $asset->type->ordinal();
-				} else {
-					$assettype = Asset::FromID($assetid)->type->ordinal();
-				}
-
-				$stmt_additem->bind_param('iii', $this->id, $assetid, $assettype);
-				$stmt_additem->execute();
+			if($rows > 1) {
+				$this->forceTakeOff($assetid, false);
+				$this->wear($assetid);
 			}
 
-			return $numberrows != 0;
+			return $rows != 0;
 		}
 
 		function wear(Asset|int $asset): array {
@@ -652,6 +627,18 @@
 			return ["error" => false];
 		}
 
+		private function forceTakeOff(int $id, bool $wearone = true) {
+			$typacolumn = $wearone ? "type" : "id";
+
+			Database::singleton()->run(
+				"DELETE FROM `inventory` WHERE `userid` = :userid AND `asset$typacolumn` = :asset$typacolumn",
+				[
+					":userid" => $this->id,
+					":asset$typacolumn" => $id
+				]
+			);
+		}
+
 		function takeOff(Asset|int $asset): array {
 			$assetid = $asset;
 			if($asset instanceof Asset) {
@@ -668,16 +655,8 @@
 
 			if(!$item->type->wearable())
 				return ["error" => true, "reason" => "Invalid item"];
-
-			$typacolumn = $item->type->wearone() ? "type" : "id";
-
-			Database::singleton()->run(
-				"DELETE FROM `inventory` WHERE `userid` = :userid AND `asset$typacolumn` = :asset$typacolumn",
-				[
-					":userid" => $this->id,
-					":asset$typacolumn" => $item->type->wearone() ? $item->type->ordinal() : $item->id
-				]
-			);
+			
+			$this->forceTakeOff($item->type->wearone() ? $item->type->ordinal() : $item->id, $item->type->wearone());
 
 			return ["error" => false];
 		}
@@ -735,11 +714,8 @@
 			$bodycoloursxml = $this->getBodyColoursXML();
 			$getwearing = $this->getWearingArray(true);
 
-			$userId = $this->id;
 			$parsedshit= "";
-
-			include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
+			
 			foreach($getwearing as $id) {
 				$asset = Asset::FromID($id);
 				if($asset != null) {
@@ -836,164 +812,153 @@
 		}
 
 		function getBodyColours() {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
+			$db = Database::singleton();
 
-			$stmt_grabcolours = $con->prepare("SELECT * FROM `bodycolours` WHERE `userid` = ?;");
-			$stmt_grabcolours->bind_param('i', $this->id);
-			$stmt_grabcolours->execute();
-			$grabcolours_result = $stmt_grabcolours->get_result();
+			$row = $db->run(
+				"SELECT * FROM `bodycolours` WHERE `userid` = :user",
+				[ ":user" => $this->id ]
+			)->fetchObject();
 
-			if($grabcolours_result->num_rows == 0) {
-				$stmt_createcolours = $con->prepare("INSERT INTO `bodycolours`(`userid`) VALUES (?);");
-				$stmt_createcolours->bind_param('i', $this->id);
-				$stmt_createcolours->execute();
+			if(!$row) {
+				$db->run(
+					"INSERT INTO `bodycolours`(`userid`) VALUES (:user)",
+					[ ":user" => $this->id ]
+				)->fetchObject();
 
 				return $this->getBodyColours();
 			}
-			$colours = $grabcolours_result->fetch_assoc();
+			$colours = $row;
 
 			return [
-				"head" => $colours['head'],
-				"torso" => $colours['torso'],
-				"leftarm" => $colours['leftarm'],
-				"rightarm" => $colours['rightarm'],
-				"leftleg" => $colours['leftleg'],
-				"rightleg" => $colours['rightleg'],
+				"head" => $colours->head,
+				"torso" => $colours->torso,
+				"leftarm" => $colours->leftarm,
+				"rightarm" => $colours->rightarm,
+				"leftleg" => $colours->leftleg,
+				"rightleg" => $colours->rightleg,
 			];
 		}
 
 		function setBodyColours(int $head, int $torso, int $leftarm, int $rightarm, int $leftleg, int $rightleg) {
 			$this->getBodyColours(); // populate if doesn't exist
 
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-
-			$stmt_createcolours = $con->prepare("UPDATE `bodycolours` SET `head` = ?, `torso` = ?, `leftarm` = ?, `rightarm` = ?, `leftleg` = ?,`rightleg` = ? WHERE `userid` = ?;");
-			$stmt_createcolours->bind_param('iiiiiii', $head, $torso, $leftarm, $rightarm, $leftleg, $rightleg, $this->id);
-			$stmt_createcolours->execute();
+			Database::singleton()->run(
+				"UPDATE `bodycolours` SET `head` = :head, `torso` = :torso, `leftarm` = :larm, `rightarm` = :rarm, `leftleg` = :lleg,`rightleg` = :rleg WHERE `userid` = :user",
+				[
+					":head" => $head,
+					":torso" => $torso,
+					":larm" => $leftarm,
+					":rarm" => $rightarm,
+					":lleg" => $leftleg,
+					":rleg" => $rightleg,
+					":user" => $this->id
+				]
+			);
 		}
 		
-		function follow(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-			if(!$this->isFollowing($user)) {
-				$stmt_getuser = $con->prepare("INSERT INTO `follows`(`follower`, `followed`) VALUES (?, ?);");
-				$stmt_getuser->bind_param('ii', $this->id, $userid);
-				$stmt_getuser->execute();
+		function follow(User $user) {
+			if(!$this->isFollowing($user) && !$user->isBanned()) {
+				Database::singleton()->run(
+					"INSERT INTO `follows`(`follower`, `followed`) VALUES (:this, :other)",
+					[
+						":this" => $this->id,
+						":other" => $user->id
+					]
+				);
 			}
 		}
 
-		function unfollow(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
+		function unfollow(User $user) {
 			if($this->isFollowing($user)) {
-				$stmt_getuser = $con->prepare("DELETE FROM `follows` WHERE `follower` = ? AND `followed` = ?;");
-				$stmt_getuser->bind_param('ii', $this->id, $userid);
-				$stmt_getuser->execute();
+				Database::singleton()->run(
+					"DELETE FROM `follows` WHERE `follower` = :this AND `followed` = :other",
+					[
+						":this" => $this->id,
+						":other" => $user->id
+					]
+				);
 			}
 		}
 
-		function isFollowing(User|int $user): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-
-			$stmt_getuser = $con->prepare("SELECT * FROM `follows` WHERE `follower` = ? AND `followed` = ?;");
-			$stmt_getuser->bind_param('ii', $this->id, $userid);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
-
-			return $result->num_rows != 0;
+		function isFollowing(User $user): bool {
+			return Database::singleton()->run(
+				"SELECT * FROM `follows` WHERE `follower` = :this AND `followed` = :other",
+				[
+					":this" => $this->id,
+					":other" => $user->id
+				]
+			)->rowCount() != 0;
 		}
 
-		function friend(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
+		function friend(User $user) {
+			$db = Database::singleton();
+
+			if($user->isBanned()) {
+				$this->unfriend($user);
+				return;
 			}
 
 			if(!$this->isFriendsWith($user) && !$this->isPendingFriendsReq($user) && !$this->isIncomingFriendsReq($user)) {
-				$stmt_addfriend = $con->prepare("INSERT INTO `friends`(`sender`, `reciever`) VALUES (?,?)");
-				$stmt_addfriend->bind_param('ii', $this->id, $userid);
-				$stmt_addfriend->execute();
+				$db->run(
+					"INSERT INTO `friends`(`sender`, `reciever`) VALUES (:this, :other)",
+					[
+						":this" => $this->id,
+						":other" => $user->id
+					]
+				);
 			} else if($this->isIncomingFriendsReq($user)) {
-				$stmt_addfriend = $con->prepare("UPDATE `friends` SET `status`= 1 WHERE `reciever` = ? AND `sender` = ?;");
-				$stmt_addfriend->bind_param('ii', $this->id, $userid);
-				$stmt_addfriend->execute();
+				$db->run(
+					"UPDATE `friends` SET `status`= 1 WHERE `reciever` = :this AND `sender` = :other",
+					[
+						":this" => $this->id,
+						":other" => $user->id
+					]
+				);
 			} else {
 				$this->unfriend($user);
 			}
 		}
 
-		function unfriend(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-
-			if($this->isPendingFriendsReq($user) || $this->isIncomingFriendsReq($user) || $this->isFriendsWith($user)) {
-				$stmt_getuser = $con->prepare("DELETE FROM `friends` WHERE (`reciever` = ? AND `sender` = ?)");
-				$stmt_getuser->bind_param('ii', $this->id, $userid);
-				$stmt_getuser->execute();
-
-				$stmt_getuser = $con->prepare("DELETE FROM `friends` WHERE (`sender` = ? AND `reciever` = ?)");
-				$stmt_getuser->bind_param('ii', $this->id, $userid);
-				$stmt_getuser->execute();
+		function unfriend(User $user) {
+			if($this->isPendingFriendsReq($user) || $this->isIncomingFriendsReq($user) || $this->isFriendsWith($user) || $user->isBanned()) {
+				Database::singleton()->run(
+					"DELETE FROM `friends` WHERE (`sender` = :this AND `reciever` = :other) OR (`reciever` = :this AND `sender` = :other)",
+					[
+						":this" => $this->id,
+						":other" => $user->id
+					]
+				);
 			}
 		}
 
-		function isPendingFriendsReq(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-
-			$stmt_getuser = $con->prepare("SELECT * FROM `friends` WHERE `sender` = ? AND `reciever` = ? AND `status` = 0;");
-			$stmt_getuser->bind_param('ii', $this->id, $userid);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
-
-			return $result->num_rows != 0;
+		function isPendingFriendsReq(User $user) {
+			return Database::singleton()->run(
+				"SELECT * FROM `friends` WHERE `sender` = :this AND `reciever` = :other AND `status` = 0;",
+				[
+					":this" => $this->id,
+					":other" => $user->id
+				]
+			)->rowCount() != 0;
 		}
 
-		function isIncomingFriendsReq(User|int $user) {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-
-			$stmt_getuser = $con->prepare("SELECT * FROM `friends` WHERE `reciever` = ? AND `sender` = ? AND `status` = 0;");
-			$stmt_getuser->bind_param('ii', $this->id, $userid);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
-
-			return $result->num_rows != 0;
+		function isIncomingFriendsReq(User $user) {
+			return Database::singleton()->run(
+				"SELECT * FROM `friends` WHERE `reciever` = :this AND `sender` = :other AND `status` = 0;",
+				[
+					":this" => $this->id,
+					":other" => $user->id
+				]
+			)->rowCount() != 0;
 		}
 
-		function isFriendsWith(User|int $user): bool {
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$userid = $user;
-			if($user instanceof User) {
-				$userid = $user->id;
-			}
-
-			$stmt_getuser = $con->prepare("SELECT * FROM `friends` WHERE ((`reciever` = ? AND `sender` = ?) OR (`sender` = ? AND `reciever` = ?)) AND `status` = 1;");
-			$stmt_getuser->bind_param('iiii', $this->id, $userid, $this->id, $userid);
-			$stmt_getuser->execute();
-			$result = $stmt_getuser->get_result();
-
-			return $result->num_rows != 0;
+		function isFriendsWith(User $user): bool {
+			return Database::singleton()->run(
+				"SELECT * FROM `friends` WHERE ((`reciever` = :this AND `sender` = :other) OR (`sender` = :this AND `reciever` = :other)) AND `status` = 1;",
+				[
+					":this" => $this->id,
+					":other" => $user->id
+				]
+			)->rowCount() != 0;
 		}
 
 		function updateBio(string $bio): array {
@@ -1003,6 +968,7 @@
 				$offset = -3600; //prod
 
 				// lord save me what the fuck is this
+				// what the fuck is this
 				$difference = (time()-($this->last_update->getTimestamp()+$this->last_update->getOffset()+$offset));
 
 				$calculated_time = 30 - $difference; 
@@ -1017,10 +983,13 @@
 					return ["error"=> true, "reason" => "Status was too long! (1000 characters maximum)"];
 				}
 
-				include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-				$stmt = $con->prepare('UPDATE `users` SET `blurb` = ?, `lastprofileupdate` = now() WHERE `id` = ?;');
-				$stmt -> bind_param('si',  $bio_content, $this->id);
-				$stmt -> execute();
+				Database::singleton()->run(
+					"UPDATE `users` SET `blurb` = :blurb, `lastprofileupdate` = now() WHERE `id` = :id",
+					[
+						":blurb" => $bio_content,
+						":id" => $this->id
+					]
+				);
 
 				return ["error" => false];
 			} else {
@@ -1033,12 +1002,14 @@
 			if($asset instanceof Asset) {
 				$assetid = $asset->id;
 			}
-			include $_SERVER["DOCUMENT_ROOT"]."/private/connection.php";
-			$stmt = $con->prepare('SELECT * FROM `transactions` WHERE `userid` = ? AND `asset` = ?;');
-			$stmt -> bind_param('ii', $this->id, $assetid);
-			$stmt -> execute();
 
-			return $stmt->get_result()->num_rows != 0;
+			return Database::singleton()->run(
+				"SELECT * FROM `transactions` WHERE `userid` = :user AND `asset` = :asset",
+				[
+					":user" => $this->id,
+					":asset" => $assetid
+				]
+			)->rowCount() != 0;
 		}
 
 		function isAdmin(): bool {
@@ -1150,11 +1121,10 @@
 							imagepng($image, $_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png", 9);
 
 							if(!$this->setprofilepicture) {
-								include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-								$stmt_updateuser = $con->prepare("UPDATE `users` SET `setprofilepicture` = 1 WHERE `id` = ?;");
-								$stmt_updateuser->bind_param("i", $this->id);
-								$stmt_updateuser->execute();
+								Database::singleton()->run(
+									"UPDATE `users` SET `setprofilepicture` = 1 WHERE `id` = :user",
+									[ ":user" => $this->id ]
+								);
 							}
 
 							return ["error" => false];
@@ -1169,11 +1139,10 @@
 							move_uploaded_file($file['tmp_name'], $_SERVER['DOCUMENT_ROOT']."/../users/profile_".$this->id.".png");
 
 							if(!$this->setprofilepicture) {
-								include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-								$stmt_updateuser = $con->prepare("UPDATE `users` SET `setprofilepicture` = 1 WHERE `id` = ?;");
-								$stmt_updateuser->bind_param("i", $this->id);
-								$stmt_updateuser->execute();
+								Database::singleton()->run(
+									"UPDATE `users` SET `setprofilepicture` = 1 WHERE `id` = :user",
+									[ ":user" => $this->id ]
+								);
 							}
 
 							return ["error" => false];
@@ -1208,11 +1177,10 @@
 					unlink($_SERVER['DOCUMENT_ROOT']."/../users/profile_{$this->id}.png");
 				}
 
-				include $_SERVER['DOCUMENT_ROOT']."/private/connection.php";
-
-				$stmt_updateuser = $con->prepare("UPDATE `users` SET `setprofilepicture` = 0 WHERE `id` = ?;");
-				$stmt_updateuser->bind_param("i", $this->id);
-				$stmt_updateuser->execute();
+				Database::singleton()->run(
+					"UPDATE `users` SET `setprofilepicture` = 0 WHERE `id` = :user",
+					[ ":user" => $this->id ]
+				);
 			}
 		}
 
