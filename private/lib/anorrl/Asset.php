@@ -318,7 +318,7 @@
 			}
 
 			return Database::singleton()->run(
-				"SELECT `assetid` FROM `favourites` WHERE `assetid` = ? AND `userid` = ?;",
+				"SELECT `assetid` FROM `favourites` WHERE `assetid` = :asset AND `userid` = :user",
 				[
 					":asset" => $this->id,
 					":user" => $userid
