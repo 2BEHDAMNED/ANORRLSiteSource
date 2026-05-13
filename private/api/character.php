@@ -197,7 +197,6 @@ use anorrl\User;
 						$pre_total_pages += 0.5;
 					}
 
-
 					$total_pages = round($pre_total_pages);
 
 					if($total_pages < 1) {
@@ -228,9 +227,9 @@ use anorrl\User;
 						}
 					}
 					die(json_encode([
-						"assets" => $assets_raw, "page" => $page,
-						"total_pages" => $total_pages,
-						"bullshit" => $pre_total_pages
+						"assets" => $assets_raw,
+						"page" => $page,
+						"total_pages" => $total_pages
 					]));
 				} else {
 					die(json_encode(["assets" => [], "page" => 1, "total_pages" => 1, "comment"=> "Hi, outfits haven't been added yet (congrats on finding this lol)"]));

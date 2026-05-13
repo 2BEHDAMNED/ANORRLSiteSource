@@ -85,7 +85,7 @@
 	route('GET|POST', '/vandals', '/private/views/vandals.php');
 	route('GET|POST', '/edit', '/private/views/edit.php');
 	
-	route('GET|POST', '/create/[i:placeId]/badge', '/private/views/create_badge.php');
+	route('GET|POST', '/create/[i:placeId]/[*:type]', '/private/views/create_badge.php');
 	route('GET|POST', '/create/[*:type]', '/private/views/create.php');
 	route('GET|POST', '/create/', '/private/views/create.php');
 	route('GET|POST', '/create', '/private/views/create.php');
@@ -154,6 +154,7 @@
 	route_api('GET|POST', 'stuff');
 	route_api('GET|POST', 'ticketer');
 	route_api('GET|POST', 'user');
+	route_api('GET|POST', 'placestuff');
 
 	route_api('GET|POST', 'gameservers/close');
 	route_api('GET|POST', 'gameservers/removeplayer');

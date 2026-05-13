@@ -47,7 +47,7 @@
 							$contents = file_get_contents($_SERVER['DOCUMENT_ROOT']."/public/images/unavailable.png");
 						}
 					} else {
-						if(count($asset->getRelatedAssets()) != 0 && ($asset->type == AssetType::DECAL || $asset->type == AssetType::FACE) || $asset->type == AssetType::IMAGE) {
+						if(count($asset->getRelatedAssets()) != 0 && ($asset->type == AssetType::DECAL || $asset->type == AssetType::FACE) || $asset->type == AssetType::IMAGE|| $asset->type == AssetType::BADGE) {
 							if(count($asset->getRelatedAssets()) == 1 && $asset->getRelatedAssets()[0]->type == AssetType::IMAGE && ($asset->type == AssetType::DECAL || $asset->type == AssetType::FACE)) {
 								$thumbsmd5hash = $asset->getRelatedAssets()[0]->getLatestVersionDetails()->md5sig;
 							}

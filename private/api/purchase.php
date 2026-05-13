@@ -1,5 +1,6 @@
 <?php
 	use anorrl\Asset;
+	use anorrl\enums\AssetType;
 	
 	header("Content-Type: application/json");
 
@@ -11,7 +12,8 @@
 	if(!$user->isBanned() && isset($_POST['asset_id'])) {
 		$asset = Asset::FromID(intval($_POST['asset_id']));
 
-		if(!$asset)
+		// nuh uh no badge buying for you!
+		if(!$asset || $asset && $asset->type == AssetType::BADGE)
 			die(json_encode(["error" => true, "message" => "Invalid purchase method."]));
 		
 		die(json_encode($asset->purchase(/*$type, */$user)));

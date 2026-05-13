@@ -56,6 +56,7 @@
 				AssetType::SHIRT => true,
 				AssetType::PANTS => true,
 				AssetType::FACE => true,
+				AssetType::BADGE => true,
 				default => false,
 			};
 		}

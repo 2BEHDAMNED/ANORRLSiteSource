@@ -1,21 +1,27 @@
 <?php
 	header("Content-Type: application/json");
 
+	use anorrl\Place;
 	use anorrl\enums\AssetType;
 
 	$user = SESSION ? SESSION->user : null;
 
 	if($user != null) {
-
-		
-		$type = AssetType::HAT->ordinal();
-		if(isset($_GET['c'])) {
-			if($_GET['c'] != "body") {
-				$type = intval($_GET['c']);
-			} else {
-				$type = AssetType::BODYPARTS->ordinal();
-			}
+		if(!isset($_GET['i'])) {
+			die(json_encode(["error" => true, "reason" => "No place given."]));
 		}
+
+		$place = Place::FromID(intval($_GET['i']));
+
+		if(!$place || ($place && !$place->isOwner($user))) {
+			die(json_encode(["error" => true, "reason" => "No place given."]));
+		}
+		
+		$type = AssetType::BADGE->ordinal();
+		if(isset($_GET['c'])) {
+			$type = intval($_GET['c']);
+		}
+
 		$page = 1;
 		if(isset($_GET['p'])) {
 			$page = intval($_GET['p']);
@@ -28,22 +34,28 @@
 		}
 
 		if($page < 1) {
-			die(header("Location: /api/stuff?c=$type&p=1"));
+			die(header("Location: /api/placestuff?c=$type&p=1"));
 		}
 
-		$showcreatoronly = false;
-
-		if(isset($_GET['showcreatoronly'])) {
-			$showcreatoronly = true;
+		$asset_type = AssetType::index($type);
+		if(!$asset_type) {
+			$asset_type = AssetType::BADGE;
 		}
 
-		$total_pages = floor($user->getOwnedAssetsCount(AssetType::index($type), $query, $showcreatoronly)/12)+1;
+		$total_pages = 1;
+		$asset = [];
+		
+		if($asset_type == AssetType::BADGE) {
+			$total_pages = floor(count($place->getBadges())/12)+1;
+		}
 
 		if($total_pages < $page) {
-			die(header("Location: /api/stuff?c=$type&p=1&q=$query"));
+			die(header("Location: /api/placestuff?c=$type&p=1&q=$query&i=$"));
 		}
 
-		$assets = $user->getOwnedAssets(AssetType::index($type), $query, $showcreatoronly, true, [], $page, 12);
+		if($asset_type == AssetType::BADGE) {
+			$assets = $place->getBadges($page, 12);
+		}
 
 		$assets_raw = [];
 

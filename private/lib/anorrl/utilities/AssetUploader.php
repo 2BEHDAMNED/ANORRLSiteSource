@@ -223,7 +223,8 @@
 
 			$asset = Asset::FromID($id);
 
-			TransactionUtils::CommitTransaction($user, $asset);
+			if($asset->type != AssetType::BADGE)
+				TransactionUtils::CommitTransaction($user, $asset);
 
 			if($public && $on_sale && !$hidden) {
 				
@@ -609,11 +610,6 @@
 
 									imagesavealpha($original_image, true);
 
-									$image = imagecreatetruecolor($width, $height);
-									$bga = imagecolorallocatealpha($image, 0, 0, 0, 127);
-									imagefill($image, 0, 0, $bga);
-									imagecopy($image, $original_image, 0, 0, 0, 0, $width, $height);
-									imagesavealpha($image, true);
 
 									if($width > $height) {
 										$new_width = 420;
@@ -626,7 +622,10 @@
 										$new_height = 420;
 									}
 
-									$resultimage = imagescale($image, $new_width, $new_height);
+									$resultimage = imagecreatetruecolor($width, $height);
+									$bga = imagecolorallocatealpha($resultimage, 0, 0, 0, 127);
+									imagefill($resultimage, 0, 0, $bga);
+									imagecopy($resultimage, $original_image, 0, 0, 0, 0, $width, $height);
 									imagesavealpha($resultimage, true);
 
 									ob_start();
@@ -714,16 +713,60 @@
 									imagepng($resizedimage);
 									$data = ob_get_contents();
 									ob_end_clean();
+								} else if($type == AssetType::BADGE) {
+									$original_image = imagecreatefromstring($data);
+									if(!$original_image) {
+										return INVALIDFILE; 
+									}
+
+									$width = imagesx($original_image);
+									$height = imagesy($original_image);
+									$size = $width;
+									if($width != $height) {
+										$size = $width > $height ? $width : $height;
+									}
+
+									if($size > 420) {
+										$size = 420;
+									}
+
+									$image = imagescale($original_image, $size, $size);
+									$w = imagesx($image);
+									$h = imagesy($image);
+									
+									// https://stackoverflow.com/a/36958441
+									$newpic = imagecreatetruecolor($w,$h);
+									imagealphablending($newpic,false);
+									$transparent = imagecolorallocatealpha($newpic, 0, 0, 0, 127);
+									$r=$w/2;
+									for($x=0;$x<$w;$x++) {
+										for($y=0;$y<$h;$y++){
+											$c = imagecolorat($image,$x,$y);
+											$_x = $x - $w/2;
+											$_y = $y - $h/2;
+											if((($_x*$_x) + ($_y*$_y)) < ($r*$r)){
+												imagesetpixel($newpic,$x,$y,$c);
+											}else{
+												imagesetpixel($newpic,$x,$y,$transparent);
+											}
+										}
+									}
+									imagesavealpha($newpic, true);
+
+									ob_start();
+									imagepng($newpic);
+									$data = ob_get_contents();
+									ob_end_clean();
 								}
 
 
 
-								$result = self::CommitAsset($data, AssetType::IMAGE, $name, "", false, false, $comments_enabled, $user);
+								$result = self::CommitAsset($data, $type == AssetType::BADGE ? $type : AssetType::IMAGE, $name, "", false, false, $comments_enabled, $user);
 								if($result["error"]) {
 									return $result;
 								}
 								
-								if($type != AssetType::IMAGE) {
+								if($type != AssetType::IMAGE && $type != AssetType::BADGE) {
 									$image_id = $result['id'];
 
 									$data = match($type) {
