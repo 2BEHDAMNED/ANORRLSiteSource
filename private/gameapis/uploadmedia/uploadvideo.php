@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>ANORRL</title>
-		<link rel="stylesheet" type="text/css" href="/public/css/new/main.css?v=3"></link>
+		<link rel="stylesheet" type="text/css" href="/public/css/new/main.css?v=5"></link>
 		<link rel="stylesheet" type="text/css" href="/public/css/new/uploadmedia.css"></link>
 	</head>
 	<body class="InGamePopup">

@@ -81,7 +81,7 @@
 	<head>
 		<title>Publish Place - ANORRL</title>
 		<link rel="icon" type="image/x-icon" href="/favicon.ico">
-		<link rel="stylesheet" href="/public/css/new/main.css?v=3">
+		<link rel="stylesheet" href="/public/css/new/main.css?v=5">
 		<link rel="stylesheet" href="/public/css/new/publish.css">
 		<script src="/public/js/core/jquery.js"></script>
 		<script src="/public/js/main.js?t=1776250887"></script>
