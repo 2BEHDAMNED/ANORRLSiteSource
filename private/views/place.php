@@ -451,6 +451,7 @@
 					background: #111;
 				}
 			</style>
+			<?php if(count($place->getBadges()) != 0): ?>
 			<table id="Badges">
 				<?php foreach($place->getBadges() as $badge): ?>
 				<tr>
@@ -484,6 +485,9 @@
 						<div>0</div>-->
 				<?php endforeach ?>
 			</table>
+			<?php else: ?>
+				<div style="font-size: 14px;margin: 25px 10px;text-align: center;">This place has no badges! Find one that does I guess...</div>
+			<?php endif ?>
 		</div>
 		<div id="InfoBox" content="Servers" style="display:none">
 			<div class="Window" style="margin: 0 auto; width: 100%">
