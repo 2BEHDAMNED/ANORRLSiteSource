@@ -63,12 +63,19 @@
 			}
 		}
 		
-		if(AssetUtils::GetFilteredCount($catalog_filter, AssetType::PLACE, $query) <= 9) {
-			$total_pages = 1;
-		} else {
-			$total_pages = floor((AssetUtils::GetFilteredCount($catalog_filter, AssetType::PLACE, $query)/9) + 1);
+		$pre_total_pages = AssetUtils::GetFilteredCount($catalog_filter, AssetType::PLACE, $query)/9;
 
-			if(AssetUtils::GetFilteredCount($catalog_filter, AssetType::PLACE, $query, $total_pages, 9) == 0) {
+		if($pre_total_pages < 0.5) {
+			$pre_total_pages += 0.5;
+		}
+
+		$total_pages = floor($pre_total_pages);
+
+		if($total_pages == 0) {
+			$total_pages++;
+		}
+		else {
+			if(AssetUtils::GetFilteredCount($catalog_filter, AssetType::PLACE, $query, $total_pages, 12) == 0) {
 				$total_pages--;
 			}
 		}

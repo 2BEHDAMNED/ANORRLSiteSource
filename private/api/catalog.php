@@ -35,25 +35,23 @@
 	$catalog_filter = CatalogFilter::index($filter);
 	$asset_type = AssetType::index($type);
 
-	$raw_count = AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query);
+	$pre_total_pages = AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query)/12;
 
-	$total_pages = floor(($raw_count/12) + 0.5);
-
-	if($raw_count > 0 && $total_pages == 0) {
-		$total_pages++;
-	} else {
-		
+	if($pre_total_pages < 0.5) {
+		$pre_total_pages += 0.5;
 	}
 
+	$total_pages = floor($pre_total_pages);
+
 	if($total_pages == 0) {
-		$total_pages++; //idfk dude
-	} else {
+		$total_pages++;
+	}
+	
+	else {
 		if(AssetUtils::GetFilteredCount($catalog_filter, $asset_type, $query, $total_pages, 12) == 0) {
 			$total_pages--;
 		}
 	}
-
-	
 
 	if($total_pages < $page && $page != 1) {
 		die(header("Location: /api/catalog?c=$type&q=$query&p=1"));

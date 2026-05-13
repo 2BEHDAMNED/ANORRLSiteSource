@@ -190,11 +190,16 @@ use anorrl\User;
 				if($_GET['c'] != "outfits") {
 					$wearing_array = $user->getWearingArray();
 
-					$total_assets = $user->getOwnedAssetsCount(AssetType::index($type), "", false, true, $wearing_array);
-					$total_pages = floor($total_assets/8)+1;
+					$pre_total_pages = $user->getOwnedAssetsCount(AssetType::index($type), "", false, true, $wearing_array)/8;
 
-					if(count($user->getOwnedAssets(AssetType::index($type), "", false, true, $wearing_array, $total_pages, 8)) == 0 && $page != 1) {
-						$total_pages--;
+					if($pre_total_pages < 0.5) {
+						$pre_total_pages += 0.5;
+					}
+
+					$total_pages = floor($pre_total_pages);
+
+					if($total_pages < 1) {
+						$total_pages++;
 					}
 
 					if($total_pages < $page) {
@@ -234,11 +239,23 @@ use anorrl\User;
 				
 				$wearing_array = $user->getWearingArray();
 				$all_assets = $user->getOwnedAssets($category, $query, false, true, $wearing_array, $page, 8);
-				$total_pages = floor($user->getOwnedAssetsCount($category, $query, false, true, $wearing_array)/8);
+
+				$pre_total_pages = $user->getOwnedAssetsCount($category, $query, false, true, $wearing_array)/8;
+
+				if($pre_total_pages < 0.5) {
+					$pre_total_pages += 0.5;
+				}
+
+				$total_pages = floor($pre_total_pages);
+				
+				if($total_pages < 1) {
+					$total_pages++;
+				}
+
 				$assets_raw = [];
 
 				foreach($all_assets as $asset) {
-					$assets_raw = [
+					$assets_raw[] = [
 						"id" => $asset->id,
 						"name" => $asset->name,
 						"creator" => [
