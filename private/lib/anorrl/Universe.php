@@ -210,7 +210,7 @@
 				$past_editors = [];
 
 				foreach($rows as $row) {
-					if(in_array($past_editors, $row->userid))
+					if(in_array($row->userid, $past_editors))
 						continue;
 
 					$user = User::FromID($row->userid);
