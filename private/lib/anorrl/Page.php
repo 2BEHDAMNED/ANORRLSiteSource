@@ -3,6 +3,7 @@
 	namespace anorrl;
 
 	use anorrl\UserSettings;
+	use anorrl\utilities\ClientDetector;
 
 	class Page {
 
@@ -17,6 +18,9 @@
 		private UserSettings $settings;
 
 		function __construct(string $title, string|null $internal_name = null) {
+			if(ClientDetector::IsAClient() && $title != "Login") // assume studio
+				die(set_header("Location", "/ide/projects"));
+
 			$this->title = $title;
 			if(!$internal_name)
 				$this->internal_name = $title;

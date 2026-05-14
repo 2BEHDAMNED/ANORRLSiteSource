@@ -190,10 +190,6 @@ hr {
 	font-size: 12px
 }
 
-.Server #PlayersBox {
-
-}
-
 .Server #PlayersBox #Player {
 	float:left;
 	width: 64px;
@@ -253,4 +249,106 @@ hr {
 	font-weight: bold;
 	margin: 2px;
 	letter-spacing: 2px;
+}
+
+#Badges {
+	width: 100%;
+	border: 2px solid black;
+	background: #1a1a1a;
+}
+
+#Badges table {
+	margin-top: 30px;
+	width: 100%;
+}
+
+#Badges td {
+	vertical-align: top;
+}
+
+#Badges img {
+	border: 2px solid black;
+	background: #111;
+}
+
+#Badges .BadgeDesc {
+	border: 2px solid black;
+	padding: 10px;
+	height: 78px;
+	overflow: auto;
+	background: #111;
+}
+
+#GameButtons {
+	margin-top: 35px;
+}
+
+#UserCard {
+	position: relative;
+}
+
+#OptionsClicker {
+	padding: 2px 4px;
+	border: 2px solid black;
+	background: black;
+	text-decoration: none;
+	color: #ffa634;
+	cursor:pointer;
+}
+
+#OptionsToolbar[enabled] #OptionsClicker {
+	background: #2a2a2a;
+}
+
+#OptionsClicker:hover {
+	background: #111111;
+}
+
+#OptionsClicker:hover {
+	text-decoration: underline;
+	color: #ffc63f;
+}
+
+#OptionsToolbar {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	font-weight: bold;
+}
+
+#OptionsMenu {
+	position: absolute;
+	left: 30px;
+	top: 0px;
+	background: #1a1a1a;
+	border: 2px solid black;
+	padding: 5px;
+	display: none;
+}
+
+#OptionsToolbar[enabled] #OptionsMenu {
+	display: block;
+}
+
+#OptionsMenu .Row img {
+	position: absolute;
+	pointer-events: none;
+}
+
+#OptionsMenu .Row a {
+	text-align: left;
+	padding-left: 25px;
+	width: 155px;
+	display:block;
+}
+
+#OptionsMenu .Row {
+	width: 155px;
+	text-align: left;
+	padding: 2px;
+	position: relative;
+}
+
+#OptionsMenu .Row:hover {
+	background: #3a3a3a;
 }

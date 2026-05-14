@@ -72,7 +72,7 @@
 	
 	$page->addStylesheet("/css/new/comments.css?v=1");
 	$page->addStylesheet("/css/new/item/item.css?v=2");
-	$page->addStylesheet("/css/new/item/place.css?v=4");
+	$page->addStylesheet("/css/new/item/place.css?v=5");
 	$page->addStylesheet("/css/new/my/home.css?v=2");
 	$page->addStylesheet("/css/new/window.css");
 	$page->addStylesheet("/css/new/placelauncher.css?");
@@ -177,6 +177,14 @@
 			});
 		}
 	}
+
+	function toggleToolbar() {
+		if($("#OptionsToolbar").attr("enabled") == undefined) {
+			$("#OptionsToolbar").attr("enabled", "");
+		} else {
+			$("#OptionsToolbar").removeAttr("enabled");
+		}
+	}
 	<?php endif ?>
 </script>
 
@@ -223,91 +231,13 @@
 		</div>
 		<div id="Information">
 			<div id="UserCard">
-				<style>
-					#UserCard {
-						position: relative;
-					}
-					#OptionsClicker {
-						padding: 2px 4px;
-						border: 2px solid black;
-						background: black;
-						text-decoration: none;
-						color: #ffa634;
-						cursor:pointer;
-					}
-
-					#OptionsToolbar[enabled] #OptionsClicker {
-						background: #2a2a2a;
-					}
-
-					#OptionsClicker:hover {
-						background: #111111;
-					}
-
-					#OptionsClicker:hover {
-						text-decoration: underline;
-						color: #ffc63f;
-					}
-
-					#OptionsToolbar {
-						position: absolute;
-						top: 5px;
-						right: 5px;
-						font-weight: bold;
-					}
-
-					#OptionsMenu {
-						position: absolute;
-						left: 30px;
-						top: 0px;
-						background: #1a1a1a;
-						border: 2px solid black;
-						padding: 5px;
-						display: none;
-					}
-					
-					#OptionsToolbar[enabled] #OptionsMenu {
-						display: block;
-					}
-
-					#OptionsMenu .Row img {
-						position: absolute;
-						pointer-events: none;
-					}
-
-					#OptionsMenu .Row a {
-						text-align: left;
-						padding-left: 25px;
-						width: 155px;
-						display:block;
-					}
-
-					#OptionsMenu .Row {
-						width: 155px;
-						text-align: left;
-						padding: 2px;
-						position: relative;
-					}
-
-					#OptionsMenu .Row:hover {
-						background: #3a3a3a;
-					}
-				</style>
-				<script>
-					function toggleToolbar() {
-						if($("#OptionsToolbar").attr("enabled") == undefined) {
-							$("#OptionsToolbar").attr("enabled", "");
-						} else {
-							$("#OptionsToolbar").removeAttr("enabled");
-						}
-					}
-				</script>
+				<?php if($is_creator): ?>
 				<div id="OptionsToolbar">
 					<button id="OptionsClicker" onclick="toggleToolbar()">
 						<img src="/public/images/icons/cog.png">
 					</button>
 					<div id="OptionsMenu">
-						<?php if($is_creator): ?>
+						
 						<div class="Row">
 							<img src="/public/images/icons/wrench_orange.png">
 							<a href="/edit?id=<?= $place->id ?>">Configure</a>
@@ -326,9 +256,10 @@
 							<img src="/public/images/icons/delete.png">
 							<a href="javascript:Delete()">Delete this asset</a>
 						</div>
-						<?php endif ?>
+						
 					</div>
 				</div>
+				<?php endif ?>
 				<a href="/users/<?= $place->creator->id ?>/profile"><img src="<?= $place->creator->getThumbsUrlService("player", 110)?>" style="width: 110px;display:block;margin:0 auto;"></a>
 				<div id="AssetInfoStuff">
 					<span>Created by <a href="/users/<?= $place->creator->id ?>/profile"><?= $place_creator_name ?></a></span>
@@ -338,11 +269,6 @@
 					<?php endif ?>
 				</div>
 				<hr>
-				<style>
-					#GameButtons {
-						margin-top: 35px;
-					}
-				</style>
 				<div id="GameButtons" >
 					<?php if($place->isUsable()): ?>
 						<button class="PlaceButton" onclick="ANORRL.PlaceLauncher.LetsJoinAndPlay(<?= $id ?>)" Play></button>
@@ -422,35 +348,6 @@
 		<div id="InfoBox" content="Badges" style="display:none">
 			<b>Badges <?php if($place->isOwner($user, true)): ?> <a href="/create/<?= $id ?>/badge">[[ Create ]]</a><?php endif ?></b>
 			<hr>
-			<style>
-				#Badges {
-					width: 100%;
-					border: 2px solid black;
-					background: #1a1a1a;
-				}
-
-				#Badges table {
-					margin-top: 30px;
-					width: 100%;
-				}
-
-				#Badges td {
-					vertical-align: top;
-				}
-
-				#Badges img {
-					border: 2px solid black;
-					background #111;
-				}
-
-				#Badges .BadgeDesc {
-					border: 2px solid black;
-					padding: 10px;
-					height: 78px;
-					overflow: auto;
-					background: #111;
-				}
-			</style>
 			<?php if(count($place->getBadges()) != 0): ?>
 			<table id="Badges">
 				<?php foreach($place->getBadges() as $badge): ?>
@@ -466,23 +363,19 @@
 						<table style="border: 2px solid black; padding: 21px; width: 200px; background: #111;">
 							<tr>
 								<td>Rarity</td>
-								<td>0%</td>
+								<td><?= $badge->getRarity() ?>%</td>
 							</tr>
 							<tr>
 								<td>Won Yesterday</td>
-								<td>0</td>
+								<td><?= $badge->getWonYesterdayTimes() ?></td>
 							</tr>
 							<tr>
 								<td>Won Ever</td>
-								<td>0</td>
+								<td><?= $badge->getWonEverTimes() ?></td>
 							</tr>
 						</table>
 					</td>
 				</tr>
-				<!-- <div>W</div>
-						<div>Won Ever</div>
-						<div>0</div>
-						<div>0</div>-->
 				<?php endforeach ?>
 			</table>
 			<?php else: ?>

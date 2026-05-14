@@ -207,8 +207,12 @@
 				)->fetchAll(\PDO::FETCH_OBJ);
 				
 				$editors = [];
+				$past_editors = [];
 
 				foreach($rows as $row) {
+					if(in_array($past_editors, $row->userid))
+						continue;
+
 					$user = User::FromID($row->userid);
 
 					if(!$user)
@@ -218,6 +222,8 @@
 						$editors[] = $user;
 					else
 						$this->removeCloudEditor($user);
+
+					array_push($past_editors, $row->userid);
 				}
 
 				return $editors;

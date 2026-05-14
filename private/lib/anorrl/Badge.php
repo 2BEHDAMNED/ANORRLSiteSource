@@ -32,6 +32,20 @@
 			return !$this->purchase($user)["error"];
 		}
 
+		// Stubs \\
+
+		function getRarity() {
+			return 0.0;
+		}
+
+		function getWonYesterdayTimes() {
+			return 0;
+		}
+
+		function getWonEverTimes() {
+			return 0;
+		}
+
 	}
 
 ?>
