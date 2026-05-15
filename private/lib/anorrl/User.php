@@ -75,15 +75,7 @@
 				[":name" => $name]
 			)->fetch(\PDO::FETCH_OBJ);
 
-			
-			$user = $row ? self::FromID($row->id) : null;
-
-			if($user) {
-				$user->updateOutfitHash(); // render maybe too idk
-			}
-
-			return $user;
-				
+			return $row ? self::FromID($row->id) : null;
 		}
 
 		/**

@@ -78,6 +78,7 @@
 				]
 			)->errorInfo()[0] == SQL_ALLOK) {
 				self::SetCookies($securitykey);
+				User::FromNamePercise($username)->updateOutfitHash();
 				return "success"; // todo return ["error" => false] bc what the fuck is this
 			}
 
