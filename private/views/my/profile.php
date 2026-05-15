@@ -102,9 +102,91 @@
 		}
 	})
 </script>
+<style>
+	#DetailsBox {
+		margin-top: 5px !important;
+	}
+</style>
 <?php if(isset($_SESSION['ANORRL$Update$ProfileError']) && $_SESSION['ANORRL$Update$ProfileError']): ?>
 <div class="ErrorTime" style="margin: 5px; border: 2px solid black;">Error: <?= $_SESSION['ANORRL$Update$ProfileResult'] ?></div>
 <?php endif ?>
+<div class="FormBox">
+	<div id="DetailsBox">
+		<h3>Your Settings</h3>
+		<div id="FormStuff">
+			<form method="POST" style="float: left;margin: 15px;margin-top: 75px;">
+				<table width="200" >
+					<tr title="I love my random images, do you?">
+						<td>Random Images</td>
+						<td>
+							<input name="ANORRL$Update$Settings$RandomsEnabled" type="checkbox" <?php if($settings->randoms): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+					<tr title="Fatass Teto">
+						<td>Fatass Teto</td>
+						<td>
+							<input name="ANORRL$Update$Settings$TetoEnabled" type="checkbox" <?php if($settings->teto): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+					<tr id="Changes the punk font to a cleaner version">
+						<td>Accessibility</td>
+						<td>
+							<input name="ANORRL$Update$Settings$AccessibilityEnabled" type="checkbox" <?php if($settings->accessibility): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+					<tr title="Shows headshots instead of profile pictures when available.">
+						<td>Headshots</td>
+						<td>
+							<input name="ANORRL$Update$Settings$HeadshotsEnabled" type="checkbox" <?php if($settings->headshots): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+					<tr title="Night time!">
+						<td>Night Background</td>
+						<td>
+							<input name="ANORRL$Update$Settings$NightBGEnabled" type="checkbox" <?php if($settings->nightbg): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+					<tr title="Fun little splash screens!">
+						<td>Loading Screens</td>
+						<td>
+							<input name="ANORRL$Update$Settings$LoadingScreensEnabled" type="checkbox" <?php if($settings->loadingscreens): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+					<tr title="Do you want to hear other peoples' music? No? You're boring.">
+						<td>Profile Music</td>
+						<td>
+							<input name="ANORRL$Update$Settings$ProfileMusicEnabled" type="checkbox" <?php if($settings->profile_music): ?>checked<?php endif ?>>
+						</td>
+					</tr>
+				</table>
+				<div style="margin-top: 15px;">
+					<h3>Change Username</h3>
+					<textarea name="ANORRL$Update$Settings$Username" style="height:16px;resize:none;margin-top: 0px;text-align: center;width: 182px;"><?= $user->name ?></textarea>
+				</div>
+				<div style="margin-top: 15px;">
+					<input type="submit" value="Update" name="ANORRL$Update$Settings$Submit">
+				</div>
+			</form>
+			
+			<!-- Ew, when are you going to un-inline this -->
+			<form method="POST" style="width: 400px;float: right;" enctype="multipart/form-data">
+				<span style="display: block;margin-bottom: 10px;font-size: 10px;color: #999;font-style: italic;">Thanks gamma for the template and letting my ass scrutinise it :sob:</span>
+				<div style="width:294px;margin: 0 auto;">
+					<h4 style="margin: 0;width: 254px;">This what you look like right now...</h4>
+					<img style="width: 290px;border: 2px solid black;background: #1a1a1a;" src="<?= $user->getThumbsUrlService("profile", 290) ?>&nocompress">
+					<div class="FilePicker" style="display: block;margin-top: 10px;">
+						<label for="thumbfiles">Choose file</label>
+						<input id="thumbfiles" type="file" name="ANORRL$Update$Profile$Picture" accept="image/*">
+						<label id="thumbfilename">No file chosen</label>
+						<a href="javascript:RemovePicture()">Remove...</a>
+					</div>
+				</div>
+			</form>
+			<div style="clear:both"></div>
+			
+		</div>
+	</div>
+</div>
 <form method="POST" class="FormBox">
 	<div id="DetailsBox">
 		<h3>About yourself</h3>
@@ -116,7 +198,7 @@
 	</div>
 </form>
 <form method="POST" class="FormBox">
-	<div id="DetailsBox" style="margin-top: 5px;">
+	<div id="DetailsBox">
 		<h3>User Profile CSS</h3>
 		<div id="FormStuff">
 			<span>Ok so this is where you can change your profile stuff... have a go i guess?</span>
@@ -127,7 +209,7 @@
 </form>
 <?php if($settings->profile_music): ?>
 <form method="POST" class="FormBox">
-	<div id="DetailsBox" style="margin-top: 5px;">
+	<div id="DetailsBox">
 		<h3>Profile Music</h3>
 		<div id="FormStuff">
 			<span>Here you can input the id of a sound asset and it'll just play when someone views your profile ig</span>
@@ -139,83 +221,12 @@
 				</div>
 			</div>
 			<?php endif ?>
-			<textarea name="ANORRL$Update$Profile$BGM" style="height:16px;resize:none;margin-top: 0px;text-align: center"><?= $bgm ? $bgm->id : "" ?></textarea>
+			<textarea name="ANORRL$Update$Profile$BGM" style="height:16px;resize:none;margin-top: 10px;text-align: center"><?= $bgm ? $bgm->id : "" ?></textarea>
 			<input type="submit" value="Update" name="ANORRL$Update$Profile$BGM$Submit">
 		</div>
 	</div>
 </form>
 <?php endif ?>
-<form method="POST" class="FormBox">
-	<div id="DetailsBox" style="margin-top: 5px;">
-		<h3>Your Settings</h3>
-		<div id="FormStuff">
-			<table width="200" style="margin: 10px auto;">
-				<tr title="I love my random images, do you?">
-					<td>Random Images</td>
-					<td>
-						<input name="ANORRL$Update$Settings$RandomsEnabled" type="checkbox" <?php if($settings->randoms): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-				<tr title="Fatass Teto">
-					<td>Fatass Teto</td>
-					<td>
-						<input name="ANORRL$Update$Settings$TetoEnabled" type="checkbox" <?php if($settings->teto): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-				<tr id="Changes the punk font to a cleaner version">
-					<td>Accessibility</td>
-					<td>
-						<input name="ANORRL$Update$Settings$AccessibilityEnabled" type="checkbox" <?php if($settings->accessibility): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-				<tr title="Shows headshots instead of profile pictures when available.">
-					<td>Headshots</td>
-					<td>
-						<input name="ANORRL$Update$Settings$HeadshotsEnabled" type="checkbox" <?php if($settings->headshots): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-				<tr title="Night time!">
-					<td>Night Background</td>
-					<td>
-						<input name="ANORRL$Update$Settings$NightBGEnabled" type="checkbox" <?php if($settings->nightbg): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-				<tr title="Fun little splash screens!">
-					<td>Loading Screens</td>
-					<td>
-						<input name="ANORRL$Update$Settings$LoadingScreensEnabled" type="checkbox" <?php if($settings->loadingscreens): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-				<tr title="Do you want to hear other peoples' music? No? You're boring.">
-					<td>Profile Music</td>
-					<td>
-						<input name="ANORRL$Update$Settings$ProfileMusicEnabled" type="checkbox" <?php if($settings->profile_music): ?>checked<?php endif ?>>
-					</td>
-				</tr>
-			</table>
-
-			<input type="submit" value="Update" name="ANORRL$Update$Settings$Submit">
-		</div>
-	</div>
-</form>
-<form method="POST" class="FormBox" id="PictureForm" enctype="multipart/form-data">
-	<div id="DetailsBox" style="margin-top: 5px;">
-		<h3>Get a look!</h3>
-		<div id="FormStuff">
-			<span style="display: block;margin-bottom: 10px;font-size: 10px;color: #999;font-style: italic;">Thanks gamma for the template and letting my ass scrutinise it :sob:</span>
-			<div style="width:294px;margin: 0 auto;">
-				<h4 style="margin: 0;width: 254px;">This what you look like right now...</h4>
-				<img style="width: 290px;border: 2px solid black;background: #1a1a1a;" src="<?= $user->getThumbsUrlService("profile", 290) ?>&nocompress">
-				<div class="FilePicker" style="display: block;margin-top: 10px;">
-					<label for="thumbfiles">Choose file</label>
-					<input id="thumbfiles" type="file" name="ANORRL$Update$Profile$Picture" accept="image/*">
-					<label id="thumbfilename">No file chosen</label>
-					<a href="javascript:RemovePicture()">Remove...</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</form>
 <?php
 	$page->loadFooter();
 	unset($_SESSION['ANORRL$Update$ProfileError']);

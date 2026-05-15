@@ -61,7 +61,7 @@
 
 	$splash = new FileSplasher("didyouknow")->getRandomSplash();
 
-	$page = new Page($universe ? $universe->starting_place->name : "ANORRL Studio");
+	$page = new Page($universe ? $universe->starting_place->name : "ANORRL Studio", "ide/projects");
 	$page->clearAll();
 	$page->addScript("/js/core/jquery.js");
 	$page->addStylesheet("/css/new/my/places.css?v=1");
