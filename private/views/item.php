@@ -116,7 +116,7 @@
 		rendering = true;
 		if(window.confirm("Are you sure you want to render this asset?")) {
 			$("#RenderButton").html("Rendering...");
-			$.post( "/api/asset/render", { id: <?= $place->id ?> }).done(function( data ) {
+			$.post( "/api/asset/render", { id: <?= $asset->id ?> }).done(function( data ) {
 				if(data['error']) {
 					window.alert(data['reason']);
 				}
