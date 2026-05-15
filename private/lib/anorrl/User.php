@@ -79,9 +79,7 @@
 			$user = $row ? self::FromID($row->id) : null;
 
 			if($user) {
-				if($user->currentoutfitmd5 != $user->getCharacterAppearanceHash()) {
-					$user->updateOutfitHash(); // render maybe too idk
-				}
+				$user->updateOutfitHash(); // render maybe too idk
 			}
 
 			return $user;
