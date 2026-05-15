@@ -58,7 +58,7 @@
 		$user->resetProfilePicture();
 	}
 	
-	if(isset($_POST['ANORRL$Update$Settings$Submit'])) {
+	if(isset($_POST['ANORRL$Update$Settings$Submit']) && isset($_POST['ANORRL$Update$Settings$Username'])) {
 		$randoms = isset($_POST['ANORRL$Update$Settings$RandomsEnabled']);
 		$teto = isset($_POST['ANORRL$Update$Settings$TetoEnabled']);
 		$accessibility = isset($_POST['ANORRL$Update$Settings$AccessibilityEnabled']);
@@ -74,6 +74,13 @@
 		$settings->setNightBGEnabled($nightbg);
 		$settings->setLoadingScreensEnabled($loadingscreens);
 		$settings->setProfileMusicEnabled($profile_music);
+
+		$result = $user->updateUsername($_POST['ANORRL$Update$Settings$Username']);
+
+		if($result['error']) {
+			$_SESSION['ANORRL$Update$ProfileError'] = true;
+			$_SESSION['ANORRL$Update$ProfileResult'] = $result['reason'];
+		}
 
 		die(header("Location: /my/profile"));
 	}
@@ -161,7 +168,7 @@
 				</table>
 				<div style="margin-top: 15px;">
 					<h3>Change Username</h3>
-					<textarea name="ANORRL$Update$Settings$Username" style="height:16px;resize:none;margin-top: 0px;text-align: center;width: 182px;"><?= $user->name ?></textarea>
+					<textarea name="ANORRL$Update$Settings$Username" style="height:16px;resize:none;margin-top: 0px;text-align: center;width: 182px;" minlength="3" maxlength="20"><?= $user->name ?></textarea>
 				</div>
 				<div style="margin-top: 15px;">
 					<input type="submit" value="Update" name="ANORRL$Update$Settings$Submit">

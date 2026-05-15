@@ -1476,5 +1476,10 @@
 				$place->updateVisitCount();
 			}
 		}
+
+		function updateUsername(string $new_name) {
+			return ["error" => true, "reason" => "This function has NOT been implemented yet!"];
+
+		}
 	}
 ?>
