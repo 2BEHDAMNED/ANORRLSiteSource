@@ -51,5 +51,21 @@
 
 			$asset->updateSalesCount();
 		}
+
+		public static function UndoTransaction(User $user, Asset $asset) {
+			if($asset->isOwner($user, true))
+				return;
+			
+			Database::singleton()->run(
+				"DELETE FROM `transactions` WHERE `userid` = :uid AND `assetcreator` = :auid AND `asset` = :aid",
+				[
+					":uid"    => $user->id,
+					":auid"   => $asset->creator->id,
+					":aid"    => $asset->id,
+				]
+			);
+
+			$asset->updateSalesCount();
+		}
 	}
 ?>

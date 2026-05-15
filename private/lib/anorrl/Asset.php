@@ -148,6 +148,26 @@
 			return ["error" => false];
 		}
 
+		function removeFrom(User|null $user = null): array {
+			
+			if(!$user)
+				return ["error" => true, "reason" => "User not authorised to perform this action!"];
+			
+			if($this->type == AssetType::BADGE) {
+				return ["error" => false];
+			}
+			
+			if(!$user->owns($this))
+				return ["error" => true, "reason" => "You don't own this item!"];
+
+			if($this->isOwner($user, true))
+				return ["error" => true, "reason" => "Hang on a second you CREATED this."];
+
+			TransactionUtils::UndoTransaction($user, $this);
+
+			return ["error" => false];
+		}
+
 		function getFileContents(int $version = -1) {
 			if($version > 0) {
 				$asset_version = AssetVersion::GetVersionOf($this, $version);

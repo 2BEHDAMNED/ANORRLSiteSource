@@ -114,19 +114,31 @@
 		}
 
 		rendering = true;
-		window.alert("Committing render! (Press ok to continue)");
-		$("#RenderButton").html("Rendering...");
-		$.post( "/api/asset/render", { id: <?= $asset->id ?> }).done(function( data ) {
-			if(data['error']) {
-				window.alert(data['reason']);
-			}
-			window.location.reload();
-		});
+		if(window.confirm("Are you sure you want to render this asset?")) {
+			$("#RenderButton").html("Rendering...");
+			$.post( "/api/asset/render", { id: <?= $place->id ?> }).done(function( data ) {
+				if(data['error']) {
+					window.alert(data['reason']);
+				}
+				window.location.reload();
+			});
+		}
 	}
 	
 	function Delete() {
 		if(window.confirm("Are you sure you want to delete this??")) {
 			$.post( "/api/asset/delete", { id: <?= $asset->id ?> }).done(function( data ) {
+				if(data['error']) {
+					window.alert(data['reason']);
+				}
+				window.location.reload();
+			});
+		}
+	}
+
+	function Refund() {
+		if(window.confirm("Are you sure you want to remove this item from your inventory???")) {
+			$.post( "/api/asset/refund", { id: <?= $asset->id ?> }).done(function( data ) {
 				if(data['error']) {
 					window.alert(data['reason']);
 				}
@@ -275,6 +287,9 @@
 				<?php if(AssetTypeUtils::IsRenderable($asset->type)): ?><a href="javascript:Render()" id="RenderButton">Render this asset</a><?php endif?>
 				<?php endif ?>
 				<a href="javascript:Delete()">Delete this asset</a>
+				<?php endif ?>
+				<?php if(!$asset->isOwner($user, true) && $user->owns($asset)): ?>
+					<a href="javascript:Refund()">Remove this item from your inventory</a>
 				<?php endif ?>
 			</div>
 			<?php endif ?>

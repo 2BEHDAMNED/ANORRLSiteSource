@@ -163,8 +163,9 @@
 	route_api('GET',      'gameservers/get');
 	route_api('POST',     'gameservers/shutdown');
 
-	route_api('GET|POST', 'asset/render');
-	route_api('GET|POST', 'asset/delete');
+	route_api('POST', 'asset/render');
+	route_api('POST', 'asset/delete');
+	route_api('POST', 'asset/refund');
 
 	route('GET', '/users/emotes', '/private/api/users/emotes.php');
 
