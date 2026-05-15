@@ -773,7 +773,7 @@
 
 		function getWearingArray(bool $ordered = false) {
 			$rows = Database::singleton()->run(
-				"SELECT `assetid` FROM `inventory` WHERE `userid` = :id".($ordered ? "ORDER BY `assetid`" : ""),
+				"SELECT `assetid` FROM `inventory` WHERE `userid` = :id".($ordered ? " ORDER BY `assetid`" : ""),
 				[ ":id" => $this->id ]
 			)->fetchAll(\PDO::FETCH_OBJ);
 
