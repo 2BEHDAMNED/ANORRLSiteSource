@@ -35,7 +35,8 @@
 					"bgm" => -1,
 					"css" => "",
 					"loadingscreens" => !ClientDetector::IsAClient(),
-					"profilemusic" => true
+					"profilemusic" => true,
+					"last_username_change" => false,
 				]);
 			}
 
