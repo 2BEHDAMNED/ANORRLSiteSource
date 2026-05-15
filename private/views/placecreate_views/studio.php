@@ -124,15 +124,14 @@
 					</script>
 					<div id="StuffContainer" data-placeid="<?= $place->id ?>">
 						<h1 style="width: 834px;">
-							<marquee scrollamount="20" direction="right" behavior="alternate">Place Creation Panel</marquee>
-							<marquee scrollamount="20" behavior="alternate" style="display: block;margin-top: -33px;z-index: 9;" direction="left">Place Creation Panel</marquee>
+							<marquee scrollamount="20" direction="right" behavior="alternate" style="text-align: center">Place Creation Panel</marquee>
 						</h1>
 						<div id="StuffNavigation">	
 							<ul>
 								<img src="<?= $place->getThumbsUrl(154, 86); ?>">
 								<h4>alias creation maybe</h4>
 								<li data_category="21"><a>Badges</a></li>
-								<h3><a href="/<?= $place->getURL() ?>">>> Go back <<</a></h3>
+								<h3><a onclick="window.close()">>> Go back <<</a></h3>
 							</ul>
 							
 						</div><div id="CreationPanel">	
