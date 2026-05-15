@@ -24,7 +24,7 @@
 		private static function CanUpload(User $user): string|null {
 			$timer = 31;
 			if($user->getLatestAssetUploaded() != null) {
-				$difference = (time()-($user->getLatestAssetUploaded()->created_at->getTimestamp()-3600));
+				$difference = UtilUtils::GetSecondsElapsedFrom($user->getLatestAssetUploaded()->created_at);
 
 				$timer = $difference;
 			}

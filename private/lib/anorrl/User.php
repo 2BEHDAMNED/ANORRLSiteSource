@@ -8,6 +8,7 @@
 	use anorrl\Universe;
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetTypeUtils;
+	use anorrl\utilities\UserUtils;
 	use anorrl\utilities\UtilUtils;
 	use anorrl\utilities\ImageUtils;
 	use anorrl\utilities\Renderer;
@@ -696,18 +697,18 @@
 			$getwearing = $this->getWearing();
 
 			$userId = $this->id;
-			$parsedshit= "";
+			$parsed = "";
 
 			foreach($getwearing as $asset) {
 				if($asset->type != AssetType::EMOTE)
-					$parsedshit .= ";http://$domain/asset/?id={$asset->id}";
+					$parsed .= ";http://$domain/asset/?id={$asset->id}";
 			}
 
-			if(str_ends_with($parsedshit, ";")) {
-				$parsedshit = substr($parsedshit, 0, strlen($parsedshit)-1);
+			if(str_ends_with($parsed, ";")) {
+				$parsed = substr($parsed, 0, strlen($parsed)-1);
 			}
 			$time = time();
-			return "http://$domain/Asset/BodyColors.ashx?userId=$userId&t=$time$parsedshit";
+			return "http://$domain/Asset/BodyColors.ashx?userId=$userId&t=$time$parsed";
 		}
 
 		function getCharacterAppearanceVerbose(): string {
@@ -715,7 +716,7 @@
 			$bodycoloursxml = $this->getBodyColoursXML();
 			$getwearing = $this->getWearingArray(true);
 
-			$parsedshit= "";
+			$parsed= "";
 			
 			foreach($getwearing as $id) {
 				$asset = Asset::FromID($id);
@@ -724,14 +725,14 @@
 						continue;
 					
 					$version = $asset->current_version;
-					$parsedshit .= "http://$domain/asset/?id=$id&version=$version;";
+					$parsed .= "http://$domain/asset/?id=$id&version=$version;";
 
 					$relatedassets = $asset->getRelatedAssets();
 
 					if(count($relatedassets) != 0) {
 						foreach($relatedassets as $relatedasset) {
 							$subversion = $relatedasset->current_version;
-							$parsedshit .= "http://$domain/asset/?id=$id&version=$subversion;";
+							$parsed .= "http://$domain/asset/?id=$id&version=$subversion;";
 						}
 					}
 				} else {
@@ -745,13 +746,13 @@
 				}
 			}
 
-			if(str_ends_with($parsedshit, ";")) {
-				$parsedshit = substr($parsedshit, 0, strlen($parsedshit)-1);
+			if(str_ends_with($parsed, ";")) {
+				$parsed = substr($parsed, 0, strlen($parsed)-1);
 			}
 
 			$bodycoloursxml_encoded = base64_encode($bodycoloursxml);
 
-			return "$bodycoloursxml_encoded;$parsedshit";
+			return "$bodycoloursxml_encoded;$parsed";
 		}
 
 		function getCharacterAppearanceHash() {
@@ -965,12 +966,8 @@
 		function updateBio(string $bio): array {
 			if(!$this->isBanned()) {
 				// check if user hasn't posted one in 30s
-
-				$offset = -3600; //prod
-
-				// lord save me what the fuck is this
-				// what the fuck is this
-				$difference = (time()-($this->last_update->getTimestamp()+$this->last_update->getOffset()+$offset));
+				
+				$difference = UtilUtils::GetSecondsElapsedFrom($this->last_update);
 
 				$calculated_time = 30 - $difference; 
 
@@ -1478,7 +1475,61 @@
 		}
 
 		function updateUsername(string $new_name) {
-			return ["error" => true, "reason" => "This function has NOT been implemented yet!"];
+			$processed_new_name = trim($new_name);
+
+			if(strcmp($processed_new_name, $this->name) == 0) {
+				return ["error" => false];
+			}
+
+			if(!UserUtils::IsUsernameValid($processed_new_name))
+				return ["error" => true, "reason" => "Username must be a-z A-Z 0-9 and 3-20 characters only!"];
+
+			if(!UserUtils::IsUsernameAvailable($processed_new_name))
+				return ["error" => true, "reason" => "Username has already been taken!"];
+
+			// todo: add uhm sql implementation and time check...
+
+			$difference = UtilUtils::GetSecondsElapsedFrom(UserSettings::Get($this)->last_username_change);
+
+			$minute = 60;
+			$hour = $minute * 60;
+
+			$day = $hour * 24;
+
+			$calculated_time = $day - $difference; 
+			$label = "seconds";
+
+			if($calculated_time > $hour) {
+				$calculated_time /= 60;
+				$calculated_time /= 60;
+				$label = "hours";
+			} else {
+				if($calculated_time < $hour) {
+					$calculated_time /= 60;
+					$label = "minutes";
+				}
+			}
+
+			$calculated_time = round($calculated_time);
+
+			if($difference < $day) {
+				return ["error"=> true, "reason" => "You need to wait $calculated_time $label before updating again."];
+			}
+
+			Database::singleton()->run(
+				"UPDATE `users_settings` SET `last_username_change` = now() WHERE `userid` = :id",
+				[ ":id" => $this->id ]
+			);
+
+			Database::singleton()->run(
+				"UPDATE `users` SET `name`= :name WHERE `id` = :id",
+				[
+					":name" => $processed_new_name,
+					":id" => $this->id
+				]
+			);
+
+			return ["error" => false];
 
 		}
 	}

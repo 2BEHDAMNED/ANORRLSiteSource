@@ -12,10 +12,10 @@
 	if(!$user)
 		die(http_response_code(500));
 
-	$generated_shit = Thumbnail::Generate3D($user);
+	$generated_result = Thumbnail::Generate3D($user);
 
-	if(!$generated_shit)
+	if(!$generated_result)
 		die(http_response_code(500));
 
-	exit(json_encode($generated_shit));
+	exit(json_encode($generated_result));
 ?>

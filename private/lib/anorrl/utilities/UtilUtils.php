@@ -66,6 +66,17 @@
 			return intval(new \DateTime()->diff($time)->format($format));
 		}
 
+		/**
+		 * This is kind of ass.
+		 * @param \DateTime $time
+		 * @return void
+		 */
+		public static function GetSecondsElapsedFrom(\DateTime $time): int {
+			$offset = -3600; //prod
+
+			return (time()-($time->getTimestamp()+$time->getOffset()+$offset));
+		}
+
 		public static function IsValidCSS(string $data) {
 			$blockedcssids = [
 				/*"@font",

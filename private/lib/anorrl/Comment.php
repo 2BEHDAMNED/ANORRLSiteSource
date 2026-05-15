@@ -109,7 +109,7 @@
 			$lastpost = self::GetLatestCommentFromUser($user);
 			
 			if($lastpost != null) {
-				$difference_in_seconds = time() - $lastpost->postdate->getTimestamp();
+				$difference_in_seconds = UtilUtils::GetSecondsElapsedFrom($lastpost->postdate);
 			} else {
 				$difference_in_seconds = 6;
 			}

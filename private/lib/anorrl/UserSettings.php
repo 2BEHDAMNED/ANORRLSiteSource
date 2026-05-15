@@ -21,6 +21,7 @@
 		public string $css = "";
 		public bool $loadingscreens;
 		public bool $profile_music;
+		public \DateTime $last_username_change;
 
 		public static function Get(User|null $user = null) {
 			if($user == null) {
@@ -74,7 +75,7 @@
 		}
 
 		function __construct(Object $rowdata) {
-			if(isset($rowdata->user)) {
+			if(!isset($rowdata->userid)) {
 				throw new \Exception("Missing user_settings table");
 			}
 
@@ -90,6 +91,14 @@
 
 			$this->background_music = $rowdata->bgm <= 0 ? null : Asset::FromID($rowdata->bgm);
 			$this->css = $rowdata->css;
+
+			if(!$rowdata->last_username_change) {
+				$this->last_username_change = new \DateTime("@0");	
+			}
+			else {
+				$this->last_username_change = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->last_username_change);
+			}
+			
 			
 			if($this->background_music && $this->background_music->type != AssetType::AUDIO)
 				$this->background_music = null;

@@ -6,6 +6,7 @@
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetUploader;
 	use anorrl\utilities\ClientDetector;
+	use anorrl\utilities\UtilUtils;
 	
 	if(!SESSION)
 		$user = null;
@@ -46,7 +47,7 @@
 
 				$timer = 31;
 				if($user->getLatestAssetUploaded() != null) {
-					$difference = (time()-($user->getLatestAssetUploaded()->created_at->getTimestamp()-3600));
+					$difference = UtilUtils::GetSecondsElapsedFrom($user->getLatestAssetUploaded()->created_at);
 					$timer = $difference;
 				}
 
