@@ -131,7 +131,7 @@
 								<img src="<?= $place->getThumbsUrl(154, 86); ?>">
 								<h4>alias creation maybe</h4>
 								<li data_category="21"><a>Badges</a></li>
-								<h3><a onclick="window.close()">>> Go back <<</a></h3>
+								<h3><a onclick="window.close()" href="#">>> Go back <<</a></h3>
 							</ul>
 							
 						</div><div id="CreationPanel">	
