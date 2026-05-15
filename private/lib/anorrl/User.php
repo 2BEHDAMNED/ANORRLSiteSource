@@ -113,7 +113,9 @@
 			$this->password = $rowdata->password;
 			$this->security_key = $rowdata->security;
 
-			$this->updateOutfitHash();
+			if($this->currentoutfitmd5 != $this->getCharacterAppearanceHash()) {
+				$this->updateOutfitHash();
+			}
 		}
 
 		function getFriends(): array {
