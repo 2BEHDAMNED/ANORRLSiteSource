@@ -75,7 +75,17 @@
 				[":name" => $name]
 			)->fetch(\PDO::FETCH_OBJ);
 
-			return $row ? self::FromID($row->id) : null;
+			
+			$user = $row ? self::FromID($row->id) : null;
+
+			if($user) {
+				if($user->currentoutfitmd5 != $user->getCharacterAppearanceHash()) {
+					$user->updateOutfitHash(); // render maybe too idk
+				}
+			}
+
+			return $user;
+				
 		}
 
 		/**
@@ -112,10 +122,6 @@
 			$this->join_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->joindate);
 			$this->password = $rowdata->password;
 			$this->security_key = $rowdata->security;
-
-			if($this->currentoutfitmd5 != $this->getCharacterAppearanceHash()) {
-				$this->updateOutfitHash(); // render maybe too idk
-			}
 		}
 
 		function getFriends(): array {
