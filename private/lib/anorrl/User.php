@@ -112,6 +112,10 @@
 			$this->join_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->joindate);
 			$this->password = $rowdata->password;
 			$this->security_key = $rowdata->security;
+
+			if($this->currentoutfitmd5 != $this->getCharacterAppearanceHash()) {
+				$this->updateOutfitHash(); // render maybe too idk
+			}
 		}
 
 		function getFriends(): array {
@@ -966,7 +970,7 @@
 		function updateBio(string $bio): array {
 			if(!$this->isBanned()) {
 				// check if user hasn't posted one in 30s
-				
+
 				$difference = UtilUtils::GetSecondsElapsedFrom($this->last_update);
 
 				$calculated_time = 30 - $difference; 
