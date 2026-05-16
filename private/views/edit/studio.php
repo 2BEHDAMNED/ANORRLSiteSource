@@ -192,6 +192,9 @@
 
 	$page->loadBasicHeader();
 ?>
+<div id="Container">
+			<div id="Body">
+				<div id="BodyContainer">
 <script>
 	$(function() {
 		$(".VersionPicker").each(function() {
@@ -392,6 +395,10 @@
 	</div>
 	
 </div>
+</div>
+</div>
+</div>
+
 <?php 
 	$page->loadBasicFooter();
 
