@@ -247,7 +247,7 @@
 	<div id="ItemDetails">
 		<div id="DetailStack">
 				<h4>Thumbnail</h4>
-				<div id="Table">
+				<div id="Table" style="text-align: center">
 					<img src="<?= $asset->type == AssetType::PLACE ? $asset->getThumbsUrl() : $asset->getThumbsUrl(300) ?>" style="max-width: 100%; max-height: 318px; object-fit: contain">
 				</div>
 			</div>
