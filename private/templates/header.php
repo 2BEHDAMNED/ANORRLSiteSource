@@ -182,7 +182,7 @@
 				?>
 				<div id="ProfileSign" logged="true">
 					<div id="UsernameRow">
-						<a href="/users/<?= $header_check_user->id ?>/profile"><?= $header_check_user->name ?></a>
+						<a href="/my/profile"><?= $header_check_user->name ?></a>
 					</div>
 					<table style="width: 100%">
 						<tr>
@@ -201,9 +201,6 @@
 							</td>
 						</tr>
 					</table>
-					
-				
-					
 				</div>
 				<a id="LogoutSign" href="javascript:ANORRL.Logout()">LOGOUT</a>
 				<?php else: ?>
