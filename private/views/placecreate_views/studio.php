@@ -76,14 +76,6 @@
 				border-top: 4px solid black;
 			}
 		</style>
-		<script>
-			// FUCK WEBKIT
-			$(function() {
-				$("#files_fakebutton").on("click", function() {
-					$("#files").trigger("click");
-				})
-			})
-		</script>
 	</head>
 	<body>
 		<div id="Container">
@@ -172,7 +164,7 @@
 													<td>File <span class="RequiredThing">*</span></td>
 													<td>
 														<label id="files_fakebutton" for="files" style="margin-top: 5px;display: inline-block;">Choose file</label>
-														<input id="files" style="display:none;" type="file"  name="ANORRL$CreateAsset$File" required>
+														<input id="files" style="opacity: 0; position: absolute;" type="file"  name="ANORRL$CreateAsset$File" required>
 														<label id="filename">No file chosen</label>
 													</td>
 												</tr>
