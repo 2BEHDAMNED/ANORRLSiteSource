@@ -231,7 +231,7 @@
 				if(data['error']) {
 					window.alert(data['reason']);
 				}
-				window.location.reload();
+				window.close();
 			});
 		}
 	}
