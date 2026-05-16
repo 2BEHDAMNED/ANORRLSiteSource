@@ -121,7 +121,7 @@
 							});
 						})
 					</script>
-					<div id="StuffContainer" data-placeid="<?= $place->id ?>">
+					<div id="StuffContainer" data-placeid="<?= $place->id ?>" data-studio="true">
 						<h1 style="width: 834px;">
 							<marquee scrollamount="20" direction="right" behavior="alternate" style="text-align: center">Place Creation Panel</marquee>
 						</h1>

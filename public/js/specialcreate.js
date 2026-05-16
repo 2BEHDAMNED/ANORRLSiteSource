@@ -22,6 +22,7 @@ const regex = /[^A-Za-z0-9 ]/g;
 
 ANORRL.Create = {
 	CurrentPlace: -1,
+	StudioMode: true,
 	CurrentPage: 1,
 	CurrentCategory: 21,
 	CurrentlyLoadingCrapBruh: false,
@@ -135,7 +136,12 @@ ANORRL.Create = {
 					template.find("#NameAndThumbs > img").attr("src", asset['thumbnail']);
 
 					template.find("#NameAndThumbs > span").html(asset['name']);
-					template.find("#NameAndThumbs").attr("href", asset['url']);
+					
+					if(ANORRL.Create.StudioMode) {
+						template.find("#NameAndThumbs").attr("href", "/edit?id="+asset['id']);
+					} else {
+						template.find("#NameAndThumbs").attr("href", asset['url']);
+					}
 
 					feedscontainer.removeAttr("hidden");
 					$(feedscontainer.find("tr")[rowIndex]).append(td);
@@ -191,6 +197,7 @@ $(function(){
 	};
 
 	ANORRL.Create.CurrentPlace = $("#StuffContainer").attr("data-placeid");
+	ANORRL.Create.StudioMode = $("#StuffContainer").attr("data-studio");
 	ANORRL.Create.GrabAssets(categories[url]);
 });
 
