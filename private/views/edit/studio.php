@@ -82,16 +82,13 @@
 			$thumbasset->type == AssetType::IMAGE
 		) {
 			$asset->setThumbnailTo($thumbasset);
-
 			$_SESSION['ANORRL$EditItem$Success'] = true;
-
-			die(header("Location: /edit?id=$id"));
 		} else {
 			$_SESSION['ANORRL$EditItem$Error'] = "ID must either be a decal or image!";
 			$_SESSION['ANORRL$EditItem$Success'] = false;
-
-			die(header("Location: /edit?id=$id"));
 		}
+
+		die(header("Location: /edit?id=$id"));
 	}
 
 	if(isset($_POST['ANORRL$EditItem$Name']) &&
@@ -165,7 +162,7 @@
 			}
 		}
 
-		die(header("Location: /{$asset->getUrl()}"));
+		die(header("Location: /edit?id={$asset->id}"));
 		
 	} else if(isset($_FILES['ANORRL$PublishAsset$File']) &&
 	   isset($_POST['ANORRL$PublishAsset$Submit'])) {
@@ -176,11 +173,9 @@
 			if($result['error']) {
 				$_SESSION['ANORRL$EditItem$Error'] = $result['reason'];
 				$_SESSION['ANORRL$EditItem$Success'] = false;
-
-				die(header("Location: /edit?id=$id"));
-			} else {
-				die(header("Location: /{$asset->getUrl()}"));
 			}
+
+			die(header("Location: /edit?id=$id"));
 		} else {
 			die("Yo, what are you doing??");
 		}
