@@ -1315,6 +1315,9 @@
 			$server = null;
 
 			foreach($rows as $row) {
+				if(!$row)
+					continue;
+				
 				$grab_server = GameServer::Get($row->serverid);
 
 				if(!$grab_server) {
