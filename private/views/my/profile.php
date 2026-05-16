@@ -176,7 +176,7 @@
 			</form>
 			
 			<!-- Ew, when are you going to un-inline this -->
-			<form method="POST" style="width: 400px;float: right;" enctype="multipart/form-data">
+			<form method="POST" style="width: 400px;float: right;" enctype="multipart/form-data" id="PictureForm">
 				<span style="display: block;margin-bottom: 10px;font-size: 10px;color: #999;font-style: italic;">Thanks gamma for the template and letting my ass scrutinise it :sob:</span>
 				<div style="width:294px;margin: 0 auto;">
 					<h4 style="margin: 0;width: 254px;">This what you look like right now...</h4>
