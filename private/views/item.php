@@ -105,7 +105,7 @@
 		margin: 0;
 	}
 </style>
-<?php if($user != null && $user->isAdmin()  || $is_creator): ?>
+<?php if($is_creator): ?>
 <script>
 	var rendering = false;
 	function Render() {

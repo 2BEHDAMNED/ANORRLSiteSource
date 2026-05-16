@@ -190,7 +190,6 @@
 
 			if($user) {
 				$user->registerAction("Website");
-				$user->updateOutfitHash();
 			}
 			
 			return $user;
@@ -198,12 +197,12 @@
 
 		static function SetCookies(string $security): void {
 			unset($_COOKIE['ANORRLSECURITY']);
-			setcookie("ANORRLSECURITY", $security, time() + (460800* 30), "/", ".lambda.cam");
+			setcookie("ANORRLSECURITY", $security, time() + (460800* 30), "/", \CONFIG->domain);
 		}
 
 		public static function RemoveCookies(): void {
 			unset($_COOKIE['ANORRLSECURITY']);
-			setcookie("ANORRLSECURITY", "", -1, "/", ".lambda.cam");
+			setcookie("ANORRLSECURITY", "", -1, "/", \CONFIG->domain);
 		}
 
 		public static function GetRandomUsers(int $count): array {
