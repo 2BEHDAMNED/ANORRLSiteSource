@@ -23,7 +23,7 @@
 			"PlaceId" => $place->id,
 			"Name" => $badge->name,
 			"Thumbnail" => [
-				"Url" => $badge->getThumbsUrl()
+				"Url" => "http://".CONFIG->domain.$badge->getThumbsUrl()
 			]
 		];
 	}

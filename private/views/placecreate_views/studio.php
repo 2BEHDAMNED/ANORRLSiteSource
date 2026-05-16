@@ -50,7 +50,7 @@
 					]
 				);
 			}
-			
+			echo $_SERVER['QUERY_STRING'];
 			die(header("Location: ".$_SERVER['QUERY_STRING']));
 		}
 	}
