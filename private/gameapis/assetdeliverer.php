@@ -6,6 +6,7 @@
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\MeshConverter;
 	use anorrl\utilities\ClientDetector;
+	use anorrl\utilities\ImageUtils;
 
 	if(!isset($_GET['id']) && !isset($_GET['ID']) && !isset($_GET['Id']) && !isset($_GET['assetName']) && !isset($_GET['universeId'])) {
 		die(http_response_code(500));
@@ -27,11 +28,6 @@
 	} else {
 		$name = null;
 		$universe = null;
-	}
-
-	function checkMimeType($contents) {
-		$file_info = new finfo(FILEINFO_MIME_TYPE);
-		return $file_info->buffer($contents);
 	}
 
 	$domain = CONFIG->domain;
@@ -134,11 +130,11 @@
 				$output = curl_exec($ch);
 				curl_close($ch);
 				
-				$mimetype = checkMimeType($output);
+				$mimetype = ImageUtils::checkMimeType($output);
 				
 				if($mimetype == "application/gzip") {
 					$output = gzdecode($output);
-					$mimetype = checkMimeType($output);
+					$mimetype = ImageUtils::checkMimeType($output);
 				}
 				
 				if(str_contains($mimetype, "json")) {
@@ -174,14 +170,14 @@
 			} else {
 				if($id > 10420) {
 					$contents = file_get_contents($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""));
-					$mimetype = checkMimeType($contents);
+					$mimetype = ImageUtils::checkMimeType($contents);
 					
 					if($mimetype == "application/gzip") {
 						$contents = gzdecode($contents);
-						$mimetype = checkMimeType($contents);
+						$mimetype = ImageUtils::checkMimeType($contents);
 					}
 					header("Content-Type: $mimetype");
-					if(str_contains(checkMimeType($contents), "json")) {
+					if(str_contains(ImageUtils::checkMimeType($contents), "json")) {
 						echo "Unauthorised access to this roblox asset!";
 						file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""), "");
 						die(http_response_code(500));
@@ -209,14 +205,14 @@
 				die("Asset not found!");
 			} else {
 				$contents = file_get_contents($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""));
-				$mimetype = checkMimeType($contents);
+				$mimetype = ImageUtils::checkMimeType($contents);
 				
 				if($mimetype == "application/gzip") {
 					$contents = gzdecode($contents);
-					$mimetype = checkMimeType($contents);
+					$mimetype = ImageUtils::checkMimeType($contents);
 				}
 				header("Content-Type: $mimetype");
-				if(str_contains(checkMimeType($contents), "json")) {
+				if(str_contains(ImageUtils::checkMimeType($contents), "json")) {
 					echo "Unauthorised access to this roblox asset!";
 					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""), "");
 					die(http_response_code(500));

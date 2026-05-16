@@ -4,6 +4,7 @@
 	use anorrl\utilities\AssetTypeUtils;
 	use anorrl\utilities\AssetUploader;
 	use anorrl\utilities\UserUtils;
+	use anorrl\utilities\ImageUtils;
 
 	use anorrl\Asset;
 	use anorrl\AssetVersion;
@@ -39,11 +40,6 @@
 	} else {
 		die(header("Location: /my/stuff"));
 	}
-
-	function CheckMimeType($contents) {
-		$file_info = new finfo(FILEINFO_MIME_TYPE);
-		return $file_info->buffer($contents);
-	} 
 
 	if(
 		isset($_POST['action']) &&
@@ -142,7 +138,7 @@
 				
 				if($file['error'] == 0 && $file['size'] <= 5242880) {
 					$contents = file_get_contents($file['tmp_name']);
-					$type = CheckMimeType($contents);
+					$type = ImageUtils::checkMimeType($contents);
 
 					if(str_starts_with($type,"image/")) {
 						$image = imagecreatefromstring($contents);
