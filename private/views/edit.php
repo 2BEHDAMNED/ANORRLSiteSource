@@ -7,7 +7,7 @@
 	use anorrl\Place;
 	use anorrl\utilities\ClientDetector;
 
-	if(!ClientDetector::IsAClient() && false) {
+	if(!ClientDetector::IsAClient()) {
 		require "edit/normal.php";
 	}
 	else {
