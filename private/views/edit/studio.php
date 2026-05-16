@@ -192,6 +192,14 @@
 
 	$page->loadBasicHeader();
 ?>
+<style>
+			h2 {
+				margin-top: 0px;
+			}
+			#BodyContainer {
+				border-top: 4px solid black;
+			}
+		</style>
 <div id="Container">
 			<div id="Body">
 				<div id="BodyContainer">
@@ -216,6 +224,17 @@
 			window.location.reload();
 		})
 	}
+
+	function Delete() {
+		if(window.confirm("Are you sure you want to delete this??")) {
+			$.post( "/api/asset/delete", { id: <?= $asset->id ?> }).done(function( data ) {
+				if(data['error']) {
+					window.alert(data['reason']);
+				}
+				window.location.reload();
+			});
+		}
+	}
 </script>
 <?php if(isset($_SESSION['ANORRL$EditItem$Success']) && !$_SESSION['ANORRL$EditItem$Success']): ?>
 <script>
@@ -226,9 +245,15 @@
 <div id="EditContainer">
 	<h2>Editing: <?= $asset->name ?></h2>
 	<div id="ItemDetails">
+		<div id="DetailStack">
+				<h4>Thumbnail</h4>
+				<div id="Table">
+					<img src="<?= $asset->getThumbsUrl() ?>" style="width: 100%; max-height: 318px; object-fit: contain">
+				</div>
+			</div>
 		<form method="POST" enctype="multipart/form-data">
 			<div id="DetailStack">
-				<h4>Information</h4>
+				<h4 style="margin-top: 10px">Information</h4>
 				<div id="Table">
 					<table>
 						<tr>
@@ -391,9 +416,11 @@
 		</div>
 		<?php endif ?>
 	
-		<a type="submit" href="<?= $asset->getUrl() ?>" style="width:50px">Go Back</a>
+		<div>
+			<a type="submit" href="javascript:Delete()" style="width:50px">Delete</a>
+		</div>
 	</div>
-	
+
 </div>
 </div>
 </div>
