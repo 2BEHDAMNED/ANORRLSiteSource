@@ -228,6 +228,14 @@
 				<h4>Information</h4>
 				<div id="Table">
 					<table>
+						<tr>
+							<td>Name</td>
+							<td><input type="text" name="ANORRL$EditItem$Name" value="<?= $asset->name ?>" minlength="3" maxlength="128"></td>
+						</tr>
+						<tr>
+							<td>Description</td>
+							<td><textarea style="height: 50px;" name="ANORRL$EditItem$Description"><?= $asset->description ?></textarea></td>
+						</tr>
 						<?php if($asset->type != AssetType::BADGE): ?>
 							<tr>
 								<td>Public</td>
