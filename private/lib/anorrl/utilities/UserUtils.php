@@ -190,6 +190,7 @@
 
 			if($user) {
 				$user->registerAction("Website");
+				$user->updateOutfitHash();
 			}
 			
 			return $user;

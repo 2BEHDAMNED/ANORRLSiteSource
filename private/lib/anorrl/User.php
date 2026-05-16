@@ -112,10 +112,6 @@
 			$this->join_date = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->joindate);
 			$this->password = $rowdata->password;
 			$this->security_key = $rowdata->security;
-
-			if($this->currentoutfitmd5 != $this->getCharacterAppearanceHash()) {
-				$this->updateOutfitHash();
-			}
 		}
 
 		function getFriends(): array {
