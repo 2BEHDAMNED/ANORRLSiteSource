@@ -32,7 +32,6 @@ ANORRL.Create = {
 		this.GrabAssets(this.CurrentCategory, this.CurrentPage - 1);
 	},
 	GrabAssets: function(category, page) {
-
 		if(this.CurrentPlace < 1) {
 			return;
 		}
@@ -175,13 +174,12 @@ function ChangeUrl(title, url) {
 }
 
 $(function(){
-
 	$("li[data_category]").on("click",function() {
 		ANORRL.Create.GrabAssets($(this).attr("data_category"));
 	});
 
-	var url = window.location.pathname;
-	url = url.replaceAll("/create/", "").replaceAll("/","");
+	var url = window.location.href;
+	url = url.replace(window.location.origin, "").replace("/create/", "").split("/")[1].replace("/", "");
 
 	$("#files").change(function() {
 		filename = this.files[0].name;
@@ -190,10 +188,9 @@ $(function(){
 
 	var categories = {
 		"badge": 21
-	}
+	};
 
 	ANORRL.Create.CurrentPlace = $("#StuffContainer").attr("data-placeid");
-
 	ANORRL.Create.GrabAssets(categories[url]);
 });
 
