@@ -103,6 +103,10 @@
 		$comments_enabled = isset($_POST['ANORRL$EditItem$CommentsBox']);
 		$on_sale = isset($_POST['ANORRL$EditItem$OnSaleBox']);
 
+		if($asset->type == AssetType::BADGE && !$public == !$asset->public) {
+			$public = !$public;
+		}
+
 		$result = AssetUploader::EditAsset($asset, $name, $description, $public, $on_sale, $comments_enabled);
 		
 		if($result['error']) {
@@ -264,19 +268,26 @@
 							<td>Description</td>
 							<td><textarea style="height: 50px;" name="ANORRL$EditItem$Description"><?= $asset->description ?></textarea></td>
 						</tr>
-						<tr>
-							<td>Public</td>
-							<td><input type="checkbox" name="ANORRL$EditItem$PublicBox" <?php if($asset->public): ?>checked<?php endif ?>></td>
-						</tr>
-						<tr>
-							<td>Enable Comments</td>
-							<td><input type="checkbox" name="ANORRL$EditItem$CommentsBox" <?php if($asset->comments_enabled): ?>checked<?php endif ?>></td>
-						</tr>
-						<?php if(AssetTypeUtils::IsSellable($asset->type)): ?>
-						<tr>
-							<td><label for="OnSaleCheckbox">On Sale</label></td>
-							<td><input id="OnSaleCheckbox" name="ANORRL$EditItem$OnSaleBox" type="checkbox" <?php if($asset->onsale): ?>checked<?php endif ?>></td>
-						</tr>
+						<?php if($asset->type != AssetType::BADGE): ?>
+							<tr>
+								<td>Public</td>
+								<td><input type="checkbox" name="ANORRL$EditItem$PublicBox" <?php if($asset->public): ?>checked<?php endif ?>></td>
+							</tr>
+							<tr>
+								<td>Enable Comments</td>
+								<td><input type="checkbox" name="ANORRL$EditItem$CommentsBox" <?php if($asset->comments_enabled): ?>checked<?php endif ?>></td>
+							</tr>
+							<?php if(AssetTypeUtils::IsSellable($asset->type)): ?>
+							<tr>
+								<td><label for="OnSaleCheckbox">On Sale</label></td>
+								<td><input id="OnSaleCheckbox" name="ANORRL$EditItem$OnSaleBox" type="checkbox" <?php if($asset->onsale): ?>checked<?php endif ?>></td>
+							</tr>
+							<?php endif ?>
+						<?php else: ?>
+							<tr>
+								<td>Secret</td>
+								<td><input type="checkbox" name="ANORRL$EditItem$PublicBox" <?php if(!$asset->public): ?>checked<?php endif ?>></td>
+							</tr>
 						<?php endif ?>
 					</table>
 				</div>
