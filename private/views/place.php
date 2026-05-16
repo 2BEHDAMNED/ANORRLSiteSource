@@ -218,7 +218,7 @@
 	<h4>ANORRL <?= $place->type->label(); ?></h4>
 	<h2><a class="FavouriteButton" href="#" data-assetid="<?= $place->id ?>" <?= $is_favourited ? 'favourited="true"' : "" ?>></a><?= $place->name ?></h2>
 	<?php if($universe->starting_place->id != $place->id): ?>
-	<h3 style="color: #CCC;font-style: italic;width: 830px;text-align: center;">This place is a sub place of: <a href="<?= $universe->starting_place->getURL() ?>"><?= $universe->starting_place->name ?></a></h3>
+	<h3 style="color: #CCC;font-style: italic;width: 830px;text-align: center;">This place is belongs to: <a href="<?= $universe->starting_place->getURL() ?>"><?= $universe->starting_place->name ?></a></h3>
 	<?php endif ?>
 	<div id="PlaceDetails">
 		<div id="Content">
