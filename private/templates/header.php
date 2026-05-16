@@ -182,12 +182,12 @@
 				?>
 				<div id="ProfileSign" logged="true">
 					<div id="UsernameRow">
-						<a href="/my/profile"><?= $header_check_user->name ?></a>
+						<a href="/users/<?= $header_check_user->id ?>/profile"><?= $header_check_user->name ?></a>
 					</div>
 					<table style="width: 100%">
 						<tr>
 							<td style="vertical-align: top;">
-								<a href="/users/<?= $header_check_user->id ?>/profile"><img src="<?= $header_check_user->getThumbsUrl(64) ?>"></a>
+								<a href="/my/profile"><img src="<?= $header_check_user->getThumbsUrl(64) ?>"></a>
 							</td>
 							<td style="vertical-align: top;">
 								<div id="CreditsRow">
