@@ -73,7 +73,7 @@
 		$bgm = null;
 
 	if($bgm)
-		$page->loadWimpy("/asset/?id={$bgm->getAssetIDSafe()}", $bgm->name, $bgm->getThumbsUrl(298), $bgm->getURL());
+		$page->loadWimpy("/asset/?id={$bgm->id}", $bgm->name, $bgm->getThumbsUrl(298), $bgm->getURL());
 ?>
 <script src="/public/js/3D/ThumbnailView.js"></script>
 <script src="/public/js/3D/ThreeDeeThumbnails.js?v=3"></script>
