@@ -227,12 +227,12 @@
 		<div id="Content">
 			<?php if($asset->type == AssetType::AUDIO): ?>
 			<img src="<?= $asset->getThumbsUrl(190) ?>&nocompress">
-			<div 
+			<div
 				data-wimpyplayer=""
 				data-skin="/public/wimpy/skins/Slick_modified.tsv"
-				data-loop="2"
+				data-loop="0"
 				data-disablecontrols="next,playlist,rewind,getid3"
-				style="text-align: center; width: 300px;height: 70px; white-space: nowrap;"
+				style="text-align: center; width: 245px;height: 50px; white-space: nowrap;"
 				data-media="asset/?id=<?= $asset->id ?>.mp3"
 				data-volume="0.4"
 			></div>
