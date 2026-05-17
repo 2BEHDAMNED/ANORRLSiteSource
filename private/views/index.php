@@ -12,6 +12,7 @@
 
 	$video_splash = new FileSplasher("videos", false, "JaneVideos")->getRandomSplash()
 ?>
+<?php ?>
 <div id="IntroductoryArea">
 	<h2>&nbsp;</h2>
 	<div id="FirstRow">

@@ -17,6 +17,12 @@
 		private bool $bad_apple = false;
 		private UserSettings $settings;
 
+		/* wimpy stuff */
+		private string $url;
+		private string $name;
+		private string $cover_art;
+		private string $link = "";
+
 		function __construct(string $title, string|null $internal_name = null) {
 			if(ClientDetector::IsAClient() && $title != "Login" && !str_starts_with($internal_name, "ide")) // assume studio
 				die(set_header("Location", "/ide/projects"));
@@ -32,6 +38,7 @@
 
 			$this->addScript("/js/core/jquery.js");
 			$this->addScript("/js/main.js?t=1776250887");
+			$this->addScript("/wimpy/wimpy.js");
 			$this->addStylesheet("/css/new/main.css?v=5");
 
 			if(SESSION) {
@@ -124,5 +131,15 @@
 		function loadFooter() {
 			$this->loadTemplate("footer");
 		}
+
+
+		function loadWimpy(string $url, string $name, string $cover_art, string $link = "") {
+			$this->url = $url;
+			$this->name = $name;
+			$this->cover_art = $cover_art;
+			$this->link = $link;
+			$this->loadTemplate("wimpy");
+		}
+
 	}
 ?>

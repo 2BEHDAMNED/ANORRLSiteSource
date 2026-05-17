@@ -71,6 +71,9 @@
 
 	if(!$settings->profile_music)
 		$bgm = null;
+
+	if($bgm)
+		$page->loadWimpy("/asset/?id={$bgm->getAssetIDSafe()}", $bgm->name, $bgm->getThumbsUrl(298), $bgm->getURL());
 ?>
 <script src="/public/js/3D/ThumbnailView.js"></script>
 <script src="/public/js/3D/ThreeDeeThumbnails.js?v=3"></script>
@@ -119,101 +122,6 @@
 		</div>
 	</div>
 </div>
-<?php if($bgm != null): ?>
-<audio id="bgm" loop muted volume="0.25"> <!-- autoplay m.i.a -->
-	<source src="/asset/?id=<?= $bgm->getAssetIDSafe() ?>">
-</audio>
-<script>
-/*
-//fuck modern browsers for ruining AutoPlay :sob: -skylerclock
-const bgm = document.getElementById("bgm");
-bgm.play();
-document.body.addEventListener("click", () => {
-	bgm.muted = false;
-	bgm.play();
-}, { once: true });
-*/
-
-// rewrite of skylers autoplay thing
-
-var shouldplay = <?= $settings->profile_music ? "true" : "false" ?>;
-var once = false;
-
-$(function() {
-	$("#bgm")[0].muted = false;
-	$("#bgm")[0].play();
-	$("body").on("click", function() {
-		if(once || !shouldplay) {
-			return;
-		}
-		once = true;
-		$("#bgm")[0].muted = false;
-		$("#bgm")[0].play();
-	})
-
-	$("#bgm")[0].volume = 0.50;
-	$("#MusicPlayer #VolumeBar").val($("#bgm")[0].volume);
-
-	$("#bgm").on("play", function() {
-		$("#MusicPlayer #VolumeBar").val($(this)[0].volume);
-	})
-
-	$("#MusicPlayer #VolumeBar").on("change input", function() {
-		$("#bgm")[0].volume = $(this).val();
-	})
-})
-
-</script>
-<style>
-	#MusicPlayer {
-		background: #333;
-		color: white;
-		border: 4px solid black;
-		position: fixed;
-		top: 10px;
-		left: 10px;
-		width: 165px;
-		padding: 15px;
-		z-index: 5;
-		text-align: center;
-	}
-
-	#MusicPlayer #PlayingLink a {
-		width: 100%;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		display: inline-block;
-		white-space: nowrap;
-	}
-
-	#MusicPlayer #VolumeBar {
-		width: 100%;
-	}
-
-	#MusicPlayer #Thumbs {
-		margin: 0 auto;
-	}
-
-	#MusicPlayer #Thumbs img {
-		border: 2px solid black;
-	}
-</style>
-<div id="MusicPlayer">
-	<div jd="Thumbs">
-		<img src="<?= $bgm->getThumbsUrl(128) ?>">
-	</div>
-	<div>Playing: </div>
-	<div id="PlayingLink"><a href="<?= $bgm->getUrl() ?>"><?= $bgm->name ?></a></div>
-	<!--<div id="ProgressBarContainer">
-		<input id="ProgressBar" type="range" min="0" max="0" step="0">
-	</div>-->
-	<br>
-	<div id="VolumeBarContainer">
-		<div>Volume:</div>
-		<input id="VolumeBar" type="range" min="0" max="1.0" step="0.00001">
-	</div>
-</div>
-<?php endif ?>
 <div class="Badge" template><a href=""><img src=""><span></span></a></div>
 <div id="UserInfoContainer">
 <div id="PaddingContainer">
