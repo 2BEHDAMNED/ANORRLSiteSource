@@ -227,7 +227,16 @@
 		<div id="Content">
 			<?php if($asset->type == AssetType::AUDIO): ?>
 			<img src="<?= $asset->getThumbsUrl(190) ?>&nocompress">
-			<audio src="/asset/?id=<?= $asset->id ?>" controls>Your browser does not support HTML5 Audio</audio>
+			<div 
+				data-wimpyplayer=""
+				data-skin="/public/wimpy/skins/Slick_modified.tsv"
+				data-loop="2"
+				data-disablecontrols="next,playlist,rewind,getid3"
+				style="text-align: center; width: 300px;height: 70px; white-space: nowrap;"
+				data-media="asset/?id=<?= $asset->id ?>.mp3"
+				data-volume="0.4"
+			></div>
+	
 			<?php else: ?>
 				<?php if(AssetTypeUtils::IsRenderable($asset->type)): ?>
 					<div class="thumbnail-holder" style="width: 240px; height: 240px;">
