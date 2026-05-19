@@ -17,6 +17,7 @@
 			"public": "private ip to the arbiter location for players to join thru"
 		},
 		"token": "sha256 for ANSRAL",
+		"key": "access key for acc",
 		"disabled": false
 	},
 	"domain": "arl.lambda.cam"
