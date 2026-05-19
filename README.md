@@ -11,6 +11,8 @@ this is a FOSS project, you can submit issues and pull requests.
 
 Check out the [Trello page](https://trello.com/b/7NXCTXXp/anorrl-2016) to see what's on the to-do list!
 
+**You need a minimum of PHP 8.4 to be able to use this source! (Gotta be secure!)**
+
 ## .about contributing
 
 Ok hey, if you want to contribute to the site. PLEASE invest in a local webserver.
