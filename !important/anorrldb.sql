@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 12, 2026 at 02:06 PM
--- Server version: 12.2.2-MariaDB
--- PHP Version: 8.5.5
+-- Generation Time: May 19, 2026 at 09:33 PM
+-- Server version: 10.11.14-MariaDB-0+deb12u2
+-- PHP Version: 8.4.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -66,7 +66,8 @@ CREATE TABLE `active_servers` (
   `playercount` int(11) NOT NULL DEFAULT 0,
   `maxcount` int(11) NOT NULL,
   `port` varchar(5) NOT NULL,
-  `teamcreate` int(1) NOT NULL DEFAULT 0
+  `teamcreate` int(1) NOT NULL DEFAULT 0,
+  `last_renewed` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -80,6 +81,20 @@ CREATE TABLE `activity` (
   `userid` int(11) NOT NULL,
   `action` text NOT NULL,
   `action_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `aliases`
+--
+
+DROP TABLE IF EXISTS `aliases`;
+CREATE TABLE `aliases` (
+  `id` int(11) NOT NULL,
+  `name` varchar(512) NOT NULL,
+  `asset` int(11) NOT NULL,
+  `universe` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -99,30 +114,15 @@ CREATE TABLE `assets` (
   `favourites_count` int(11) NOT NULL DEFAULT 0,
   `comments_enabled` int(11) NOT NULL DEFAULT 1,
   `onsale` int(11) NOT NULL DEFAULT 0,
+  `cones` int(11) NOT NULL DEFAULT 0,
+  `lights` int(11) NOT NULL DEFAULT 0,
   `sales_count` int(11) NOT NULL DEFAULT 0,
   `relatedid` int(11) DEFAULT NULL,
   `currentversion` int(11) NOT NULL DEFAULT 1,
+  `universe` int(11) DEFAULT NULL,
   `nevershow` int(11) NOT NULL DEFAULT 0,
   `lastedited` timestamp NOT NULL DEFAULT current_timestamp(),
   `created` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `places`
---
-
-DROP TABLE IF EXISTS `places`;
-CREATE TABLE `places` (
-  `id` int(11) NOT NULL,
-  `copylocked` int(11) NOT NULL DEFAULT 1,
-  `serversize` int(11) NOT NULL DEFAULT 12,
-  `visit_count` int(11) NOT NULL DEFAULT 0,
-  `currently_playing_count` int(11) NOT NULL DEFAULT 0,
-  `teamcreate_enabled` int(1) NOT NULL DEFAULT 0,
-  `original` int(1) NOT NULL DEFAULT 0,
-  `gears_enabled` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -168,7 +168,7 @@ DROP TABLE IF EXISTS `cloudeditors`;
 CREATE TABLE `cloudeditors` (
   `id` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
-  `placeid` int(11) NOT NULL,
+  `universe` int(11) NOT NULL,
   `added` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -276,6 +276,22 @@ CREATE TABLE `outfits` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `places`
+--
+
+DROP TABLE IF EXISTS `places`;
+CREATE TABLE `places` (
+  `id` int(11) NOT NULL,
+  `copylocked` int(11) NOT NULL DEFAULT 1,
+  `serversize` int(11) NOT NULL DEFAULT 12,
+  `visit_count` int(11) NOT NULL DEFAULT 0,
+  `currently_playing_count` int(11) NOT NULL DEFAULT 0,
+  `gears_enabled` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `profilebadges`
 --
 
@@ -331,6 +347,22 @@ CREATE TABLE `transactions` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `universes`
+--
+
+DROP TABLE IF EXISTS `universes`;
+CREATE TABLE `universes` (
+  `id` int(11) NOT NULL,
+  `starting_place` int(11) NOT NULL,
+  `creator` int(11) NOT NULL,
+  `public` int(11) NOT NULL DEFAULT 1,
+  `original` int(11) NOT NULL DEFAULT 1,
+  `teamcreate` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -367,7 +399,9 @@ CREATE TABLE `users_settings` (
   `bgm` int(11) NOT NULL DEFAULT -1,
   `css` text NOT NULL DEFAULT '',
   `loadingscreens` int(1) NOT NULL DEFAULT 1,
-  `profilemusic` int(1) NOT NULL DEFAULT 1
+  `profilemusic` int(1) NOT NULL DEFAULT 1,
+  `accessibility` int(1) NOT NULL DEFAULT 0,
+  `last_username_change` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -412,15 +446,15 @@ ALTER TABLE `activity`
   ADD PRIMARY KEY (`userid`);
 
 --
--- Indexes for table `assets`
+-- Indexes for table `aliases`
 --
-ALTER TABLE `assets`
+ALTER TABLE `aliases`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `places`
+-- Indexes for table `assets`
 --
-ALTER TABLE `places`
+ALTER TABLE `assets`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -454,6 +488,12 @@ ALTER TABLE `datastores`
   ADD PRIMARY KEY (`dkey`(100));
 
 --
+-- Indexes for table `places`
+--
+ALTER TABLE `places`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `profilebadges`
 --
 ALTER TABLE `profilebadges`
@@ -478,6 +518,12 @@ ALTER TABLE `transactions`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `universes`
+--
+ALTER TABLE `universes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -492,6 +538,12 @@ ALTER TABLE `users_settings`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `aliases`
+--
+ALTER TABLE `aliases`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `assets`
@@ -515,6 +567,12 @@ ALTER TABLE `cloudeditors`
 -- AUTO_INCREMENT for table `profilebadges`
 --
 ALTER TABLE `profilebadges`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `universes`
+--
+ALTER TABLE `universes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
