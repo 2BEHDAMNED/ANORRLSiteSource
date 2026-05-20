@@ -649,7 +649,7 @@
 		
 		}
 
-		function getThumbsUrl(int $size_x = -1, int $size_y = -1): string {
+		function getThumbsUrl(int $size_x = -1, int $size_y = -1, bool $nocompress = false): string {
 			$size_params = "";
 			if($size_x > 0 && $size_y <= 0)
 				$size_params = "&sxy=$size_x";
@@ -657,7 +657,7 @@
 			else if($size_x > 0 && $size_y > 0)
 				$size_params = "&sx=$size_x&sy=$size_y";
 
-			return "/thumbs/?id=" . $this->id . $size_params;
+			return "/thumbs/?id=" . $this->id . $size_params . $nocompress ? "&nocompress" : "";
 		}
 
 		function isOwner(User|null $user, bool $explicit = false) {
