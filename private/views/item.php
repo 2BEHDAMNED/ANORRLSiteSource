@@ -17,7 +17,7 @@
 
 	if($asset != null) {
 		if($asset->getURLTitle() != $name || $asset->type == AssetType::PLACE) {
-			die(header("Location: /{$asset->getUrl()}"));
+			redirect("/{$asset->getURL()}");
 		}
 
 		if($user != null) {
@@ -36,7 +36,7 @@
 					$_SESSION['ANORRL$Comment$Post$Error'] = $result['reason'];
 				}
 
-				die(header("Location: /{$asset->getUrl()}"));
+				redirect("/{$asset->getURL()}");
 			}
 
 			$comments = Comment::GetCommentsOn($asset);
@@ -56,7 +56,7 @@
 			$asset_description = str_replace(PHP_EOL, "<br>", $asset_description);
 		}
 	} else {
-		die(header("Location: /my/stuff"));
+		redirect("/my/stuff");
 	}
 
 	$get_related_id = $asset->getAssetIDSafe();
@@ -78,7 +78,7 @@
 	$page->addMeta("description", htmlspecialchars(substr($asset->description, 0, 128), ENT_QUOTES));
 	$page->addMeta("og:type", "website");
 	$page->addMeta("og:site_name", "ANORRL");
-	$page->addMeta("og:url", "https://{$domain}/{$asset->getUrl()}");
+	$page->addMeta("og:url", "https://{$domain}/{$asset->getURL()}");
 	$page->addMeta("og:title", htmlspecialchars($asset->name, ENT_QUOTES));
 	$page->addMeta("og:description", htmlspecialchars(substr($asset->description, 0, 128), ENT_QUOTES));
 	$page->addMeta("og:image", "https://{$domain}/{$asset->getThumbsUrl()}");

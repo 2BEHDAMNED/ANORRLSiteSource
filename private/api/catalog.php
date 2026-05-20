@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\utilities\UserUtils;
 	use anorrl\utilities\AssetUtils;
@@ -29,7 +29,7 @@
 	}
 
 	if($page < 1) {
-		die(header("Location: /api/catalog?c=$type&q=$query&p=1"));
+		redirect("/api/catalog?c=$type&q=$query&p=1");
 	}
 
 	$catalog_filter = CatalogFilter::index($filter);
@@ -54,7 +54,7 @@
 	}
 
 	if($total_pages < $page && $page != 1) {
-		die(header("Location: /api/catalog?c=$type&q=$query&p=1"));
+		redirect("/api/catalog?c=$type&q=$query&p=1");
 	}
 
 	$assets = AssetUtils::GetFiltered($catalog_filter, $asset_type, $query, $page, 12);
@@ -80,7 +80,7 @@
 		}
 	}
 		
-	header("Content-Encoding: gzip");
+	set_encoding("gzip");
 	ob_start("ob_gzhandler");
 	echo (json_encode(["assets" => $assets_raw, "page" => $page, "total_pages" => $total_pages]));
 	ob_end_flush();

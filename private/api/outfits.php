@@ -1,6 +1,6 @@
 <?php
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(SESSION) {
 		$user = SESSION->user;

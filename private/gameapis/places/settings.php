@@ -3,7 +3,7 @@
 use anorrl\Place;
 use anorrl\Universe;
 
-header('Content-type: application/json');
+set_content_type(ARLTYPEJSON);
 
 $place = Place::FromID(intval($placeId));
 $universe = Universe::FromID($place->universe);

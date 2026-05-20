@@ -1,3 +1,3 @@
 <?php
-	die(header("Location: /my/home"));
+	redirect("/my/home");
 ?>

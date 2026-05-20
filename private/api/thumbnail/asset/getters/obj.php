@@ -1,7 +1,7 @@
 <?php
 	use anorrl\utilities\Thumbnail;
 	
-	header("Content-Type: text/plain");
+	set_content_type(ARLTYPEPLAIN);
 
 	if(!isset($hash))
 		die(http_response_code(500));

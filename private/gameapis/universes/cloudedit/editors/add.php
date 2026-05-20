@@ -3,7 +3,7 @@
 	use anorrl\Universe;
 	use anorrl\User;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$usertoadd_id = intval($_GET['userId']);
 

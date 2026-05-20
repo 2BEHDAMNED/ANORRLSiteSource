@@ -2,7 +2,7 @@
 	use anorrl\User;
 	use anorrl\utilities\Thumbnail;
 	
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(!isset($_GET['for']))
 		die(http_response_code(500));

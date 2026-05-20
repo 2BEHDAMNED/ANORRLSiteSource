@@ -3,7 +3,7 @@
 	use anorrl\User;
 	use anorrl\Database;
 
-	header("Content-Type: application/xml");
+	set_content_type(ARLTYPEXML);
 	function IsValidXML(string $xml): bool {
 		libxml_use_internal_errors(true);
 		$sxe = simplexml_load_string($xml);

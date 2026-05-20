@@ -5,26 +5,26 @@
 
 	// No id parameter? GET OUT!
 	if(!isset($id)) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	$get_user = User::FromID($id);
 
 	if($get_user == null) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	if(isset($_GET['page'])) {
 		if(intval($_GET['page']) == 1) {
 			die(include $_SERVER['DOCUMENT_ROOT']."/private/api/users/friends.php");
 		} else {
-			header("Content-Type: application/json");
+			set_content_type(ARLTYPEJSON);
 			die("{}");
 		}
 	}
 
 	if(!SESSION)
-		die(header("Location: /goodbye"));
+		redirect("/goodbye");
 	
 	$user = SESSION->user;
 

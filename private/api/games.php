@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\Place;
 	use anorrl\Universe;
@@ -32,7 +32,7 @@
 		}
 
 		if($page < 1) {
-			die(header("Location: /api/games?q=$query&p=1"));
+			redirect("/api/games?q=$query&p=1");
 		}
 
 		$catalog_filter = CatalogFilter::index($filter);
@@ -81,9 +81,9 @@
 		}
 
 		if($total_pages < $page && $total_pages != $page && $page != 1) {
-			die(header("Location: /api/games?q=$query&p=1"));
+			redirect("/api/games?q=$query&p=1");
 		}
-		header("Content-Encoding: gzip");
+		set_encoding("gzip");
 		unset($_SESSION['ANORRL$Games$OriginalOnly']);
 		ob_start("ob_gzhandler");
 		echo (json_encode(["games" => $assets, "page" => $page, "total_pages" => $total_pages]));

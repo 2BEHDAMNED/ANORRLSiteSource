@@ -2,7 +2,7 @@
 
 	use anorrl\User;
 
-	header("Content-Type: application/xml;charset=utf-8");
+	set_content_type(ARLTYPEXML);
 	
 	if ($_GET["method"] == "IsBestFriendsWith" || $_GET["method"] == "IsFriendsWith") {
 		

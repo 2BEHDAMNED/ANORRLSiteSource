@@ -1,5 +1,5 @@
 <?php
-	set_header("Content-Type", "application/json");
+	set_content_type(ARLTYPEJSON);
 
 	echo json_encode([
 		"message" => "hello!"

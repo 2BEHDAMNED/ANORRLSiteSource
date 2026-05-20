@@ -7,18 +7,18 @@
 
 	
 	if(!UtilUtils::HasBeenRewritten()) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	// No id parameter? GET OUT!
 	if(!isset($id)) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	$get_user = User::FromID(intval($id));
 
 	if($get_user == null) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	$user = SESSION->user;

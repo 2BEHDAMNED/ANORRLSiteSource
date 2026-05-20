@@ -10,7 +10,7 @@
 	if(!$data)
 		die(http_response_code(500));
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$api = $data instanceof User ? "avatar" : "asset";
 

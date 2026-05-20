@@ -3,7 +3,7 @@
 	use anorrl\enums\AssetType;
 	use anorrl\utilities\AssetUtils;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	//?category=FreeModels&keyword=&num=30&page=1&sort=Relevance
 

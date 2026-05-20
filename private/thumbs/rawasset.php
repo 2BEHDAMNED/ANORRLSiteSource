@@ -113,7 +113,7 @@
 					imagesavealpha($resizedimage, true);
 					
 					ob_clean();
-					header("Content-Type: image/png");
+					set_content_type(ARLTYPEPNG);
 					imagepng($resizedimage, null, 9);
 				} else if(isset($_GET['width']) && isset($_GET['height'])) {
 					$sizex = intval($_GET['width']);
@@ -153,13 +153,13 @@
 					imagecopyresampled($resizedimage, $image, 0, 0, 0, 0, $sizex, $sizey, $width, $height);
 
 					ob_clean();
-					header("Content-Type: image/png");
+					set_content_type(ARLTYPEPNG);
 					imagepng($resizedimage, null, 9);
 				} else {
 					$file_info = new finfo(FILEINFO_MIME_TYPE);
 					$mime = $file_info->buffer($contents);
 
-					header("Content-Type: $mime");
+					set_content_type($mime);
 					ob_clean();
 					echo $contents;
 				}
@@ -190,13 +190,13 @@
 					imagecopyresampled($resizedimage, $image, 0, 0, 0, 0, $sizex, $sizey, $width, $height);
 
 					ob_clean();
-					header("Content-Type: image/png");
+					set_content_type(ARLTYPEPNG);
 					imagepng($resizedimage, null, 9);
 				} else {
 					$file_info = new finfo(FILEINFO_MIME_TYPE);
 					$mime = $file_info->buffer($contents);
 
-					header("Content-Type: $mime");
+					set_content_type($mime);
 					ob_clean();
 					echo $contents;
 				}

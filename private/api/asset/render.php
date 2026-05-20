@@ -3,7 +3,7 @@
 
 	$user = SESSION ? SESSION->user : null;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$result = ["error" => true, "reason" => "Request failed."];
 	

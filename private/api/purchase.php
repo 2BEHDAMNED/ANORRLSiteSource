@@ -2,7 +2,7 @@
 	use anorrl\Asset;
 	use anorrl\enums\AssetType;
 	
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(!SESSION)
 		die(json_encode(["error" => true, "message" => "User is not logged in."]));

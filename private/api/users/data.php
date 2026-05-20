@@ -2,7 +2,7 @@
 	use anorrl\User;
 	use anorrl\utilities\UtilUtils;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(!UtilUtils::HasBeenRewritten()) {
 		die("{}");

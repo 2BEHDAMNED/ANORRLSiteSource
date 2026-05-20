@@ -10,19 +10,19 @@
 	use anorrl\utilities\UtilUtils;
 
 	if(!UtilUtils::HasBeenRewritten()) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 	
 	// No id parameter? GET OUT!
 	
 	if(!isset($id)) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	$get_user = User::FromID(intval($id));
 
 	if($get_user == null) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	$user = SESSION->user;
@@ -41,7 +41,7 @@
 			$_SESSION['ANORRL$Comment$Post$Error'] = $result['reason'];
 		}
 
-		die(header("Location: /users/".$get_user->id."/profile"));
+		redirect("/users/{$get_user->id}/profile");
 	}
 
 	$comments = Comment::GetCommentsOn($get_user);
@@ -220,7 +220,7 @@
 					echo <<<EOT
 					<li>
 						<div class="Asset">
-							<a id="NameAndThumbs" href="{$asset->getUrl()}">
+							<a id="NameAndThumbs" href="{$asset->getURL()}">
 								<img src="{$asset->getThumbsUrl(130)}">
 								<span>{$asset->name}</span>
 							</a>

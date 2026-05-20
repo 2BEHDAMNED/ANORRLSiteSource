@@ -3,7 +3,7 @@
 	use anorrl\Script;
 	use anorrl\utilities\ClientDetector;
 
-	header("Content-Type: text/plain");
+	set_content_type(ARLTYPEPLAIN);
 
 	if(!isset($_GET['PlaceId']) || !ClientDetector::HasAccess())
 		die(http_response_code(403));

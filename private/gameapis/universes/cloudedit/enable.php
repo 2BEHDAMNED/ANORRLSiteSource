@@ -1,7 +1,7 @@
 <?php
 	use anorrl\Universe;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$universe = Universe::FromID(intval($universeId));
 	$user = SESSION->user;

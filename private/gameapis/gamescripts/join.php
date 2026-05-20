@@ -4,7 +4,7 @@
 	use anorrl\utilities\UserUtils;
 	use anorrl\Script;
 
-	header("Content-Type: text/plain");
+	set_content_type(ARLTYPEPLAIN);
 
 	$serverToken = $_GET['serverToken'] ?? '';
 	$sessionToken = $_GET['sessionToken'] ?? '';

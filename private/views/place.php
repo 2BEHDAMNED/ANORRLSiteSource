@@ -2,7 +2,7 @@
 	if(!isset($id))
 		$id = intval($_GET['id']);
 	if(!isset($_GET['id']) && !isset($id))
-		die(header("Location: /my/stuff"));
+		redirect("/my/stuff");
 
 	use anorrl\Asset;
 	use anorrl\Comment;
@@ -18,7 +18,7 @@
 	if($place != null) {
 		
 		if($place->getURLTitle() != $name) {
-			die(header("Location: /{$place->getUrl()}"));
+			redirect("/{$place->getURL()}");
 		}
 
 		$universe = Universe::FromID($place->universe);
@@ -39,7 +39,7 @@
 					$_SESSION['ANORRL$Comment$Post$Error'] = $result['reason'];
 				}
 
-				die(header("Location: /{$place->getUrl()}"));
+				redirect("/{$place->getURL()}");
 			}
 
 			$comments = Comment::GetCommentsOn($place);
@@ -61,9 +61,9 @@
 
 		$new_asset = Asset::FromID($id);
 		if($new_asset == null) {
-			die(header("Location: /my/stuff"));
+			redirect("/my/stuff");
 		} else {
-			die(header("Location: /{$new_asset->getUrl()}"));
+			redirect("/{$new_asset->getURL()}");
 		}
 	}
 	$header_data = $place;
@@ -85,7 +85,7 @@
 	$page->addMeta("description", htmlspecialchars(substr($place->description, 0, 128), ENT_QUOTES));
 	$page->addMeta("og:type", "website");
 	$page->addMeta("og:site_name", "ANORRL");
-	$page->addMeta("og:url", "https://{$domain}{$place->getUrl()}");
+	$page->addMeta("og:url", "https://{$domain}{$place->getURL()}");
 	$page->addMeta("og:title", htmlspecialchars($place->name, ENT_QUOTES));
 	$page->addMeta("og:description", htmlspecialchars(substr($place->description, 0, 128), ENT_QUOTES));
 	$page->addMeta("og:image", "https://{$domain}{$place->getThumbsUrl()}");

@@ -2,11 +2,9 @@
 	use anorrl\Universe;
 	use anorrl\User;
 	
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 	// dont cache this shit!
-	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache");
+	enable_cache();
 
 	if(isset($universeId)) {
 		$universe = Universe::FromID(intval($universeId));

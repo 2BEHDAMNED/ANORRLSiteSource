@@ -2,6 +2,8 @@
 	use anorrl\User;
 	use anorrl\UserSettings;
 
+	set_content_type(ARLTYPEJSON);
+
 	$userid = null;
 	if(isset($_GET['userId'])) {
 		$userid = intval($_GET['userId']);

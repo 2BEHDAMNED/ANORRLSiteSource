@@ -7,7 +7,7 @@
 	--game:HttpGet("http://{domain}/Game/Statistics.ashx?UserID=0&AssociatedCreatorID=0&AssociatedCreatorType=User&AssociatedPlaceID=1818")
 	*/
 
-	header("Content-Type: text/plain");
+	set_content_type(ARLTYPEPLAIN);
 
 	if(!SESSION || !isset($_GET['placeId']) && !isset($_GET['PlaceID']))
 		die(http_response_code(403));

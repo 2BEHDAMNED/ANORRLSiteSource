@@ -4,7 +4,7 @@
 	use anorrl\Page;
 
 	if(SESSION) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 	
 	$istoomany = count(UserUtils::GetAllUsers()) > 15;
@@ -22,10 +22,10 @@
 		$result = UserUtils::RegisterUser($username, $password, $confirm_password, $accesskey);
 
 		if($result == "success") {
-			die(header("Location: /my/home"));
+			redirect("/my/home");
 		} else {
 			$_SESSION['signup_errors'] = $result;
-			die(header("Location: /register"));
+			redirect("/register");
 		}
 	}
 

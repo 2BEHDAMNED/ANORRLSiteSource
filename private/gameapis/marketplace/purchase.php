@@ -1,5 +1,5 @@
 <?php
-	header('Content-Type: application/json');
+	set_content_type(ARLTYPEJSON);
 	
 	if(!isset($_REQUEST['productId'])) {
 		$productId = rand(0,100000);

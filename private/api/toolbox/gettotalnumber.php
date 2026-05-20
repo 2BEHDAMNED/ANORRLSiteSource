@@ -5,7 +5,7 @@
 
 	//?keyword=&type=FreeModels&sortBy=Relevance&startOffset=0&resultSize=26&_=1770476003587
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$result = [
         [

@@ -1,6 +1,6 @@
 
 <?php 
-	header("Content-Type: text/xml");
+	set_content_type(ARLTYPEXML);
 	if(isset($_GET['type'])): ?>
 <?php if($_GET['type'] == "base"): ?>
 <List>

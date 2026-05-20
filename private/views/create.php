@@ -47,7 +47,7 @@
 	];
 
 	if(!in_array($type, $validtypes))
-		die(header("Location: /create/hats"));
+		redirect("/create/hats");
 
 	if(count($_POST) != 0) {
 		if(in_array($type, $validtypes)) {
@@ -71,7 +71,7 @@
 					$_SESSION['ANORRL$CreateAsset$Error'] = true;
 					$_SESSION['ANORRL$CreateAsset$Result'] = "Invalid body type!";
 					
-					die(header("Location: /create/".$type));
+					redirect("/create/$type");
 				}
 
 				$asset_type = $type == "body" ? $body_type->assettype() : $types[$type];
@@ -87,7 +87,7 @@
 						$_SESSION['ANORRL$CreateAsset$Result'] = $result['id'];
 					}
 					
-					die(header("Location: /create/".$type));
+					redirect("/create/$type");
 				}
 			}
 		} else {
@@ -246,11 +246,11 @@
 								$uploaded_asset = Asset::FromID($_SESSION['ANORRL$CreateAsset$Result']);
 								?>
 								<?php if(true): ?>
-									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<?= $uploaded_asset->name ?>&quot;! <span id="Message">Check it out <a href="/"<?= $uploaded_asset->getUrl() ?>">here</a>!  <a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">(Copy Asset ID)</a></div>
+									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<?= $uploaded_asset->name ?>&quot;! <span id="Message">Check it out <a href="/"<?= $uploaded_asset->getURL() ?>">here</a>!  <a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">(Copy Asset ID)</a></div>
 								<?php else: ?>
 									<!-- Other iterations. -->
-									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<a href="/"<?= $uploaded_asset->getUrl() ?>"><?= $uploaded_asset->name ?></a>&quot;! <span id="Message">(<a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">Copy Asset ID</a>)</div>
-									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded a <?= $uploaded_asset->type->label() ?>! <span id="Message">Check it out <a href="/"<?= $uploaded_asset->getUrl() ?>">here!</a></span> (<a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">Copy Asset ID</a>)</div>
+									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<a href="/"<?= $uploaded_asset->getURL() ?>"><?= $uploaded_asset->name ?></a>&quot;! <span id="Message">(<a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">Copy Asset ID</a>)</div>
+									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded a <?= $uploaded_asset->type->label() ?>! <span id="Message">Check it out <a href="/"<?= $uploaded_asset->getURL() ?>">here!</a></span> (<a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">Copy Asset ID</a>)</div>
 								<?php endif ?>
 							<?php endif ?>
 						<?php endif ?>

@@ -2,7 +2,7 @@
 
 	use anorrl\User;
 
-	header('Content-type: application/json');
+	set_content_type(ARLTYPEJSON);
 	$user = User::FromID($id);
 
 	if($user != null) {

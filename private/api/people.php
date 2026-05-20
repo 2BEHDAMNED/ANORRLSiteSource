@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\utilities\UserUtils;
 	use anorrl\User;
@@ -15,7 +15,8 @@
 	}
 
 	if($page < 1) {
-		die(header("Location: /api/people?q=$query&p=1"));
+		redirect("/api/people?q=$query&p=1");
+		
 	}
 
 	$total_pages = floor((count(UserUtils::GetAllUsers($query))/10) + 0.5)+1;
@@ -25,7 +26,7 @@
 	}
 
 	if($total_pages < $page) {
-		die(header("Location: /api/people?q=$query&p=1"));
+		redirect("/api/people?q=$query&p=1");
 	}
 
 	$users = UserUtils::GetAllUsersPaged($page, 10, $query);

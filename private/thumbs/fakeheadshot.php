@@ -1,7 +1,7 @@
 <?php
 	use anorrl\User;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$user = null;
 

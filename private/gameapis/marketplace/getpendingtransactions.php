@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: application/json; charset=UTF-8; X-Robots-Tag: noindex');
+set_content_type(ARLTYPEJSON);
 $PlayerId = (int)$_GET['PlayerId'];
 $PlaceId = (int)$_GET['PlaceId'];
 

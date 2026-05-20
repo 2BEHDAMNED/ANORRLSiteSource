@@ -2,7 +2,7 @@
 	use anorrl\enums\AssetType;
 	use anorrl\User;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(isset($_GET['id']) && isset($_GET['request'])) {
 		$user = User::FromID(intval($_GET['id']));
@@ -21,7 +21,7 @@
 				
 				if($page < 1) {
 					$id = $user->id;
-					die(header("Location: /api/user?id=$id&request=getuserbadges&p=1"));
+					redirect("/api/user?id=$id&request=getuserbadges&p=1");
 				}
 				
 				$badges = $user->getOwnedAssets(AssetType::BADGE, "", false, true, [], $page, 12);

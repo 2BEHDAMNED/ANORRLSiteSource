@@ -1056,11 +1056,11 @@
 					if($place->public) {
 						if($server_details->teamcreate) {
 							return <<<EOT
-							[ In Team Create: <a href="{$place->getUrl()}">$place_name</a> ]
+							[ In Team Create: <a href="{$place->getURL()}">$place_name</a> ]
 							EOT;
 						} else {
 							return <<<EOT
-							[ In Game: <a href="{$place->getUrl()}">$place_name</a> ]
+							[ In Game: <a href="{$place->getURL()}">$place_name</a> ]
 							EOT;
 						}
 					}

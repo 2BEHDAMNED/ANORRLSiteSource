@@ -12,9 +12,9 @@
 		if($result['error']) {
 			$_SESSION['ANORRL$Update$ProfileError'] = true;
 			$_SESSION['ANORRL$Update$ProfileResult'] = $result['reason'];
-			die(header("Location: /my/profile"));
+			redirect("/my/profile");
 		} else {
-			die(header("Location: /users/".$user->id."/profile"));
+			redirect("/users/{$user->id}/profile");
 		}
 	}
 
@@ -23,7 +23,7 @@
 		
 		SESSION->settings->setBackgroundMusic(intval(trim($_POST['ANORRL$Update$Profile$BGM'])));
 
-		die(header("Location: /my/profile"));
+		redirect("/my/profile");
 	}
 	
 	if(isset($_POST['ANORRL$Update$Profile$PLIcon']) &&
@@ -31,7 +31,7 @@
 		
 		SESSION->settings->setPlayerListIcon(intval(trim($_POST['ANORRL$Update$Profile$PLIcon'])));
 
-		die(header("Location: /my/profile"));
+		redirect("/my/profile");
 	}
 
 	if(isset($_POST['ANORRL$Update$Profile$CSS']) &&
@@ -42,9 +42,9 @@
 		if(!$result) {
 			$_SESSION['ANORRL$Update$ProfileError'] = true;
 			$_SESSION['ANORRL$Update$ProfileResult'] = "That was invalid css!";
-			die(header("Location: /my/profile"));
+			redirect("/my/profile");
 		} else {
-			die(header("Location: /users/".$user->id."/profile"));
+			redirect("/users/{$user->id}/profile");
 		}
 	}
 
@@ -56,9 +56,9 @@
 		if($result['error']) {
 			$_SESSION['ANORRL$Update$ProfileError'] = true;
 			$_SESSION['ANORRL$Update$ProfileResult'] = $result['reason'];
-			die(header("Location: /my/profile"));
+			redirect("/my/profile");
 		} else {
-			die(header("Location: /users/".$user->id."/profile"));
+			redirect("/users/{$user->id}/profile");
 		}
 	}
 
@@ -90,7 +90,7 @@
 			$_SESSION['ANORRL$Update$ProfileResult'] = $result['reason'];
 		}
 
-		die(header("Location: /my/profile"));
+		redirect("/my/profile");
 	}
 
 	$bgm = $settings->background_music;
@@ -233,7 +233,7 @@
 			<div style="border: 2px solid black; margin: 10px auto; width: 320px; text-align: center;">
 				<img src="<?= $bgm->getThumbsUrl(320) ?>">
 				<div style="padding: 5px; background: #333;">
-					<a href="<?= $bgm->getUrl() ?>"><?= $bgm->name ?></a>
+					<a href="<?= $bgm->getURL() ?>"><?= $bgm->name ?></a>
 				</div>
 			</div>
 			<?php endif ?>
@@ -252,7 +252,7 @@
 			<div style="border: 2px solid black; margin: 10px auto; width: 320px; text-align: center;">
 				<img src="<?= $plicon->getThumbsUrl(320) ?>">
 				<div style="padding: 5px; background: #333;">
-					<a href="<?= $plicon->getUrl() ?>"><?= $plicon->name ?></a>
+					<a href="<?= $plicon->getURL() ?>"><?= $plicon->name ?></a>
 				</div>
 			</div>
 			<?php endif ?>

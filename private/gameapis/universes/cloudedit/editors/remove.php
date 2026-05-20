@@ -2,7 +2,7 @@
 	use anorrl\Universe;
 	use anorrl\User;
 	
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(!SESSION || !isset($universeId))
 		die(http_response_code(503));

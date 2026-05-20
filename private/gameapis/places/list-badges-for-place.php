@@ -4,7 +4,7 @@
 	if(!isset($_GET['placeId']) || !SESSION)
 		die(http_response_code(503));
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$place = Place::FromID(intval($_GET['placeId']));
 	

@@ -2,7 +2,7 @@
 <?php 
 	use anorrl\utilities\UserUtils;
 	
-	header("Content-Type: application/json"); 
+	set_content_type(ARLTYPEJSON); 
 	
 	$user = UserUtils::RetrieveUser();
 	if(isset($_POST['username']) && isset($_POST['password'])) {

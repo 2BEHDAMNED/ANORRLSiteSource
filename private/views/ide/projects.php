@@ -47,10 +47,10 @@
 		$universe = Universe::FromID(intval($_GET['universeId']));
 
 		if(!$universe)
-			die(set_header("Location", "/ide/projects"));
+			redirect("/ide/projects");
 
 		if(!$universe->hasAccess($user) || count($universe->getAllPlaces()) <= 1)
-			die(set_header("Location", "/ide/projects"));
+			redirect("/ide/projects");
 
 		$places = $universe->getAllPlaces();
 	}

@@ -3,7 +3,7 @@
 	use anorrl\utilities\UserUtils;
 
 	if(SESSION) {
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	if(isset($_POST['ANORRL$Login$Username']) &&
@@ -16,10 +16,10 @@
 		$result = UserUtils::LoginUser($username, $password);
 
 		if($result["login"] != "Incorrect details provided!") {
-			die(header("Location: /my/home"));
+			redirect("/my/home");
 		} else {
 			$_SESSION['login_errors'] = $result;
-			die(header("Location: /login"));
+			redirect("/login");
 		}
 	}
 

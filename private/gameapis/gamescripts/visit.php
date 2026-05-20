@@ -1,7 +1,7 @@
 <?php
 	use anorrl\Script;
 
-	header("Content-Type: text/plain");
+	set_content_type(ARLTYPEPLAIN);
 
 	$username = "Player";
 	$userid = 1;

@@ -2,7 +2,7 @@
 	use anorrl\Place;
 	use anorrl\Database;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(SESSION) {
 		if(isset($_GET['placeId'])) {

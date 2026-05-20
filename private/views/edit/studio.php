@@ -21,7 +21,7 @@
 	$universe = Universe::FromID($asset->universe);
 
 	if($user == null) {
-		die(header("Location: /catalog"));
+		redirect("/catalog");
 	}
 
 	if($asset != null) {
@@ -33,12 +33,12 @@
 		$is_creator = $asset->isOwner($user);
 
 		if(!$is_creator) {
-			die(header("Location: /catalog"));
+			redirect("/catalog");
 		}
 
 		$asset_description = $asset->description;
 	} else {
-		die(header("Location: /my/stuff"));
+		redirect("/my/stuff");
 	}
 
 	if(
@@ -60,7 +60,7 @@
 		$version = AssetVersion::FromID($version_id);
 
 		if($version != null && $version->asset->id == $asset->id) {
-			header("Content-Type: application/json");
+			set_content_type(ARLTYPEJSON);
 			die(json_encode($asset->setVersion($version)));
 		}
 	}
@@ -84,7 +84,7 @@
 			$_SESSION['ANORRL$EditItem$Success'] = false;
 		}
 
-		die(header("Location: /edit?id=$id"));
+		redirect("/edit?id=$id");
 	}
 
 	if(isset($_POST['ANORRL$EditItem$Name']) &&
@@ -106,7 +106,7 @@
 			$_SESSION['ANORRL$EditItem$Error'] = $result['reason'];
 			$_SESSION['ANORRL$EditItem$Success'] = false;
 
-			die(header("Location: /edit?id=$id"));
+			redirect("/edit?id=$id");
 		}
 
 		$_SESSION['ANORRL$EditItem$Success'] = true;
@@ -158,7 +158,7 @@
 			}
 		}
 
-		die(header("Location: /edit?id={$asset->id}"));
+		redirect("/edit?id={$asset->id}");
 		
 	} else if(isset($_FILES['ANORRL$PublishAsset$File']) &&
 	   isset($_POST['ANORRL$PublishAsset$Submit'])) {
@@ -171,7 +171,7 @@
 				$_SESSION['ANORRL$EditItem$Success'] = false;
 			}
 
-			die(header("Location: /edit?id=$id"));
+			redirect("/edit?id=$id");
 		} else {
 			die("Yo, what are you doing??");
 		}

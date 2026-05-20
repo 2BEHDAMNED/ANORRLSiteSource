@@ -2,7 +2,7 @@
 
 	use anorrl\Place;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(isset($_GET['placeId'])) {
 		$placeid = intval($_GET['placeId']);

@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	//?maxsets=10&rqtype=getrobloxsets
 

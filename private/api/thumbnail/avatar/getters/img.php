@@ -1,7 +1,7 @@
 <?php
 	use anorrl\utilities\Thumbnail;
 	
-	header("Content-Type: image/png");
+	set_content_type(ARLTYPEPNG);
 
 	if(!isset($hash) || !isset($image))
 		die(http_response_code(500));

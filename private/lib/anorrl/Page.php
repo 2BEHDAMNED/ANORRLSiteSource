@@ -25,7 +25,7 @@
 
 		function __construct(string $title, string|null $internal_name = null) {
 			if(ClientDetector::IsAClient() && $title != "Login" && !str_starts_with($internal_name, "ide")) // assume studio
-				die(set_header("Location", "/ide/projects"));
+				redirect("/ide/projects");
 
 			$this->title = $title;
 			if(!$internal_name)

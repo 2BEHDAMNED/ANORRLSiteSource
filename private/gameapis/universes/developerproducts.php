@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 	
 	die(json_encode([
 		"DeveloperProducts" => [],

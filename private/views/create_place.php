@@ -8,18 +8,18 @@
 	use anorrl\utilities\ClientDetector;
 
 	if(!isset($placeId) || !isset($type))
-		die(header("Location: /create/"));
+		redirect("/create/");
 
 	if($type != "badge")
-		die(header("Location: /create/"));
+		redirect("/create/");
 
 	$place = Place::FromID($placeId);
 
 	if(!$place)
-		die(header("Location: /create/"));
+		redirect("/create/");
 
 	if(SESSION->user->id != $place->creator->id)
-		die(header("Location: /{$place->getURL()}"));
+		redirect("/{$place->getURL()}");
 
 	if(!ClientDetector::IsAClient()) {
 		require "placecreate_views/normal.php";

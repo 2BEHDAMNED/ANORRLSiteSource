@@ -14,7 +14,7 @@
 				str_starts_with($file, "/private/views/") &&
 				(!isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) || 
 				(isset($_COOKIE['ANORRL$Hidden$Cookie$yaya']) && $_COOKIE['ANORRL$Hidden$Cookie$yaya'] != CONFIG->secret->token))) {
-					die(header("Location: https://arl.lambda.cam/goodbye"));
+					redirect("https://arl.lambda.cam/goodbye");
 			} else {
 				$secret_enabled = false;
 			}
@@ -29,7 +29,7 @@
 					str_starts_with($file, "/private/views/") &&
 					!SESSION
 				) {
-					die(header("Location: /login"));
+					redirect("/login");
 				}
 			}
 
@@ -37,11 +37,11 @@
 				$$key = $value;
 			}
 			if(str_ends_with($file, ".json")) {
-				header("Content-Type: application/json");
+				set_content_type(ARLTYPEJSON);
 
 			}
 			if(str_ends_with($file, ".txt")) {
-				header("Content-Type: text/plain");
+				set_content_type(ARLTYPEPLAIN);
 			}
 			
 			if(str_ends_with($file, ".json") || str_ends_with($file, ".js")) {
@@ -353,7 +353,7 @@
 	} else {
 		header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
 		if(!SESSION && isset(CONFIG->secret)) {
-			die(header("Location: https://arl.lambda.cam/goodbye"));
+			redirect("https://arl.lambda.cam/goodbye");
 		}
 		require __DIR__.'/private/views/errors/404.php';
 		exit();

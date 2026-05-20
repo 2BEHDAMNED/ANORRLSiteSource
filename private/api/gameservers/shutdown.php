@@ -2,7 +2,7 @@
 	use anorrl\GameServer;
 	use anorrl\Place;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	if(!SESSION || (!isset($_POST['serverID']) && !isset($_POST['placeID'])))
 		die(json_encode([ "error" => true, "reason" => "You are not authorised to perform this action." ]));

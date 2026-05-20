@@ -1,7 +1,7 @@
 <?php
 	use anorrl\Script;
 
-	header("Content-Type: text/plain");
+	set_content_type(ARLTYPEPLAIN);
 
 	die(new Script("gameserver")->sign());
 ?>

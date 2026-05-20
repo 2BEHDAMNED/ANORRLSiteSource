@@ -1,7 +1,8 @@
 <?php
 	use anorrl\Asset;
 
-	header('Content-type: application/json');
+	set_content_type(ARLTYPEJSON);
+	
 	if(isset($_GET['productId'])) {
 		$assetid = intval($_GET['productId']);
 	} else if(isset($_GET['assetId'])) {

@@ -2,7 +2,7 @@
 	use anorrl\User;
 	use anorrl\enums\AssetType;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	$userid = 1;
 

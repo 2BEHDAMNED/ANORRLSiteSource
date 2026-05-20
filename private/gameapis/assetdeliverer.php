@@ -102,8 +102,8 @@
 				$contents = str_replace("rbxasset", "arlasset", $contents);
 			}
 
-			header("Content-Type: application/octet-stream");
-			Header("Content-Disposition: attachment; filename=\"$md5hash\"");
+			set_content_type("application/octet-stream");
+			set_attachment($md5hash);
 			die($contents);
 			
 		} else {
@@ -149,7 +149,7 @@
 					echo "Unauthorised access to this roblox asset!";
 					die(http_response_code(500));
 				} else {
-					header("Content-Type: $mimetype");
+					set_content_type($mimetype);
 
 					$contents = str_replace("www.roblox.com", $domain, $output);
 
@@ -176,7 +176,7 @@
 						$contents = gzdecode($contents);
 						$mimetype = ImageUtils::checkMimeType($contents);
 					}
-					header("Content-Type: $mimetype");
+					set_content_type($mimetype);
 					if(str_contains(ImageUtils::checkMimeType($contents), "json")) {
 						echo "Unauthorised access to this roblox asset!";
 						file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""), "");
@@ -189,7 +189,7 @@
 				
 			}
 
-			Header('Content-Disposition: attachment; filename="rbx_'.$id.'"');
+			set_attachment("rbx_{$id}");
 
 			if(str_contains($contents, "<roblox")) {
                                 $contents = str_replace("<roblox", "<anorrl", $contents);
@@ -211,7 +211,7 @@
 					$contents = gzdecode($contents);
 					$mimetype = ImageUtils::checkMimeType($contents);
 				}
-				header("Content-Type: $mimetype");
+				set_content_type($mimetype);
 				if(str_contains(ImageUtils::checkMimeType($contents), "json")) {
 					echo "Unauthorised access to this roblox asset!";
 					file_put_contents($_SERVER['DOCUMENT_ROOT']."/../assets/rbx_".$id.(isset($_GET['version']) ?  "_".$version : ""), "");

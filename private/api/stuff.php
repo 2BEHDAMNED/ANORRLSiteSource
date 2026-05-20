@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\enums\AssetType;
 
@@ -28,7 +28,7 @@
 		}
 
 		if($page < 1) {
-			die(header("Location: /api/stuff?c=$type&p=1"));
+			redirect("/api/stuff?c=$type&p=1");
 		}
 
 		$showcreatoronly = false;
@@ -40,7 +40,7 @@
 		$total_pages = floor($user->getOwnedAssetsCount(AssetType::index($type), $query, $showcreatoronly)/12)+1;
 
 		if($total_pages < $page) {
-			die(header("Location: /api/stuff?c=$type&p=1&q=$query"));
+			redirect("/api/stuff?c=$type&p=1&q=$query");
 		}
 
 		$assets = $user->getOwnedAssets(AssetType::index($type), $query, $showcreatoronly, true, [], $page, 12);

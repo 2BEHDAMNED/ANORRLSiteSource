@@ -1,7 +1,7 @@
 <?php
 	use anorrl\User;
 	
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 	
 	if(isset($_GET['username'])) {
 		$user = User::FromName($_GET['username']);

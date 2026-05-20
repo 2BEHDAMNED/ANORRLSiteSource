@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\Status;
 	use anorrl\utilities\UtilUtils;
@@ -14,7 +14,7 @@
 		}
 
 		if($page < 1) {
-			die(header("Location: /api/feeds?p=1"));
+			redirect("/api/feeds?p=1");
 		}
 
 		$statuses = Status::GetLatestFeedsPaged($page, 5);

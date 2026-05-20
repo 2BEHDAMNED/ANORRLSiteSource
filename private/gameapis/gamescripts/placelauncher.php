@@ -7,7 +7,7 @@
 	use anorrl\utilities\Arbiter;
 	use anorrl\utilities\UserUtils;
 	
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 
 	function errorOut(int $status = 0, string|null $sessionID = null, bool $teamcreate = false) {

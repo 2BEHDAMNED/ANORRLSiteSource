@@ -1,7 +1,7 @@
 <?php
 	use anorrl\Universe;
 
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 	if(isset($_GET['universeId'])) {
 		$universe = Universe::FromID(intval($_GET['universeId']));
 

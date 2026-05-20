@@ -1,5 +1,5 @@
 <?php
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\Place;
 	use anorrl\enums\AssetType;
@@ -34,7 +34,7 @@
 		}
 
 		if($page < 1) {
-			die(header("Location: /api/placestuff?c=$type&p=1"));
+			redirect("/api/placestuff?c=$type&p=1&i={$place->id}");
 		}
 
 		$asset_type = AssetType::index($type);
@@ -50,7 +50,7 @@
 		}
 
 		if($total_pages < $page) {
-			die(header("Location: /api/placestuff?c=$type&p=1&q=$query&i=$"));
+			redirect("/api/placestuff?c=$type&p=1&q=$query&i={$place->id}");
 		}
 
 		if($asset_type == AssetType::BADGE) {

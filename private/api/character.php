@@ -1,7 +1,7 @@
 <?php
 
 use anorrl\User;
-	header("Content-Type: application/json");
+	set_content_type(ARLTYPEJSON);
 
 	use anorrl\enums\AssetType;
 	use anorrl\Asset;
@@ -183,7 +183,7 @@ use anorrl\User;
 				}
 
 				if($page < 1) {
-					die(header("Location: /api/character?r=getwardrobe&c=$type&p=1"));
+					redirect("/api/character?r=getwardrobe&c=$type&p=1");
 				}
 
 				// REWRITE.
@@ -204,7 +204,7 @@ use anorrl\User;
 					}
 
 					if($total_pages < $page) {
-						die(header("Location: /api/character?r=getwardrobe&c=$type&p=1"));
+						redirect("/api/character?r=getwardrobe&c=$type&p=1");
 					}
 
 					$assets = $user->getOwnedAssets(AssetType::index($type), "", false, true, $wearing_array, $page, 8);

@@ -2,10 +2,8 @@
 	use anorrl\User;
 
 	// dont cache this shit!
-	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache");
-	header("Content-Type: text/plain");
+	enable_cache();
+	set_content_type(ARLTYPEPLAIN);
 
 	$userId = (int)$_GET['userId'];
 

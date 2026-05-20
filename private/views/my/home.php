@@ -16,7 +16,7 @@
 			$_SESSION['ANORRL$Home$StatusResult'] = "Success!";
 		}
 
-		die(header("Location: /my/home"));
+		redirect("/my/home");
 	}
 
 	$recentlyplayed = $user->getRecentlyPlayedGames(2);
