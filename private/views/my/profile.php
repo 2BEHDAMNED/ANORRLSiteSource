@@ -25,6 +25,14 @@
 
 		die(header("Location: /my/profile"));
 	}
+	
+	if(isset($_POST['ANORRL$Update$Profile$PLIcon']) &&
+	   isset($_POST['ANORRL$Update$Profile$PLIcon$Submit'])) {
+		
+		SESSION->settings->setPlayerListIcon(intval(trim($_POST['ANORRL$Update$Profile$PLIcon'])));
+
+		die(header("Location: /my/profile"));
+	}
 
 	if(isset($_POST['ANORRL$Update$Profile$CSS']) &&
 	   isset($_POST['ANORRL$Update$Profile$CSS$Submit'])) {
@@ -86,6 +94,7 @@
 	}
 
 	$bgm = $settings->background_music;
+	$plicon = $settings->playerlisticon;
 
 	if($bgm && !$bgm->isUsable()) {
 		$bgm = null;
@@ -234,6 +243,24 @@
 	</div>
 </form>
 <?php endif ?>
+<form method="POST" class="FormBox">
+	<div id="DetailsBox">
+		<h3>Player List Icon</h3>
+		<div id="FormStuff">
+			<span>you can input the id of an image asset and it'll be applied to the player list on every game you join.</span>
+			<?php if($plicon): ?>
+			<div style="border: 2px solid black; margin: 10px auto; width: 320px; text-align: center;">
+				<img src="<?= $plicon->getThumbsUrl(320) ?>">
+				<div style="padding: 5px; background: #333;">
+					<a href="<?= $plicon->getUrl() ?>"><?= $plicon->name ?></a>
+				</div>
+			</div>
+			<?php endif ?>
+			<textarea name="ANORRL$Update$Profile$PLIcon" style="height:16px;resize:none;margin-top: 10px;text-align: center"><?= $plicon ? $plicon->id : "" ?></textarea>
+			<input type="submit" value="Update" name="ANORRL$Update$Profile$PLIcon$Submit">
+		</div>
+	</div>
+</form>
 <?php
 	$page->loadFooter();
 	unset($_SESSION['ANORRL$Update$ProfileError']);
