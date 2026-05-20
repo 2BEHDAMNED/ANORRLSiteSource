@@ -63,6 +63,7 @@
 	$page->addStylesheet("/css/new/window.css");
 	$page->addStylesheet("/css/new/placelauncher.css?");
 	$page->addStylesheet("/css/new/thumbnail.css");
+	$page->addStylesheet("/css/new/my/home.css?v=2");
 
 	$page->addScript("/js/placelauncher.js?t=1776506477");
 	$page->addScript("/js/user.js?t=1776712536");
@@ -196,6 +197,45 @@
 	</div>
 	<br clear="all">
 </div>
+</div>
+<hr>
+<div id="CommentsContainer" style="margin: 10px">
+	<h3 style="margin-bottom: 0px;"><?= $get_user->name ?>'s Friends<?php if($get_user->getFriendsCount() > 6): ?> <a href="/users/<?= $get_user->id ?>/friends" style="font-size: 12px;">(See all)</a><?php endif ?></h3>
+	<div id="CommentSection" style="background: #111;">
+		<?php if($get_user->getFriendsCount() > 0): ?>
+			<div id="FriendsContainer">
+				<ul id="Friends" style="width: 848px;border: 0px;background: none;padding: 0px; text-align: center;">
+				<?php 
+					$friends = $get_user->getFriends();
+					shuffle($friends);
+					
+					if(count($friends) > 6) {
+						$new_friends = [];
+						for($i = 1; $i <= 6; $i++) {
+							$new_friends[] = $friends[count($friends)-$i];
+						}
+
+						$friends = $new_friends;
+					}
+
+					foreach($friends as $friend): ?>
+
+						<li class="Friend">
+							<a id="ProfileLink" href="/users/<?= $friend->id ?>/profile">
+								<img id="Profile" src="<?= $friend->getThumbsUrl(100) ?>">
+								<div id="Name"><?= $friend->name ?></div>
+							</a>
+						</li>
+
+					<?php endforeach ?>
+				</ul>
+				
+			
+			</div>
+		<?php else: ?>
+			<div id="CommentsDisabled">Aw man! <?= $get_user->name ?> has no friends... :(</div>	
+		<?php endif ?>
+	</div>
 </div>
 <hr>
 <div id="UserAvatarContainer">
