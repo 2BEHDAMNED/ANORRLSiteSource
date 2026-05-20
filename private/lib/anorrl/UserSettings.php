@@ -18,6 +18,7 @@
 		public bool $headshots;
 		public bool $nightbg;
 		public Asset|null $background_music = null;
+		public Asset|null $plicon = null;
 		public string $css = "";
 		public bool $loadingscreens;
 		public bool $profile_music;
@@ -33,6 +34,7 @@
 					"headshots" => false,
 					"nightbg" => false,
 					"bgm" => -1,
+					"plicon" => -1,
 					"css" => "",
 					"loadingscreens" => !ClientDetector::IsAClient(),
 					"profilemusic" => true,
@@ -89,8 +91,8 @@
 			$this->nightbg = !isset($rowdata->nightbg) ? self::CreateColumn("nightbg", false) : $rowdata->nightbg;
 			$this->loadingscreens = !isset($rowdata->loadingscreens) ? self::CreateColumn("loadingscreens", true) : $rowdata->loadingscreens;
 			$this->profile_music = !isset($rowdata->profilemusic) ? self::CreateColumn("profilemusic", true) : $rowdata->profilemusic;
-
 			$this->background_music = $rowdata->bgm <= 0 ? null : Asset::FromID($rowdata->bgm);
+			$this->playerlisticon = $rowdata->plicon <= 0 ? null : Asset::FromID($rowdata->plicon);
 			$this->css = $rowdata->css;
 
 			if(!$rowdata->last_username_change) {
@@ -103,6 +105,8 @@
 			
 			if($this->background_music && $this->background_music->type != AssetType::AUDIO)
 				$this->background_music = null;
+			if($this->playerlisticon && $this->playerlisticon->type != AssetType::IMAGE)
+				$this->playerlisticon = null;
 		}
 
 		function setValue(string $name, bool|int $value) {
@@ -171,6 +175,17 @@
 			}
 		}
 
+		function setPlayerListIcon(Asset|int|null $asset = null) {
+			$parsed_asset = is_int($asset) ? Asset::FromID($asset) : $asset;
+			if($parsed_asset && $parsed_asset->type == AssetType::IMAGE) {
+				$this->setValue("plicon", $parsed_asset->id);
+				$this->background_music = $parsed_asset;
+			} else {
+				$this->setValue("plicon", -1);
+				$this->background_music = null;
+			}
+		}
+		
 		function setCSS(string $data = ""): bool {
 			$validator = new CSSValidator();
 

@@ -892,6 +892,15 @@
 			)->rowCount() != 0;
 		}
 
+		//written by skylerclock for ANORRL
+		function getPlayerListIcon(): ?Asset {
+    		$sonion = Database::singleton()->run("SELECT `plicon` FROM `users_settings` WHERE `userid` = :id", [ ":id" => $this->id ])->fetchObject();
+    		if(!$sonion || !$sonion->plicon) {
+        		return null;
+    		}
+    		return Asset::FromID($sonion->plicon);
+		}
+		
 		function friend(User $user) {
 			$db = Database::singleton();
 
