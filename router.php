@@ -168,6 +168,7 @@
 	route_api('POST', 'asset/refund');
 
 	route('GET', '/users/emotes', '/private/api/users/emotes.php');
+	route('GET', '/users/get-icon', '/private/api/users/get-icon.php');
 
 	// game apis
 	route('GET',      '/asset/', '/private/gameapis/assetdeliverer.php');

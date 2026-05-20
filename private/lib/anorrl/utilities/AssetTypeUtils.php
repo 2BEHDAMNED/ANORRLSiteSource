@@ -61,6 +61,16 @@
 			};
 		}
 
+		public static function IsActualImage(AssetType $type) {
+			return match($type) {
+				AssetType::IMAGE => true,
+				AssetType::DECAL => true,
+				AssetType::TSHIRT => true,
+				AssetType::FACE => true,
+				default => false,
+			};
+		}
+
 		public static function IsSellable(AssetType $type) {
 			return match($type) {
 				AssetType::PLACE => false,

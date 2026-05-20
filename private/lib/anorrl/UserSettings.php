@@ -4,6 +4,7 @@
 	use anorrl\Asset;
 	use anorrl\enums\AssetType;
 	use anorrl\Database;
+	use anorrl\utilities\AssetTypeUtils;
 	use anorrl\utilities\UtilUtils;
 	use anorrl\utilities\ClientDetector;
 
@@ -18,7 +19,7 @@
 		public bool $headshots;
 		public bool $nightbg;
 		public Asset|null $background_music = null;
-		public Asset|null $plicon = null;
+		public Asset|null $playerlisticon = null;
 		public string $css = "";
 		public bool $loadingscreens;
 		public bool $profile_music;
@@ -102,10 +103,9 @@
 				$this->last_username_change = \DateTime::createFromFormat("Y-m-d H:i:s", $rowdata->last_username_change);
 			}
 			
-			
 			if($this->background_music && $this->background_music->type != AssetType::AUDIO)
 				$this->background_music = null;
-			if($this->playerlisticon && $this->playerlisticon->type != AssetType::IMAGE)
+			if($this->playerlisticon && !AssetTypeUtils::IsActualImage($this->playerlisticon->type))
 				$this->playerlisticon = null;
 		}
 
