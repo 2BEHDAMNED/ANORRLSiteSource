@@ -245,13 +245,7 @@
 							<?php else: 
 								$uploaded_asset = Asset::FromID($_SESSION['ANORRL$CreateAsset$Result']);
 								?>
-								<?php if(true): ?>
-									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<?= $uploaded_asset->name ?>&quot;! <span id="Message">Check it out <a href="/"<?= $uploaded_asset->getURL() ?>">here</a>!  <a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">(Copy Asset ID)</a></div>
-								<?php else: ?>
-									<!-- Other iterations. -->
-									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<a href="/"<?= $uploaded_asset->getURL() ?>"><?= $uploaded_asset->name ?></a>&quot;! <span id="Message">(<a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">Copy Asset ID</a>)</div>
-									<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded a <?= $uploaded_asset->type->label() ?>! <span id="Message">Check it out <a href="/"<?= $uploaded_asset->getURL() ?>">here!</a></span> (<a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">Copy Asset ID</a>)</div>
-								<?php endif ?>
+								<div id="SuccessTime" style="margin: -10px;margin-bottom: 10px;">You've successfully uploaded &quot;<?= $uploaded_asset->name ?>&quot;! <span id="Message">Check it out <a href="/<?= $uploaded_asset->getURL() ?>">here</a>!  <a href="javascript:copyToClipboard(<?= $uploaded_asset->getAssetIDSafe() ?>)">(Copy Asset ID)</a></div>
 							<?php endif ?>
 						<?php endif ?>
 						<table style="width: 100%">
