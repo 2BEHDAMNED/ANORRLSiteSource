@@ -657,7 +657,7 @@
 			else if($size_x > 0 && $size_y > 0)
 				$size_params = "&sx=$size_x&sy=$size_y";
 
-			return "/thumbs/?id=" . $this->id . $size_params . $nocompress ? "&nocompress" : "";
+			return "/thumbs/?id=" . $this->id . $size_params . ($nocompress ? "&nocompress" : "");
 		}
 
 		function isOwner(User|null $user, bool $explicit = false) {
