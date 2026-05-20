@@ -164,11 +164,6 @@
 	</div>
 	<div id="ProfileInfo">
 		<div id="Stats">
-			<?php if ($bgm): ?>
-                        <div id="OnlineStatusArea" style="text-align: center; font-size: 11px; padding-top: 10px; margin-bottom: 5px; color: #bbb; font-style: italic;">
-                                <span><b>This user has profile music set. Don't hear it? Turn on autoplay! (or click anywhere on this page)</b></span>
-                        </div>
-                        <?php endif; ?>
 			<div id="FollowFriendsWhatever">
 				<a href="/users/<?= $get_user->id ?>/friends">
 					<b id="Numbers"><?= $get_user->getFriendsCount() ?></b> <span>Friends</span>

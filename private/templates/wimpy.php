@@ -16,6 +16,6 @@
 		<?php endif ?>
 	</div>
 	<div style="border: 2px solid black;margin-left:-2px; height: 298px; border-top: none">
-		<img src="<?= $this->cover_art ?>" style="width: 100%">
+		<img src="<?= $this->cover_art ?>" style="width: 100%; background: #111;">
 	</div>
 </div>
