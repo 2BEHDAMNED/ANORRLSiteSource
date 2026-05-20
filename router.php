@@ -167,16 +167,16 @@
 	route_api('POST', 'asset/delete');
 	route_api('POST', 'asset/refund');
 
-	route('GET', '/users/emotes', '/private/api/users/emotes.php');
-	route('GET', '/users/get-icon', '/private/api/users/get-icon.php');
-
 	// game apis
 	route('GET',      '/asset/', '/private/gameapis/assetdeliverer.php');
 	route('GET',      '/Asset/', '/private/gameapis/assetdeliverer.php');
 	
-	route('GET',      '/users/[i:userId]/canmanage/[i:placeId]', '/private/api/users/canmanage.php');
+	route('GET',      '/users/', '/private/api/users/index.php');
 	route('GET',      '/Users/[i:userId]', '/private/api/users/data.php');
+	route('GET',      '/users/[i:userId]/canmanage/[i:placeId]', '/private/api/users/canmanage.php');
 	route('GET',      '/users/get-by-username', '/private/api/users/get-by-username.php');
+	route('GET',      '/users/emotes', '/private/api/users/emotes.php');
+	route('GET',      '/users/get-icon', '/private/api/users/get-icon.php');
 
 	route('GET',      '/IDE/Upload.aspx', '/private/views/ide/publish.php');
 	route('GET|POST', '/IDE/PublishNewPlace.aspx', '/private/views/ide/publishnewplace.php');
