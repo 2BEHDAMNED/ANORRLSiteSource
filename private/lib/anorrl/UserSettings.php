@@ -177,8 +177,8 @@
 
 		function setPlayerListIcon(Asset|int|null $asset = null) {
 			$parsed_asset = is_int($asset) ? Asset::FromID($asset) : $asset;
-			if($parsed_asset && $parsed_asset->type == AssetType::IMAGE) {
-				$this->setValue("plicon", $parsed_asset->id);
+			if($parsed_asset && AssetTypeUtils::IsActualImage($parsed_asset->type)) {
+				$this->setValue("plicon", $parsed_asset->getAssetIDSafe());
 				$this->background_music = $parsed_asset;
 			} else {
 				$this->setValue("plicon", -1);
