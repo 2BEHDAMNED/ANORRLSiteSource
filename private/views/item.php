@@ -245,7 +245,9 @@
 						<img src="<?= $asset->getThumbsUrl(240) ?>&nocompress">
 					</div>
 				<?php else: ?>
-					<img src="<?= $asset->getThumbsUrl(240) ?>&nocompress">
+					<a href="<?= $asset->getThumbsUrl() ?>&nocompress">
+						<img src="<?= $asset->getThumbsUrl() ?>&nocompress" style="width: 240px;height: 240px;">
+					</a>
 				<?php endif ?>
 			<?php endif ?>
 		</div>
