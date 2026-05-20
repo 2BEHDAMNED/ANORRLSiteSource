@@ -149,7 +149,7 @@
 		}
 
 		function setAccessibilityEnabled(bool $value) {
-			$this->setValue("accessbility", $value);
+			$this->setValue("accessibility", $value);
 			$this->accessibility = $value;
 		}
 

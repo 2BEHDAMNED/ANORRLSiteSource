@@ -34,7 +34,7 @@
 				}
 
 				$placelauncherurl = urlencode("http://{$domain}/game/PlaceLauncher.ashx?request=RequestGame&placeId={$place->id}&isTeleport=false");
-				$session = urlencode(base64_encode($user->security_key));
+				$session = base64_encode($user->security_key);
 
 				die("anorrl-player:1+placelauncherurl:{$placelauncherurl}+placeid:{$place->id}+launchmode:play+gameinfo:{$session}");
 			}

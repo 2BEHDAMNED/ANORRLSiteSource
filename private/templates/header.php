@@ -171,7 +171,7 @@
 		<style>
 			@font-face {
 				font-family: 'punk';
-				src: url('/css/SplendidB.ttf');
+				src: url('/public/css/SplendidB.ttf');
 			}
 		</style>
 		<?php endif ?>

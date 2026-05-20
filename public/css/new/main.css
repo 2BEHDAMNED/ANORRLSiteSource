@@ -9,11 +9,11 @@
 }
 
 #Footer > * {
-	font-family: Arial,Helvetica,sans-serif !important;
+	font-family: Arial,Helvetica,sans-serif;
 }
 
 #Footer {
-	font-family: Arial,Helvetica,sans-serif !important;
+	font-family: Arial,Helvetica,sans-serif;
 }
 
 body {
@@ -243,7 +243,7 @@ a:hover {
 	color: white;
 	text-align: center;
 	font-weight: bold;
-	font-family: punk !important;
+	font-family: punk;
 	position: relative;
 	z-index: 2;
 
@@ -256,7 +256,7 @@ a:hover {
 	padding: 0px 1.5em;
 	background: rgb(0,0,0);
 	border: 2px solid black;
-	font-family: punk !important;
+	font-family: punk;
 }
 
 #Header #Links a:hover {
